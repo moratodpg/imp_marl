@@ -35,12 +35,15 @@ class GymSaStruct(gym.Env):
     def step(self, action, return_info=False):
         # Here, function is given 1 action from 3 ** n possible actions
         # that need to be converted to 1 action from 3 actions per agent.
-        action = self.convert_action_dict[action]
-        print(action)
-        observations, rewards, dones = self.struct_env.step(action)
-        print(observations)
-        print(rewards)
-        print(dones)
+        print("action", action)
+        action_multi = self.convert_action_dict[action]
+        print("action_multi", action_multi)
+        obs_multi, rewards, dones = self.struct_env.step(action_multi)
+        observation = self.convert_obs_multi(obs_multi)
+        reward = rewards[[self.struct_env.agent_list[0]]]
+        done = True in dones
+        info = {"belief": self.struct_env.agent_belief}
+        return observation, reward, done, info
 
     def convert_obs_multi(self, obs_multi):
         time = obs_multi[self.struct_env.agent_list[0]][-1]
@@ -48,18 +51,3 @@ class GymSaStruct(gym.Env):
         observation = np.concatenate(list_obs)
         observation = np.append(observation, time)
         return observation
-
-    def convert_base_action(self, action, base, comp):
-
-        # TODO: Hard code an array to have instantaneous answer.
-        action_multi = np.zeros((comp,), dtype=int)
-        if action == 0:
-            return action_multi
-        digits = []
-        index_comp = int(comp) - 1
-        while action:
-            digits = (int(action % base))
-            action_multi[index_comp] = digits
-            action //= base
-            index_comp -= 1
-        return action_multi

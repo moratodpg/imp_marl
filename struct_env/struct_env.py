@@ -31,9 +31,9 @@ class Struct:
 
         self.agent_list = ["agent_" + str(i) for i in range(self.ncomp)]
 
-        self.time_step = None
-        self.agent_belief = None
-        self.drate = None
+        self.time_step = 0
+        self.agent_belief = self.belief0
+        self.drate = np.zeros((self.ncomp, 1), dtype=int)
 
         # Reset struct_env.
         self.reset()
@@ -75,12 +75,13 @@ class Struct:
         for i in range(self.ncomp):
             rewards[self.agent_list[i]] = reward
 
-
         self.agent_belief = belief_prime
         self.drate = drate_prime
+
         # An episode is done if the agent has reached the target
-        done = np.array_equal(self.time_step, self.ep_length)
+        done = self.time_step >= self.ep_length
         dones = {"__all__": done}
+
         # info = {"belief": self.agent_belief}
         return observations, rewards, dones
 
