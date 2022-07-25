@@ -174,7 +174,7 @@ config={
         "gamma": 0.95,
         
         # https://github.com/ray-project/ray/blob/releases/1.11.1/rllib/models/catalog.py
-        # FullyConnectedNetwork (tf and torch): rllib.models.tf|torch.fcnet.py
+        # FullyConnectedNetwork (tf and torch): rllib.pomdp_models.tf|torch.fcnet.py
         # These are used if no custom model is specified and the input space is 1D.
         # Number of hidden layers to be used.
         # Activation function descriptor.
