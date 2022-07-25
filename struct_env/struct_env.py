@@ -80,10 +80,9 @@ class Struct:
 
         # An episode is done if the agent has reached the target
         done = self.time_step >= self.ep_length
-        dones = {"__all__": done}
 
         # info = {"belief": self.agent_belief}
-        return observations, rewards, dones
+        return observations, rewards, done
 
     def pf_sys(self, pf, k):  # compute pf_sys for k-out-of-n components
         n = pf.size

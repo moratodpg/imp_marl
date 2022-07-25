@@ -35,13 +35,15 @@ class GymSaStruct(gym.Env):
     def step(self, action, return_info=False):
         # Here, function is given 1 action from 3 ** n possible actions
         # that need to be converted to 1 action from 3 actions per agent.
-        print("action", action)
-        action_multi = self.convert_action_dict[action]
-        print("action_multi", action_multi)
-        obs_multi, rewards, dones = self.struct_env.step(action_multi)
+        action_multi_list = self.convert_action_dict[action]
+        action_multi = {}
+        # TODO: maybe remove the dict
+        #  from Struct step method to avoid this conversion
+        for idx, i in enumerate(self.struct_env.agent_list):
+            action_multi[i] = action_multi_list[idx]
+        obs_multi, rewards, done = self.struct_env.step(action_multi)
         observation = self.convert_obs_multi(obs_multi)
-        reward = rewards[[self.struct_env.agent_list[0]]]
-        done = True in dones
+        reward = rewards[self.struct_env.agent_list[0]]
         info = {"belief": self.struct_env.agent_belief}
         return observation, reward, done, info
 
