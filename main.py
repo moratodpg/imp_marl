@@ -2,8 +2,8 @@ import itertools
 
 import gym
 from gym import spaces
-from env.gym_sa_struct import GymSaStruct
-from env.struct_env import Struct
+from struct_env.gym_sa_struct import GymSaStruct
+from struct_env.struct_env import Struct
 
 if __name__ == '__main__':
     print("test")
@@ -17,5 +17,5 @@ if __name__ == '__main__':
     env_sa = GymSaStruct()
     print("reset SA",env_sa.reset())
     print(env_sa.action_space.sample())
-    #print(env.step(env_sa.action_space.sample()))
+    print(env.step(env_sa.action_space.sample()))
 
