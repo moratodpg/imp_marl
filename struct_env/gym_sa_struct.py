@@ -10,7 +10,10 @@ from struct_env.struct_env import Struct
 
 class GymSaStruct(gym.Env):
     def __init__(self, config=None):
-        self.struct_env = Struct(config)
+        empty_config = {"config": {"components": 2}}
+        config = config or empty_config
+        # Number of components #
+        self.struct_env = Struct({"components": config['config'].get("components", 2)})
         n_actions = self.struct_env.actions_per_agent
         n_comps = self.struct_env.ncomp
         self.action_space = \
@@ -25,7 +28,7 @@ class GymSaStruct(gym.Env):
             list(itertools.product(range(n_actions), repeat=n_comps))
         for idx, i in enumerate(list_actions):
             self.convert_action_dict[idx] = np.array(i)
-
+        print(self.convert_action_dict)
     def reset(self, seed=None, return_info=False, options=None):
         obs_multi = self.struct_env.reset()
         observation = self.convert_obs_multi(obs_multi)

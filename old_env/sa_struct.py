@@ -1,3 +1,5 @@
+import gym
+import numpy as np
 class StructSA(gym.Env):
 
     def __init__(self, config=None):
@@ -18,7 +20,7 @@ class StructSA(gym.Env):
                                                 shape=(self.obs_total,),
                                                 dtype=np.float64)
         ### Loading the underlying POMDP model ###
-        drmodel = np.load('Dr3031C10.npz')
+        drmodel = np.load('pomdp_models/Dr3031C10.npz')
         self.belief0 = drmodel['belief0'][0, 0:self.ncomp, :,
                        0]  # (10 components, 30 crack states)
         self.P = drmodel['P'][:, 0:self.ncomp, :, :,

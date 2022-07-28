@@ -1,3 +1,6 @@
+import gym
+from ray.rllib.env.multi_agent_env import MultiAgentEnv
+import numpy as np
 class StructMA(MultiAgentEnv):
 
     def __init__(self, config=None):
@@ -18,7 +21,7 @@ class StructMA(MultiAgentEnv):
                                                 shape=(self.obs_total,),
                                                 dtype=np.float64)
         ### Loading the underlying POMDP model ###
-        drmodel = np.load('Dr3031C10.npz')
+        drmodel = np.load('pomdp_models/Dr3031C10.npz')
         self.belief0 = drmodel['belief0'][0, 0:self.ncomp, :,
                        0]  # (10 components, 30 crack states)
         self.P = drmodel['P'][:, 0:self.ncomp, :, :,
@@ -53,7 +56,6 @@ class StructMA(MultiAgentEnv):
         action_ = np.zeros(self.ncomp, dtype=int)
         for i in range(self.ncomp):
             action_[i] = action[self.agent_list[i]]
-
         observation_, belief_prime, drate_prime = self.belief_update(
             self.agent_belief, action_, self.drate)
 
@@ -65,7 +67,6 @@ class StructMA(MultiAgentEnv):
         reward_ = self.immediate_cost(self.agent_belief, action_, belief_prime,
                                       self.drate)
         reward = reward_.item()  # Convert float64 to float
-
         rewards = {}
         for i in range(self.ncomp):
             rewards[self.agent_list[i]] = reward

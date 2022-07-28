@@ -1,5 +1,5 @@
 import gym
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 import scipy.io as spio
 import numpy as np
 import os
@@ -26,7 +26,7 @@ class StructSA(gym.Env):
         self.belief0 = drmodel['belief0'][0,0:self.ncomp,:,0] # (10 components, 30 crack states)
         self.P = drmodel['P'][:,0:self.ncomp,:,:,:] # (3 actions, 10 components, 31 det rates, 30 cracks, 30 cracks)
         self.O = drmodel['O'][:,0:self.ncomp,:,:] # (3 actions, 10 components, 30 cracks, 2 observations)
-            
+
     def reset(self, seed=None, return_info=False, options=None):
         # We need the following line to seed self.np_random
         # super().reset(seed=seed)
@@ -35,11 +35,11 @@ class StructSA(gym.Env):
         self.time_step = 0
         self.agent_belief = self.belief0
         self.drate = np.zeros((self.ncomp, 1), dtype=int)
-        
+
         observation = np.concatenate( ((self.agent_belief).reshape(self.obs_total - 1), [self.time_step/30]) )
         info = {"belief": self.agent_belief}
         return (observation, info) if return_info else observation
-    
+
     def step(self, action, return_info=False):
         action_ = np.zeros(1, dtype=int)
         action_ = action
@@ -48,16 +48,16 @@ class StructSA(gym.Env):
         observation = np.concatenate( (belief_prime.reshape(self.obs_total - 1), [self.time_step/30]) )
         reward_ = self.immediate_cost(self.agent_belief, action_, belief_prime, self.drate)
         reward = reward_.item() #Convert float64 to float
-        self.time_step += 1 
+        self.time_step += 1
         self.agent_belief = belief_prime
         self.drate = drate_prime
         # An episode is done if the agent has reached the target
         done = np.array_equal(self.time_step, self.ep_length)
         info = {"belief": self.agent_belief}
-        return (observation, reward, done, info) 
-    
-    
-    def pf_sys(self, pf, k): # compute pf_sys for k-out-of-n components 
+        return (observation, reward, done, info)
+
+
+    def pf_sys(self, pf, k): # compute pf_sys for k-out-of-n components
         n = pf.size
         # k = ncomp-1
         PF_sys = np.zeros(1)
@@ -77,8 +77,8 @@ class StructSA(gym.Env):
             for i in range(h, L-1, -1):
                 A[i] = A[i] + (A[i-1]-A[i])*Rel
         PF_sys = 1-A[m]
-        return PF_sys  
-    
+        return PF_sys
+
     def immediate_cost(self, B, a, B_, drate): # immediate reward (-cost), based on current damage state and action#
         cost_system = 0
         PF = np.zeros((1,1))
@@ -89,21 +89,21 @@ class StructSA(gym.Env):
             if a[i]==1:
                 cost_system += -1
                 Bplus = self.P[a[i],i,drate[i,0]].T.dot(B[i,:])
-                PF_[i] = Bplus[-1]         
+                PF_[i] = Bplus[-1]
             elif a[i]==2:
                 cost_system +=  - 20
         if self.ncomp < 2: # single component setting
             PfSyS_ = PF_
             PfSyS = PF
         else:
-            PfSyS_ = self.pf_sys(PF_, self.ncomp-1) 
-            PfSyS = self.pf_sys(PF, self.ncomp-1) 
+            PfSyS_ = self.pf_sys(PF_, self.ncomp-1)
+            PfSyS = self.pf_sys(PF, self.ncomp-1)
         if PfSyS_ < PfSyS:
             cost_system += PfSyS_*(-10000)
         else:
-            cost_system += (PfSyS_-PfSyS)*(-10000) 
+            cost_system += (PfSyS_-PfSyS)*(-10000)
         return cost_system
-    
+
     def belief_update(self, b, a, drate):  # Bayesian belief update based on previous belief, current observation, and action taken
         b_prime = np.zeros((self.ncomp, self.nstcomp))
         b_prime[:] = b
@@ -121,18 +121,18 @@ class StructSA(gym.Env):
                     ob[i] = 0
                 else:
                     ob_dist = np.array([Obs0, Obs1])
-                    ob[i] = np.random.choice(range(0,self.nobs), size=None, replace=True, p=ob_dist)           
+                    ob[i] = np.random.choice(range(0,self.nobs), size=None, replace=True, p=ob_dist)
                 b_prime[i,:] = p1* self.O[a[i],i,:,int(ob[i])]/(p1.dot(self.O[a[i],i,:,int(ob[i])])) # belief update
             if a[i] == 2:
                 drate_prime[i, 0] = 0
         return ob, b_prime, drate_prime
-    
+
     def convert_base_action(self, action_, base, comp):
         action_multi = np.zeros((comp,), dtype=int)
         if action_ == 0:
                 return action_multi
         digits = []
-        index_comp = int(comp) - 1 
+        index_comp = int(comp) - 1
         while action_:
             digits = (int(action_ % base))
             action_multi[index_comp] = digits

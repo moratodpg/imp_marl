@@ -4,9 +4,10 @@ import numpy as np
 class Struct:
 
     def __init__(self, config=None):
-        config = config or {"config": {"components": 2}}
-        # Number of components #
-        self.ncomp = config['config']["components"]
+        ## TODO: add seed ? Maybe not required.
+        if config is None:
+            config = {"components": 2}
+        self.ncomp = config["components"]
         self.time = 0
         self.ep_length = 30
         self.nstcomp = 30  # What is this?
@@ -34,6 +35,7 @@ class Struct:
         self.time_step = 0
         self.agent_belief = self.belief0
         self.drate = np.zeros((self.ncomp, 1), dtype=int)
+        self.observations = None
 
         # Reset struct_env.
         self.reset()
@@ -46,11 +48,11 @@ class Struct:
         self.time_step = 0
         self.agent_belief = self.belief0
         self.drate = np.zeros((self.ncomp, 1), dtype=int)
-        observations = {}
+        self.observations = {}
         for i in range(self.ncomp):
-            observations[self.agent_list[i]] = np.concatenate(
+            self.observations[self.agent_list[i]] = np.concatenate(
                 (self.agent_belief[i], [self.time_step / 30]))
-        return observations
+        return self.observations
 
     def step(self, action: dict):
         action_ = np.zeros(self.ncomp, dtype=int)
@@ -62,9 +64,9 @@ class Struct:
 
         self.time_step += 1
 
-        observations = {}
+        self.observations = {}
         for i in range(self.ncomp):
-            observations[self.agent_list[i]] = np.concatenate(
+            self.observations[self.agent_list[i]] = np.concatenate(
                 (belief_prime[i], [self.time_step / 30]))
 
         reward_ = self.immediate_cost(self.agent_belief, action_, belief_prime,
@@ -82,7 +84,7 @@ class Struct:
         done = self.time_step >= self.ep_length
 
         # info = {"belief": self.agent_belief}
-        return observations, rewards, done
+        return self.observations, rewards, done
 
     def pf_sys(self, pf, k):  # compute pf_sys for k-out-of-n components
         n = pf.size
