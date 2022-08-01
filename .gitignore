@@ -308,3 +308,5 @@ https://www.toptal.com/developers/gitignore/api/python,pycharm
 
 .idea/*
 *.pyc
+/ray_tests/D:/
+/results/
