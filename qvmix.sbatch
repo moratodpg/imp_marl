@@ -7,7 +7,7 @@
 #SBATCH --output=logs/qvmix-output%j.log   # Log-file (important!)
 #SBATCH --cpus-per-task=6           # Number of CPU cores to allocate
 #SBATCH --mem=4G                   # Memory to allocate per allocated CPU core
-#SBATCH --time=4:00:00                # Max execution time
+#SBATCH --time=45:00                # Max execution time
 #SBATCH --partition=all
 #
 
