@@ -15,4 +15,4 @@
 conda activate qVmix
 # Run your Python script
 cd /home/pleroy/struct_marl
-./run.sh $1
+./run.sh $1 $2
