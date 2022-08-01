@@ -3,14 +3,14 @@
 action_selector: "multinomial"
 epsilon_start: .5
 epsilon_finish: .01
-epsilon_anneal_time: 100000
+epsilon_anneal_time: 50000
 mask_before_softmax: False
 
 runner: "parallel"
 
-buffer_size: 8
-batch_size_run: 8
-batch_size: 8
+buffer_size: 6
+batch_size_run: 6
+batch_size: 6
 
 env_args:
   state_last_action: False # critic adds last action internally
