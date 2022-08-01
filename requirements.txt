@@ -27,12 +27,10 @@ protobuf==3.6.1
 py==1.6.0
 pygame==1.9.4
 pyparsing==2.2.2
-pysc2==3.0.0
 pytest==3.8.2
 python-dateutil==2.7.3
 PyYAML==3.13
 requests==2.19.1
-s2clientprotocol==4.10.1.75800.0
 sacred==0.7.2
 scipy==1.1.0
 six==1.11.0
@@ -46,4 +44,3 @@ urllib3==1.23
 websocket-client==0.53.0
 whichcraft==0.5.2
 wrapt==1.10.11
-git+https://github.com/PaLeroy/smac.git
