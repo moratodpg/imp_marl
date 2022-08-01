@@ -6,14 +6,11 @@ epsilon_finish: .01
 epsilon_anneal_time: 50000
 mask_before_softmax: False
 
-runner: "parallel"
+runner: "episode"
 
 buffer_size: 6
-batch_size_run: 6
+batch_size_run: 1
 batch_size: 6
-
-env_args:
-  state_last_action: False # critic adds last action internally
 
 # update the target network every {} training steps
 target_update_interval: 200
