@@ -19,25 +19,25 @@ if __name__ == '__main__':
     # {0: array([0, 0]), 1: array([0, 1]), 2: array([0, 2]), 3: array([1, 0]),
     # 4: array([1, 1]), 5: array([1, 2]), 6: array([2, 0]), 7: array([2, 1]),
     # 8: array([2, 2])}
-    action_SA = 0
-    print("test Struct")
-    env = Struct()
-    action_space = gym.spaces.Discrete(env.actions_per_agent)
-    array_reward = []
-    for _ in range(n_episode):
-        env.reset()
-        done = False
-        id = 0
-        rew_tot = 0
-        while not done:
-            observations, rewards, done = env.step(action_MA)
-            # print(id, 'action:', action, 'reward:', rewards, done)
-            id += 1
-            rew_tot += rewards["agent_1"]
-        array_reward.append(rew_tot)
-
-    print(n_episode, " mean std ", np.mean(array_reward), np.std(array_reward),
-          np.min(array_reward), np.max(array_reward))
+    # action_SA = 0
+    # print("test Struct")
+    # env = Struct()
+    # action_space = gym.spaces.Discrete(env.actions_per_agent)
+    # array_reward = []
+    # for _ in range(n_episode):
+    #     env.reset()
+    #     done = False
+    #     id = 0
+    #     rew_tot = 0
+    #     while not done:
+    #         observations, rewards, done = env.step(action_MA)
+    #         # print(id, 'action:', action, 'reward:', rewards, done)
+    #         id += 1
+    #         rew_tot += rewards["agent_1"]
+    #     array_reward.append(rew_tot)
+    #
+    # print(n_episode, " mean std ", np.mean(array_reward), np.std(array_reward),
+    #       np.min(array_reward), np.max(array_reward))
     # print()
     # print("test GYM SA")
     # env_sa = GymSaStruct()
@@ -138,8 +138,10 @@ if __name__ == '__main__':
 
             actions = []
             for k, v in action_MA.items():
-                actions.append(v)
-
+                avail_actions = env.get_avail_agent_actions(k)
+                avail_actions_ind = np.nonzero(avail_actions)[0]
+                action = np.random.choice(avail_actions_ind)
+                actions.append(action)
            #print("actions", actions)
             reward, terminated, info = env.step(actions)
             episode_reward += reward

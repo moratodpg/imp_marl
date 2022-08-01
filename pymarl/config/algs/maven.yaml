@@ -1,0 +1,57 @@
+# --- Maven specific parameters ---
+
+# use epsilon greedy action selector
+action_selector: "epsilon_greedy"
+epsilon_start: 1.0
+epsilon_finish: 0.05
+epsilon_anneal_time: 200000
+
+runner: "parallel"
+batch_size_run: 8
+
+buffer_size: 5000
+
+
+target_update_interval: 200
+
+
+agent_output_type: "q"
+learner: "maven_learner"
+double_q: True
+mixer: "qmix"
+mixing_embed_dim: 32
+skip_connections: False
+hyper_initialization_nonzeros: 0
+
+mac: "maven_mac"
+agent: "maven_rnn"
+noise_dim: 16
+noise_embedding_dim: 32
+
+mi_loss: 0.001
+rnn_discrim: True
+rnn_agg_size: 32
+
+discrim_size: 64
+discrim_layers: 3
+
+noise_bandit: True
+noise_bandit_lr: 0.1
+noise_bandit_epsilon: 0.2
+
+mi_intrinsic: False
+mi_scaler: 0.1
+entropy_scaling: 0.001
+hard_qs: False
+
+bandit_epsilon: 0.1
+bandit_iters: 8
+bandit_batch: 64
+bandit_buffer: 512
+bandit_reward_scaling: 20
+bandit_use_state: True
+bandit_policy: True
+
+name: "maven"
+use_cuda: False
+use_tensorboard: True

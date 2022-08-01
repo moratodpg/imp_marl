@@ -39,7 +39,7 @@ class PymarlMAStruct(MultiAgentEnv):
 
     def get_state_size(self):
         """ Returns the shape of the state"""
-        return self.struct_env.obs_total_single
+        return len(self.get_state())
 
     def get_avail_actions(self):
         avail_actions = []
@@ -50,7 +50,7 @@ class PymarlMAStruct(MultiAgentEnv):
 
     def get_avail_agent_actions(self, agent_id):
         """ Returns the available actions for agent_id """
-        return [1] * self.n_agents
+        return [1] * self.n_actions
 
     def get_total_actions(self):
         """ Returns the total number of actions an agent could ever take """
@@ -80,3 +80,6 @@ class PymarlMAStruct(MultiAgentEnv):
                     "n_agents": self.n_agents,
                     "episode_limit": self.episode_limit}
         return env_info
+
+    def get_stats(self):
+        return {}
