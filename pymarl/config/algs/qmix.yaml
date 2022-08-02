@@ -4,13 +4,12 @@
 action_selector: "epsilon_greedy"
 epsilon_start: 1.0
 epsilon_finish: 0.05
-epsilon_anneal_time: 20000
+epsilon_anneal_time: 200000
 
 runner: "parallel"
 batch_size_run: 6
 
-buffer_size: 2500
-
+buffer_size: 5000
 
 target_update_interval: 200
 
@@ -26,4 +25,3 @@ name: "qmix"
 
 use_cuda: False
 use_tensorboard: True
-
