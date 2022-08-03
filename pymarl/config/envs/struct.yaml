@@ -2,6 +2,7 @@ env: struct
 
 env_args:
   components: 2
+  state_config: concat_obs
 
 learner_log_interval: 10000
 log_interval: 10000
