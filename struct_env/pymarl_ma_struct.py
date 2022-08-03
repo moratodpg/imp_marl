@@ -4,7 +4,11 @@ from struct_env.struct_env import Struct
 
 class PymarlMAStruct(MultiAgentEnv):
 
-    def __init__(self, components=2, seed=None):
+    def __init__(self,
+                 components=2,  # Number of structure
+                 state_config="obs",  # State config ["obs", "belief"]
+                 seed=None):
+        self.state_config = state_config
         self._seed = seed
         self.config = {"components": components}
         self.struct_env = Struct(self.config)
@@ -34,8 +38,13 @@ class PymarlMAStruct(MultiAgentEnv):
 
     def get_state(self):
         # TODO: state = full obs is not very usefuel in CTDE
-        obs = self.get_obs()
-        return [i for j in obs for i in j]
+        if self.state_config == "obs":
+            return[i for j in self.get_obs() for i in j]
+        elif self.state_config == "belief":
+            return[i for j in self.struct_env.beliefs for i in j]
+        else:
+            print("Error state_config")
+            return None
 
     def get_state_size(self):
         """ Returns the shape of the state"""

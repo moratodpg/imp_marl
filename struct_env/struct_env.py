@@ -33,7 +33,7 @@ class Struct:
         self.agent_list = ["agent_" + str(i) for i in range(self.ncomp)]
 
         self.time_step = 0
-        self.agent_belief = self.belief0
+        self.beliefs = self.belief0
         self.drate = np.zeros((self.ncomp, 1), dtype=int)
         self.observations = None
 
@@ -46,12 +46,12 @@ class Struct:
 
         # Choose the agent's belief
         self.time_step = 0
-        self.agent_belief = self.belief0
+        self.beliefs = self.belief0
         self.drate = np.zeros((self.ncomp, 1), dtype=int)
         self.observations = {}
         for i in range(self.ncomp):
             self.observations[self.agent_list[i]] = np.concatenate(
-                (self.agent_belief[i], [self.time_step / 30]))
+                (self.beliefs[i], [self.time_step / 30]))
         return self.observations
 
     def step(self, action: dict):
@@ -60,7 +60,7 @@ class Struct:
             action_[i] = action[self.agent_list[i]]
 
         observation_, belief_prime, drate_prime = self.belief_update(
-            self.agent_belief, action_, self.drate)
+            self.beliefs, action_, self.drate)
 
         self.time_step += 1
 
@@ -69,7 +69,7 @@ class Struct:
             self.observations[self.agent_list[i]] = np.concatenate(
                 (belief_prime[i], [self.time_step / 30]))
 
-        reward_ = self.immediate_cost(self.agent_belief, action_, belief_prime,
+        reward_ = self.immediate_cost(self.beliefs, action_, belief_prime,
                                       self.drate)
         reward = reward_.item()  # Convert float64 to float
 
@@ -77,13 +77,13 @@ class Struct:
         for i in range(self.ncomp):
             rewards[self.agent_list[i]] = reward
 
-        self.agent_belief = belief_prime
+        self.beliefs = belief_prime
         self.drate = drate_prime
 
         # An episode is done if the agent has reached the target
         done = self.time_step >= self.ep_length
 
-        # info = {"belief": self.agent_belief}
+        # info = {"belief": self.beliefs}
         return self.observations, rewards, done
 
     def pf_sys(self, pf, k):  # compute pf_sys for k-out-of-n components
