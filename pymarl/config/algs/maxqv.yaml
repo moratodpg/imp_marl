@@ -1,0 +1,29 @@
+# --- QVmix specific parameters ---
+
+# use epsilon greedy action selector
+action_selector: "epsilon_greedy"
+epsilon_start: 1.0
+epsilon_finish: 0.05
+epsilon_anneal_time: 20000
+
+runner: "episode"
+#batch_size_run: 6
+
+buffer_size: 2500
+
+# update the target network every {} episodes
+target_update_interval: 200
+
+# use the Q_Learner to train
+agent_output_type: "q"
+learner: "maxqv_learner"
+mixer: "qmix"
+vmixer: "vmix"
+mixing_embed_dim: 32
+
+
+
+name: "maxqvmix"
+
+use_cuda: False
+use_tensorboard: True

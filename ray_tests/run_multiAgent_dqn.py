@@ -161,7 +161,7 @@ ray.init()  # Hear the engine humming? ;)
 # In case you encounter the following error during our tutorial: `RuntimeError: Maybe you called ray.init twice by accident?`
 # Try: `ray.shutdown() + ray.init()` or `ray.init(ignore_reinit_error=True)`
 
-n_components = 10
+n_components = 3
 PATH_logger = "D:/14_DecomposedQ_DRL/multiagent_environment/01_kOutOfN/log_files"
 config_env = {"config": {"components": n_components} }
 
@@ -192,7 +192,7 @@ for i in range(env.ncomp):
 def policy_mapping_fn(agent_id: str):
     return mapping_agent2policy[agent_id]
 
-from ray.rllib.agents.ppo import PPOTrainer
+from ray.rllib.agents.dqn import DQNTrainer
 # from ray.rllib.agents.ppo import PPOTrainer
 # Create an RLlib Trainer instance.
 
@@ -207,12 +207,12 @@ config={
         # to `env.spec.max_episode_steps` (if present) for Gym envs.
         "horizon": 30,
         # Parallelize environment rollouts.
-        "num_workers": 3,
+        "num_workers": 4,
         # Discount factor of the MDP.
         "gamma": 0.95,
         
         # https://github.com/ray-project/ray/blob/releases/1.11.1/rllib/models/catalog.py
-        # FullyConnectedNetwork (tf and torch): rllib.models.tf|torch.fcnet.py
+        # FullyConnectedNetwork (tf and torch): rllib.pomdp_models.tf|torch.fcnet.py
         # These are used if no custom model is specified and the input space is 1D.
         # Number of hidden layers to be used.
         # Activation function descriptor.
@@ -258,7 +258,7 @@ def custom_log_creator(custom_path, custom_str):
 
     return logger_creator
 
-trainer = PPOTrainer(config=config, logger_creator=custom_log_creator(PATH_logger, 'ppo_C10') )
+trainer = DQNTrainer(config=config, logger_creator=custom_log_creator(PATH_logger, 'dqn') )
 
 for i in range(100):
     results = trainer.train()

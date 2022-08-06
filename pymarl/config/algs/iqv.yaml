@@ -1,0 +1,28 @@
+# --- IQV specific parameters ---
+
+# use epsilon greedy action selector
+action_selector: "epsilon_greedy"
+epsilon_start: 1.0
+epsilon_finish: 0.05
+epsilon_anneal_time: 20000
+
+runner: "episode"
+#batch_size_run: 6
+
+buffer_size: 2500
+
+
+target_update_interval: 200
+
+
+agent_output_type: "q"
+learner: "qv_learner"
+mixer: # None: no Qmixer
+vmixer: # None: no Vmixer
+
+
+
+name: "iqv"
+
+use_cuda: False
+use_tensorboard: True

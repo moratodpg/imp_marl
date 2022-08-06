@@ -1,23 +1,22 @@
 import gym
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 import scipy.io as spio
 import numpy as np
 import os
-from ray.rllib.env.multi_agent_env import MultiAgentEnv
 
-class StructMA(MultiAgentEnv):
+class StructSA(gym.Env):
 
     def __init__(self, config=None):
         empty_config = {"config": {"components": 2} }
-        config_ = config or empty_config
+        config = config or empty_config
         # Number of components #
-        self.ncomp = config_['config']["components"]
+        self.ncomp = config['config'].get("components", 2)
         self.time = 0
         self.ep_length = 30
         self.nstcomp = 30
         self.nobs = 2
-        self.actions_total = int(3)
-        self.obs_total = int(30 + 1)
+        self.actions_total = int(3**self.ncomp)
+        self.obs_total = int(self.ncomp*30 + 1)
 
         # configure spaces
         self.action_space = gym.spaces.Discrete(self.actions_total)
@@ -27,16 +26,8 @@ class StructMA(MultiAgentEnv):
         self.belief0 = drmodel['belief0'][0,0:self.ncomp,:,0] # (10 components, 30 crack states)
         self.P = drmodel['P'][:,0:self.ncomp,:,:,:] # (3 actions, 10 components, 31 det rates, 30 cracks, 30 cracks)
         self.O = drmodel['O'][:,0:self.ncomp,:,:] # (3 actions, 10 components, 30 cracks, 2 observations)
-        
-        self.agent_list = []
-        for i in range(self.ncomp):
-            item = "agent_"+ str(i)
-            self.agent_list.append(item)
-        self._agent_ids = self.agent_list
-        # Reset env.
-        self.reset()
-            
-    def reset(self):
+
+    def reset(self, seed=None, return_info=False, options=None):
         # We need the following line to seed self.np_random
         # super().reset(seed=seed)
 
@@ -44,41 +35,29 @@ class StructMA(MultiAgentEnv):
         self.time_step = 0
         self.agent_belief = self.belief0
         self.drate = np.zeros((self.ncomp, 1), dtype=int)
-        observations = {}
-        for i in range(self.ncomp):
-            observations[self.agent_list[i]] = np.concatenate((self.agent_belief[i], [self.time_step/30])) 
 
-        return observations
-    
-    def step(self, action: dict):
-        action_ = np.zeros(self.ncomp, dtype=int)
-        for i in range(self.ncomp):
-            action_[i] = action[self.agent_list[i]]
+        observation = np.concatenate( ((self.agent_belief).reshape(self.obs_total - 1), [self.time_step/30]) )
+        info = {"belief": self.agent_belief}
+        return (observation, info) if return_info else observation
 
+    def step(self, action, return_info=False):
+        action_ = np.zeros(1, dtype=int)
+        action_ = action
+        action_ = self.convert_base_action(action_, 3, self.ncomp)
         observation_, belief_prime, drate_prime = self.belief_update(self.agent_belief, action_, self.drate)
-        
-        observations = {}
-        for i in range(self.ncomp):
-            observations[self.agent_list[i]] = np.concatenate((belief_prime[i], [self.time_step/30])) 
-        
+        observation = np.concatenate( (belief_prime.reshape(self.obs_total - 1), [self.time_step/30]) )
         reward_ = self.immediate_cost(self.agent_belief, action_, belief_prime, self.drate)
         reward = reward_.item() #Convert float64 to float
-        
-        rewards = {}
-        for i in range(self.ncomp):
-            rewards[self.agent_list[i]] = reward
-            
-        self.time_step += 1 
+        self.time_step += 1
         self.agent_belief = belief_prime
         self.drate = drate_prime
         # An episode is done if the agent has reached the target
         done = np.array_equal(self.time_step, self.ep_length)
-        dones = {"__all__": done}
-        # info = {"belief": self.agent_belief}
-        return observations, rewards, dones, {} 
-    
-    
-    def pf_sys(self, pf, k): # compute pf_sys for k-out-of-n components 
+        info = {"belief": self.agent_belief}
+        return (observation, reward, done, info)
+
+
+    def pf_sys(self, pf, k): # compute pf_sys for k-out-of-n components
         n = pf.size
         # k = ncomp-1
         PF_sys = np.zeros(1)
@@ -98,8 +77,8 @@ class StructMA(MultiAgentEnv):
             for i in range(h, L-1, -1):
                 A[i] = A[i] + (A[i-1]-A[i])*Rel
         PF_sys = 1-A[m]
-        return PF_sys  
-    
+        return PF_sys
+
     def immediate_cost(self, B, a, B_, drate): # immediate reward (-cost), based on current damage state and action#
         cost_system = 0
         PF = np.zeros((1,1))
@@ -110,21 +89,21 @@ class StructMA(MultiAgentEnv):
             if a[i]==1:
                 cost_system += -1
                 Bplus = self.P[a[i],i,drate[i,0]].T.dot(B[i,:])
-                PF_[i] = Bplus[-1]         
+                PF_[i] = Bplus[-1]
             elif a[i]==2:
                 cost_system +=  - 20
         if self.ncomp < 2: # single component setting
             PfSyS_ = PF_
             PfSyS = PF
         else:
-            PfSyS_ = self.pf_sys(PF_, self.ncomp-1) 
-            PfSyS = self.pf_sys(PF, self.ncomp-1) 
+            PfSyS_ = self.pf_sys(PF_, self.ncomp-1)
+            PfSyS = self.pf_sys(PF, self.ncomp-1)
         if PfSyS_ < PfSyS:
             cost_system += PfSyS_*(-10000)
         else:
-            cost_system += (PfSyS_-PfSyS)*(-10000) 
+            cost_system += (PfSyS_-PfSyS)*(-10000)
         return cost_system
-    
+
     def belief_update(self, b, a, drate):  # Bayesian belief update based on previous belief, current observation, and action taken
         b_prime = np.zeros((self.ncomp, self.nstcomp))
         b_prime[:] = b
@@ -142,12 +121,27 @@ class StructMA(MultiAgentEnv):
                     ob[i] = 0
                 else:
                     ob_dist = np.array([Obs0, Obs1])
-                    ob[i] = np.random.choice(range(0,self.nobs), size=None, replace=True, p=ob_dist)           
+                    ob[i] = np.random.choice(range(0,self.nobs), size=None, replace=True, p=ob_dist)
                 b_prime[i,:] = p1* self.O[a[i],i,:,int(ob[i])]/(p1.dot(self.O[a[i],i,:,int(ob[i])])) # belief update
             if a[i] == 2:
                 drate_prime[i, 0] = 0
         return ob, b_prime, drate_prime
 
+    def convert_base_action(self, action_, base, comp):
+        action_multi = np.zeros((comp,), dtype=int)
+        if action_ == 0:
+                return action_multi
+        digits = []
+        index_comp = int(comp) - 1
+        while action_:
+            digits = (int(action_ % base))
+            action_multi[index_comp] = digits
+            action_ //= base
+            index_comp -= 1
+        return action_multi
+
+import numpy as np
+import pprint
 import ray
 from datetime import datetime
 import tempfile
@@ -161,58 +155,26 @@ ray.init()  # Hear the engine humming? ;)
 # In case you encounter the following error during our tutorial: `RuntimeError: Maybe you called ray.init twice by accident?`
 # Try: `ray.shutdown() + ray.init()` or `ray.init(ignore_reinit_error=True)`
 
-n_components = 3
-PATH_logger = "D:/14_DecomposedQ_DRL/multiagent_environment/01_kOutOfN/log_files"
-config_env = {"config": {"components": n_components} }
-
-env = StructMA(config_env)
-agent_list = []
-for i in range(env.ncomp):
-    item = "agent_"+ str(i)
-    agent_list.append(item)
-
-agent_list = []
-policy_list = []
-for i in range(env.ncomp):
-    item = "agent_"+ str(i)
-    item_ = "policy"+ str(i)
-    agent_list.append(item)
-    policy_list.append(item_)
-
-policies = {}
-mapping_agent2policy = {}
-# print(env.ncomp)
-for i in range(env.ncomp):
-    mapping_agent2policy[agent_list[i]] = policy_list[i]
-    policies[policy_list[i]] = (None, env.observation_space, env.action_space, {})
-
-# Define an agent->policy mapping function.
-# Which agents (defined by the environment) use which policies (defined by us)?
-# The mapping here is M (agents) -> N (policies), where M >= N.
-def policy_mapping_fn(agent_id: str):
-    return mapping_agent2policy[agent_id]
-
 from ray.rllib.agents.dqn import DQNTrainer
-# from ray.rllib.agents.ppo import PPOTrainer
 # Create an RLlib Trainer instance.
 
 config={
         # Env class to use (here: our gym.Env sub-class from above).
-        "env": StructMA,
+        "env": StructSA,
         
         "env_config": {
-            "config": {"components": n_components},
+            "config": {"components": 3},
         },
         # Number of steps after which the episode is forced to terminate. Defaults
         # to `env.spec.max_episode_steps` (if present) for Gym envs.
         "horizon": 30,
         # Parallelize environment rollouts.
-        "num_workers": 4,
+        "num_workers": 3,
         # Discount factor of the MDP.
         "gamma": 0.95,
         
         # https://github.com/ray-project/ray/blob/releases/1.11.1/rllib/models/catalog.py
-        # FullyConnectedNetwork (tf and torch): rllib.models.tf|torch.fcnet.py
+        # FullyConnectedNetwork (tf and torch): rllib.pomdp_models.tf|torch.fcnet.py
         # These are used if no custom model is specified and the input space is 1D.
         # Number of hidden layers to be used.
         # Activation function descriptor.
@@ -228,13 +190,6 @@ config={
         #"evaluation_interval": 2,
         "evaluation_num_workers": 1,
         "evaluation_duration": 50,
-    
-        "multiagent": {
-            "policies": policies,
-            "policy_mapping_fn": policy_mapping_fn,
-            # We'll leave this empty: Means, we train both policy1 and policy2.
-            # "policies_to_train": policies_to_train,
-        },
         # === Deep Learning Framework Settings ===
         # tf: TensorFlow (static-graph)
         # tf2: TensorFlow 2.x (eager or traced, if eager_tracing=True)
@@ -243,6 +198,7 @@ config={
 #         "framework": "torch",
     }
 
+PATH_logger = "D:/14_DecomposedQ_DRL/single_agent_environment/01_single_agent_multiComponent/log_files"
 ### Defaut logger creator ###
 def custom_log_creator(custom_path, custom_str):
 
@@ -258,22 +214,29 @@ def custom_log_creator(custom_path, custom_str):
 
     return logger_creator
 
-trainer = DQNTrainer(config=config, logger_creator=custom_log_creator(PATH_logger, 'dqn') )
+trainer = DQNTrainer(config=config, logger_creator=custom_log_creator(PATH_logger, 'dqn'))
 
 for i in range(100):
     results = trainer.train()
     #if i%100==0:
     #trainer.export_policy_model("D:/14_DecomposedQ_DRL/single_agent_environment/struc_SA_jupyter/savedModel")
     print(f"Iter: {i}; avg. reward={results['episode_reward_mean']}")
-    print(f"Iter (policy_1): {i}; avg. reward={results['policy_reward_mean']['policy1']}")
-    print(f"Iter (policy_2): {i}; avg. reward={results['policy_reward_mean']['policy2']}")
     #print(f"Iter: {i}; evaluation={results['evaluation']['episode_reward_mean']}")
     
     if i%5==0:
         evaluat = trainer.evaluate()
         print(evaluat['evaluation']['episode_reward_mean'])
-        print(evaluat['evaluation']['policy_reward_mean']['policy1'])
-        print(evaluat['evaluation']['policy_reward_mean']['policy2'])
+#         print(f"Iter: {i}; evaluation={results['evaluation']['episode_reward_mean']}")
+        
+''' export policy checkpoint
+def export_policy_checkpoint(
+            self,
+            export_dir: str,
+            filename_prefix: str = "model",
+            policy_id: PolicyID = DEFAULT_POLICY_ID,
+    )   
+'''
+# PATH_model = "D:/14_DecomposedQ_DRL/single_agent_environment/struc_SA_jupyter/savedModel"
 
 ### Shutdown Ray's session
 ray.shutdown() 

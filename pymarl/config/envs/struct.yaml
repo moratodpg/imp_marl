@@ -1,0 +1,13 @@
+env: struct
+
+env_args:
+  components: 2
+  state_config: concat_obs
+
+learner_log_interval: 10000
+log_interval: 10000
+runner_log_interval: 10000
+test_interval: 10000
+test_nepisode: 30
+test_greedy: True
+t_max: 1000000
