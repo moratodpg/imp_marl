@@ -89,7 +89,6 @@ class Struct:
     def pf_sys(self, pf, k):  # compute pf_sys for k-out-of-n components
         n = pf.size
         # k = ncomp-1
-        PF_sys = np.zeros(1)
         nk = n - k
         m = k + 1
         A = np.zeros(m + 1)
@@ -111,10 +110,9 @@ class Struct:
     def immediate_cost(self, B, a, B_,
                        drate):  # immediate reward (-cost), based on current damage state and action#
         cost_system = 0
-        PF = np.zeros((1, 1))
         PF = B[:, -1]
-        PF_ = np.zeros((1, 1))
         PF_ = B_[:, -1].copy()
+
         for i in range(self.ncomp):
             if a[i] == 1:
                 cost_system += -1
@@ -143,12 +141,19 @@ class Struct:
         for i in range(self.ncomp):
             p1 = self.P[a[i], i, drate[i, 0]].T.dot(
                 b_prime[i, :])  # environment transition
+
             b_prime[i, :] = p1
+            # if do nothing, you update your belief without new evidences
             drate_prime[i, 0] = drate[i, 0] + 1
-            ob[i] = 2
+            # At every timestep, the deterioration rate increases
+
+
+            ob[i] = 2 # ib[o] = 0 if no crack detected 1 if crack detected
             if a[i] == 1:
                 Obs0 = np.sum(p1 * self.O[a[i], i, :, 0])
+                # self.O = Probability to observe the crack
                 Obs1 = 1 - Obs0
+
                 if Obs1 < 1e-5:
                     ob[i] = 0
                 else:
@@ -158,5 +163,7 @@ class Struct:
                 b_prime[i, :] = p1 * self.O[a[i], i, :, int(ob[i])] / (
                     p1.dot(self.O[a[i], i, :, int(ob[i])]))  # belief update
             if a[i] == 2:
+                # action in b_prime has already
+                # been accounted in the env transition
                 drate_prime[i, 0] = 0
         return ob, b_prime, drate_prime

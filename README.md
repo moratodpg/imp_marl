@@ -10,3 +10,7 @@ and
 
 
 ```pip install torch==0.4.1 -f https://download.pytorch.org/whl/torch_stable.html```
+
+
+RLLib:
+1.11
