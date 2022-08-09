@@ -4,10 +4,10 @@ import numpy as np
 class Struct:
 
     def __init__(self, config=None):
-        ## TODO: add seed ? Maybe not required.
         if config is None:
-            config = {"components": 2}
+            config = {"components": 2, "discount_reward": 1}
         self.ncomp = config["components"]
+        self.discount_reward = config["discount_reward"]
         self.time = 0
         self.ep_length = 30
         self.nstcomp = 30  # What is this?
@@ -62,20 +62,20 @@ class Struct:
         observation_, belief_prime, drate_prime = self.belief_update(
             self.beliefs, action_, self.drate)
 
+        reward_ = self.immediate_cost(self.beliefs, action_, belief_prime,
+                                      self.drate)
+        reward = self.discount_reward ** self.time_step * reward_.item()  # Convert float64 to float
+
+        rewards = {}
+        for i in range(self.ncomp):
+            rewards[self.agent_list[i]] = reward
+
         self.time_step += 1
 
         self.observations = {}
         for i in range(self.ncomp):
             self.observations[self.agent_list[i]] = np.concatenate(
                 (belief_prime[i], [self.time_step / 30]))
-
-        reward_ = self.immediate_cost(self.beliefs, action_, belief_prime,
-                                      self.drate)
-        reward = reward_.item()  # Convert float64 to float
-
-        rewards = {}
-        for i in range(self.ncomp):
-            rewards[self.agent_list[i]] = reward
 
         self.beliefs = belief_prime
         self.drate = drate_prime
@@ -147,8 +147,7 @@ class Struct:
             drate_prime[i, 0] = drate[i, 0] + 1
             # At every timestep, the deterioration rate increases
 
-
-            ob[i] = 2 # ib[o] = 0 if no crack detected 1 if crack detected
+            ob[i] = 2  # ib[o] = 0 if no crack detected 1 if crack detected
             if a[i] == 1:
                 Obs0 = np.sum(p1 * self.O[a[i], i, :, 0])
                 # self.O = Probability to observe the crack

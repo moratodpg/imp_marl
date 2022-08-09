@@ -6,15 +6,21 @@ class PymarlMAStruct(MultiAgentEnv):
 
     def __init__(self,
                  components=2,  # Number of structure
+                 discount_reward=1.,
+                 # float [0,1] importance of short-time reward vs long-time reward
                  state_config="obs",  # State config ["obs", "belief"]
                  seed=None):
+        self.discount_reward = discount_reward
         self.state_config = state_config
         self._seed = seed
-        self.config = {"components": components}
+        self.config = {"components": components,
+                       "discount_reward": discount_reward}
         self.struct_env = Struct(self.config)
         self.n_agents = self.struct_env.ncomp
         self.episode_limit = self.struct_env.ep_length
         self.n_actions = self.struct_env.actions_per_agent
+
+        self.agent_list = self.struct_env.agent_list
 
     def step(self, actions):
         """ Returns reward, terminated, info """
@@ -39,9 +45,15 @@ class PymarlMAStruct(MultiAgentEnv):
     def get_state(self):
         # TODO: state = full obs is not very usefuel in CTDE
         if self.state_config == "obs":
-            return[i for j in self.get_obs() for i in j]
-        elif self.state_config == "belief":
-            return[i for j in self.struct_env.beliefs for i in j]
+            return [i for j in self.get_obs() for i in j]
+        elif self.state_config == "drate":
+            return [i / self.struct_env.ep_length for j in
+                    self.struct_env.drate for i in j]
+        elif self.state_config == "all":
+            obs = [i for j in self.get_obs() for i in j]
+            drate = [i / self.struct_env.ep_length for j in
+                     self.struct_env.drate for i in j]
+            return obs + drate
         else:
             print("Error state_config")
             return None
