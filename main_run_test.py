@@ -17,14 +17,14 @@ from types import SimpleNamespace as SN
 from pymarl.utils.logging import Logger
 from os.path import dirname, abspath
 
-from learners import REGISTRY as le_REGISTRY
-from runners import REGISTRY as r_REGISTRY
-from controllers import REGISTRY as mac_REGISTRY
-from components.episode_buffer import ReplayBuffer
-from components.transforms import OneHot
+from pymarl.learners import REGISTRY as le_REGISTRY
+from pymarl.runners import REGISTRY as r_REGISTRY
+from pymarl.controllers import REGISTRY as mac_REGISTRY
+from pymarl.components.episode_buffer import ReplayBuffer
+from pymarl.components.transforms import OneHot
 
 from main import _get_config, recursive_dict_update
-from run import args_sanity_check, evaluate_sequential
+from pymarl.run import args_sanity_check, evaluate_sequential
 
 SETTINGS[
     'CAPTURE_MODE'] = "fd"  # set to "no" if you want to see stdout/stderr in console
@@ -166,7 +166,6 @@ def run_sequential_test(args, logger):
         for idx_, timestep_to_load in enumerate(timesteps):
             if idx_ < max_index:
                 continue
-            print(idx_)
             # if args.n_skip != 0 and idx_ % args.n_skip != 0:
             #     continue
             print("timestep_to_load", timestep_to_load)
