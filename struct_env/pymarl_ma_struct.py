@@ -7,6 +7,7 @@ class PymarlMAStruct(MultiAgentEnv):
     def __init__(self,
                  components=2,  # Number of structure
                  discount_reward=1.,
+                 k_comp=1,
                  # float [0,1] importance of short-time reward vs long-time reward
                  state_config="obs",  # State config ["obs", "belief"]
                  seed=None):
@@ -14,7 +15,8 @@ class PymarlMAStruct(MultiAgentEnv):
         self.state_config = state_config
         self._seed = seed
         self.config = {"components": components,
-                       "discount_reward": discount_reward}
+                       "discount_reward": discount_reward,
+                       "k_comp": k_comp}
         self.struct_env = Struct(self.config)
         self.n_agents = self.struct_env.ncomp
         self.episode_limit = self.struct_env.ep_length

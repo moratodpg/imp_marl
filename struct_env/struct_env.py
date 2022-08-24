@@ -5,9 +5,10 @@ class Struct:
 
     def __init__(self, config=None):
         if config is None:
-            config = {"components": 2, "discount_reward": 1}
+            config = {"components": 2, "discount_reward": 1, "k_comp": 1}
         self.ncomp = config["components"]
         self.discount_reward = config["discount_reward"]
+        self.k_comp = config["k_comp"]
         self.time = 0
         self.ep_length = 30
         self.nstcomp = 30  # What is this?
@@ -19,16 +20,17 @@ class Struct:
         self.obs_total_single = 30 * self.ncomp + 1
 
         ### Loading the underlying POMDP model ###
-        drmodel = np.load('pomdp_models/Dr3031C10.npz')
+        drmodel = np.load('../pomdp_models/Dr3031C10.npz')
 
         # (10 components, 30 crack states)
-        self.belief0 = drmodel['belief0'][0, 0:self.ncomp, :, 0]
+        self.belief0 = np.zeros((self.ncomp, self.nstcomp))
+        self.belief0[:, :] = drmodel['belief0'][0, 0, :, 0]
 
         # (3 actions, 10 components, 31 det rates, 30 cracks, 30 cracks)
-        self.P = drmodel['P'][:, 0:self.ncomp, :, :, :]
+        self.P = drmodel['P'][:, 0, :, :, :]
 
         # (3 actions, 10 components, 30 cracks, 2 observations)
-        self.O = drmodel['O'][:, 0:self.ncomp, :, :]
+        self.O = drmodel['O'][:, 0, :, :]
 
         self.agent_list = ["agent_" + str(i) for i in range(self.ncomp)]
 
@@ -116,7 +118,7 @@ class Struct:
         for i in range(self.ncomp):
             if a[i] == 1:
                 cost_system += -1
-                Bplus = self.P[a[i], i, drate[i, 0]].T.dot(B[i, :])
+                Bplus = self.P[a[i], drate[i, 0]].T.dot(B[i, :])
                 PF_[i] = Bplus[-1]
             elif a[i] == 2:
                 cost_system += - 20
@@ -124,8 +126,8 @@ class Struct:
             PfSyS_ = PF_
             PfSyS = PF
         else:
-            PfSyS_ = self.pf_sys(PF_, self.ncomp - 1)
-            PfSyS = self.pf_sys(PF, self.ncomp - 1)
+            PfSyS_ = self.pf_sys(PF_, self.k_comp)
+            PfSyS = self.pf_sys(PF, self.k_comp)
         if PfSyS_ < PfSyS:
             cost_system += PfSyS_ * (-10000)
         else:
@@ -139,7 +141,7 @@ class Struct:
         ob = np.zeros(self.ncomp)
         drate_prime = np.zeros((self.ncomp, 1), dtype=int)
         for i in range(self.ncomp):
-            p1 = self.P[a[i], i, drate[i, 0]].T.dot(
+            p1 = self.P[a[i], drate[i, 0]].T.dot(
                 b_prime[i, :])  # environment transition
 
             b_prime[i, :] = p1
@@ -149,7 +151,7 @@ class Struct:
 
             ob[i] = 2  # ib[o] = 0 if no crack detected 1 if crack detected
             if a[i] == 1:
-                Obs0 = np.sum(p1 * self.O[a[i], i, :, 0])
+                Obs0 = np.sum(p1 * self.O[a[i], :, 0])
                 # self.O = Probability to observe the crack
                 Obs1 = 1 - Obs0
 
@@ -159,8 +161,8 @@ class Struct:
                     ob_dist = np.array([Obs0, Obs1])
                     ob[i] = np.random.choice(range(0, self.nobs), size=None,
                                              replace=True, p=ob_dist)
-                b_prime[i, :] = p1 * self.O[a[i], i, :, int(ob[i])] / (
-                    p1.dot(self.O[a[i], i, :, int(ob[i])]))  # belief update
+                b_prime[i, :] = p1 * self.O[a[i], :, int(ob[i])] / (
+                    p1.dot(self.O[a[i], :, int(ob[i])]))  # belief update
             if a[i] == 2:
                 # action in b_prime has already
                 # been accounted in the env transition
