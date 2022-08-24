@@ -28,7 +28,7 @@ class GymSaStruct(gym.Env):
             list(itertools.product(range(n_actions), repeat=n_comps))
         for idx, i in enumerate(list_actions):
             self.convert_action_dict[idx] = np.array(i)
-        print(self.convert_action_dict)
+
     def reset(self, seed=None, return_info=False, options=None):
         obs_multi = self.struct_env.reset()
         observation = self.convert_obs_multi(obs_multi)
