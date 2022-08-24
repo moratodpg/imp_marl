@@ -20,7 +20,7 @@ class Struct:
         self.obs_total_single = 30 * self.ncomp + 1
 
         ### Loading the underlying POMDP model ###
-        drmodel = np.load('../pomdp_models/Dr3031C10.npz')
+        drmodel = np.load('pomdp_models/Dr3031C10.npz')
 
         # (10 components, 30 crack states)
         self.belief0 = np.zeros((self.ncomp, self.nstcomp))
