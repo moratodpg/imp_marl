@@ -4,7 +4,7 @@ env_args:
   components: 2
   state_config: obs
   discount_reward: 0.95
-  k_comp: 1
+  k_comp: None
 
 learner_log_interval: 10000
 log_interval: 10000
