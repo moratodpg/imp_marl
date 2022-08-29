@@ -13,7 +13,11 @@ class PymarlSAStruct(MultiAgentEnv):
                  # float [0,1] importance of short-time reward vs long-time reward
                  k_comp=None,  # Number of structure
                  # required (k_comp out of components)
-                    state_config="obs",  # State config ["obs", "belief"]
+                 state_config="obs",
+                 # State config ["obs", "drate", "all"]
+                 # Caution: obs = all observations from struct_env,
+                 # not a concatenation of self.get_obs() !
+                 # In SARL, there is not "obs_config"
                  seed=None):
         self.discount_reward = discount_reward
         self.state_config = state_config
@@ -24,6 +28,7 @@ class PymarlSAStruct(MultiAgentEnv):
         self.struct_env = Struct(self.config)
         self.n_agents = 1
         self.n_comp = self.struct_env.ncomp
+        self.k_comp = self.struct_env.k_comp
         self.episode_limit = self.struct_env.ep_length
 
         self.agent_list = self.struct_env.agent_list
@@ -54,28 +59,41 @@ class PymarlSAStruct(MultiAgentEnv):
 
     def get_obs(self):
         """ Returns all agent observations in a list """
-        return self.convert_obs_multi(self.struct_env.observations)
+        return self.get_state() # because a single agent!
 
     def get_obs_agent(self, agent_id):
         """Returns observation for agent_id."""
-        return self.get_obs() # because a single agent!
+        return self.get_state() # because a single agent!
 
     def get_obs_size(self):
         """Returns the size of the observation."""
         return len(self.get_obs())
 
+    def get_normalized_drate(self):
+        return self.struct_env.drate / self.struct_env.ep_length
+
+    def all_obs_from_struct_env(self):
+        # Concatenate all obs with a single time.
+        idx = 0
+        obs = None
+        for k, v in self.struct_env.observations.items():
+            if idx == 0:
+                obs = v
+                idx = 1
+            else:
+                obs = np.append(obs, v[:-1])
+                # remove the time from the list if not the first element
+        return obs
+
     def get_state(self):
-        """Returns the global state."""
         if self.state_config == "obs":
-            return self.get_obs()
+            return self.all_obs_from_struct_env()
         elif self.state_config == "drate":
-            return [i / self.struct_env.ep_length for j in
-                    self.struct_env.drate for i in j]
+            return self.get_normalized_drate()
         elif self.state_config == "all":
-            obs = self.get_obs()
-            drate = np.array([i / self.struct_env.ep_length for j in
-                     self.struct_env.drate for i in j])
-            return np.concatenate([obs, drate])
+            obs = self.all_obs_from_struct_env()
+            drate = self.get_normalized_drate()
+            return np.append(obs, drate)
         else:
             print("Error state_config")
             return None
