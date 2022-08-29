@@ -7,7 +7,7 @@ class PymarlMAStruct(MultiAgentEnv):
     def __init__(self,
                  components=2,  # Number of structure
                  discount_reward=1.,
-                 k_comp=1,
+                 k_comp=None,
                  # float [0,1] importance of short-time reward vs long-time reward
                  state_config="obs",  # State config ["obs", "belief"]
                  seed=None):

@@ -5,10 +5,10 @@ class Struct:
 
     def __init__(self, config=None):
         if config is None:
-            config = {"components": 2, "discount_reward": 1, "k_comp": 1}
+            config = {"components": 2, "discount_reward": 1, "k_comp": None}
         self.ncomp = config["components"]
         self.discount_reward = config["discount_reward"]
-        self.k_comp = config["k_comp"]
+        self.k_comp = self.ncomp-1 if config["k_comp"] is None else config["k_comp"]
         self.time = 0
         self.ep_length = 30
         self.nstcomp = 30  # What is this?
