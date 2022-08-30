@@ -18,7 +18,7 @@ class PymarlMAStruct(MultiAgentEnv):
                  # State config ["obs", "drate", "all"]
                  # Caution: obs = all observations from struct_env,
                  # not a concatenation of self.get_obs() !
-                 obs_config="single_obs",
+                 obs_config="so",
                  # Obs config=["so",  # single_obs
                  # "so_sd",  # single_obs + single_drate
                  # "ao",  # all obs
