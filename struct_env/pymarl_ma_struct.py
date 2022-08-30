@@ -1,3 +1,5 @@
+import numpy as np
+
 from struct_env.MultiAgentEnv import MultiAgentEnv
 from struct_env.struct_env import Struct
 
@@ -5,16 +7,39 @@ from struct_env.struct_env import Struct
 class PymarlMAStruct(MultiAgentEnv):
 
     def __init__(self,
-                 components=2,  # Number of structure
-                 discount_reward=1.,  # float [0,1] importance of
-                                        # short-time reward
-                                        # vs long-time reward
-                 k_comp=None, # Number of structure
-                                # required (k_comp out of components)
-                 state_config="obs",  # State config ["obs", "belief"]
+                 components=2,
+                 # Number of structure
+                 discount_reward=1.,
+                 # float [0,1] importance of
+                 # short-time reward vs long-time reward
+                 k_comp=None,
+                 # Number of structure required (k_comp out of components)
+                 state_config="obs",
+                 # State config ["obs", "drate", "all"]
+                 # Caution: obs = all observations from struct_env,
+                 # not a concatenation of self.get_obs() !
+                 obs_config="single_obs",
+                 # Obs config=["so",  # single_obs
+                 # "so_sd",  # single_obs + single_drate
+                 # "ao",  # all obs
+                 # "ao_sd",  # all_obs + single drate
+                 # "ao_ad"], # all_obs + all drate
                  seed=None):
+
+        assert obs_config in ["so",
+                              "so_sd",
+                              "ao",
+                              "ao_sd",
+                              "ao_ad"], \
+            "Error in obs config"
+        assert state_config in ["obs", "drate", "all"], \
+            "Error in state config"
+        assert k_comp is None or k_comp <= components, \
+            "Error in k_comp"
+
         self.discount_reward = discount_reward
         self.state_config = state_config
+        self.obs_config = obs_config
         self._seed = seed
         self.config = {"components": components,
                        "discount_reward": discount_reward,
@@ -22,9 +47,9 @@ class PymarlMAStruct(MultiAgentEnv):
         self.struct_env = Struct(self.config)
         self.n_agents = self.struct_env.ncomp
         self.n_comp = self.struct_env.ncomp
+        self.k_comp = self.struct_env.k_comp
         self.episode_limit = self.struct_env.ep_length
         self.n_actions = self.struct_env.actions_per_agent
-
         self.agent_list = self.struct_env.agent_list
 
     def step(self, actions):
@@ -37,28 +62,60 @@ class PymarlMAStruct(MultiAgentEnv):
 
     def get_obs(self):
         """ Returns all agent observations in a list """
-        return [v for k, v in self.struct_env.observations.items()]
+        return [self.get_obs_agent(i) for i in
+                range(self.n_agents)]
 
     def get_obs_agent(self, agent_id):
-        """ Returns observation for agent_id """
-        return self.struct_env.observations[agent_id]
+        """
+        Returns observation for agent_id
+        agent_id = integer in range (self.n_agents)
+        """
+        agent_name = self.struct_env.agent_list[agent_id]
+        if self.obs_config.startswith("so"):
+            obs = self.struct_env.observations[agent_name]
+            if self.obs_config == "so_sd":
+                obs = np.append(obs, self.get_normalized_drate()[agent_id])
+            return obs
+
+        elif self.obs_config.startswith("ao"):
+            obs = self.all_obs_from_struct_env()
+
+            if self.obs_config == "ao_sd":
+                obs = np.append(obs, self.get_normalized_drate()[agent_id])
+            elif self.obs_config == "ao_ad":
+                obs = np.append(obs, self.get_normalized_drate())
+            return obs
+        return None
+
+    def get_normalized_drate(self):
+        return self.struct_env.drate / self.struct_env.ep_length
+
+    def all_obs_from_struct_env(self):
+        # Concatenate all obs with a single time.
+        idx = 0
+        obs = None
+        for k, v in self.struct_env.observations.items():
+            if idx == 0:
+                obs = v
+                idx = 1
+            else:
+                obs = np.append(obs, v[:-1])
+                # remove the time from the list if not the first element
+        return obs
 
     def get_obs_size(self):
         """ Returns the shape of the observation """
         return self.struct_env.obs_per_agent_multi
 
     def get_state(self):
-        # TODO: state = full obs is not very usefuel in CTDE
         if self.state_config == "obs":
-            return [i for j in self.get_obs() for i in j]
+            return self.all_obs_from_struct_env()
         elif self.state_config == "drate":
-            return [i / self.struct_env.ep_length for j in
-                    self.struct_env.drate for i in j]
+            return self.get_normalized_drate()
         elif self.state_config == "all":
-            obs = [i for j in self.get_obs() for i in j]
-            drate = [i / self.struct_env.ep_length for j in
-                     self.struct_env.drate for i in j]
-            return obs + drate
+            obs = self.all_obs_from_struct_env()
+            drate = self.get_normalized_drate()
+            return np.append(obs, drate)
         else:
             print("Error state_config")
             return None
