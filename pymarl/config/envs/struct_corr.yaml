@@ -1,11 +1,11 @@
-env: struct_corr
+env: struct
 
 env_args:
   components: 2
   state_config: obs
   obs_config: so
   discount_reward: 0.95
-  k_comp: 1
+  env_type: correlated
 
 learner_log_interval: 10000
 log_interval: 10000
