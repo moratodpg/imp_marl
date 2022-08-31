@@ -21,11 +21,11 @@ class Struct:
             else config["k_comp"]
         self.env_type = config["env_type"]
         self.time = 0
-        self.ep_length = 30
-        self.nstcomp = 30  # What is this?
-        self.nsthyperp = 80 if self.env_type is "correlated" else None  # What is this?
-        self.nobs = 2  # What is this?
-        self.actions_per_agent = 3
+        self.ep_length = 30 # Horizon length
+        self.nstcomp = 30  # Crack states (fatigue hotspot damage states)
+        self.nsthyperp = 80 if self.env_type is "correlated" else None  # Gaussian hyperparemeter states 
+        self.nobs = 2  # Total number of observations (crack detected / crack not detected)
+        self.actions_per_agent = 3 
 
         # Uncorrelated obs = 30 per agent + 1 timestep
         # Correlated obs = 30 per agent + 1 timestep +
@@ -105,7 +105,7 @@ class Struct:
         if self.env_type is "correlated":
             for i in range(self.ncomp):
                 self.observations[self.agent_list[i]] = np.concatenate(
-                    (self.observations[self.agent_list[i]], self.alphas))
+                    (self.observations[self.agent_list[i]], self.alphas, [self.time_step / 30]))
 
         return self.observations
 
@@ -140,7 +140,7 @@ class Struct:
         if self.env_type is "correlated":
             for i in range(self.ncomp):
                 self.observations[self.agent_list[i]] = np.concatenate(
-                    (self.observations[self.agent_list[i]], self.alphas))
+                    (self.observations[self.agent_list[i]], self.alphas, [self.time_step / 30]))
 
         self.beliefs = belief_prime
         self.drate = drate_prime
