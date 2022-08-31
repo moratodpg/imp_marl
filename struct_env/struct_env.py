@@ -55,7 +55,7 @@ class Struct:
             self.b0cR = None
             self.alpha0 = None
 
-        else:
+        elif self.env_type is "correlated":
             self.belief0[:, :] = drmodel['belief0']
             # (3 actions, 31 det rates, 30 cracks, 30 cracks)
             self.P = drmodel['P']
