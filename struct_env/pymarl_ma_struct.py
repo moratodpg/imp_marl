@@ -5,7 +5,6 @@ from struct_env.struct_env import Struct
 
 
 class PymarlMAStruct(MultiAgentEnv):
-
     def __init__(self,
                  components=2,
                  # Number of structure
@@ -15,7 +14,7 @@ class PymarlMAStruct(MultiAgentEnv):
                  k_comp=None,
                  # Number of structure required (k_comp out of components)
                  state_config="obs",
-                 # State config ["obs", "drate", "all"]
+                 # State config ["obs", "drate", "alphas", "all"]
                  # Caution: obs = all observations from struct_env,
                  # not a concatenation of self.get_obs() !
                  obs_config="so",
@@ -54,8 +53,8 @@ class PymarlMAStruct(MultiAgentEnv):
         self.n_comp = self.struct_env.ncomp
         self.k_comp = self.struct_env.k_comp
         self.episode_limit = self.struct_env.ep_length
-        self.n_actions = self.struct_env.actions_per_agent
         self.agent_list = self.struct_env.agent_list
+        self.n_actions = self.struct_env.actions_per_agent
 
     def step(self, actions):
         """ Returns reward, terminated, info """
@@ -117,10 +116,13 @@ class PymarlMAStruct(MultiAgentEnv):
             return self.all_obs_from_struct_env()
         elif self.state_config == "drate":
             return self.get_normalized_drate()
+        elif self.state_config == "alphas":
+            return self.struct_env.alphas
         elif self.state_config == "all":
-            obs = self.all_obs_from_struct_env()
-            drate = self.get_normalized_drate()
-            return np.append(obs, drate)
+            state = self.all_obs_from_struct_env()
+            state = np.append(state, self.get_normalized_drate())
+            state = np.append(state, self.struct_env.alphas)
+            return state
         else:
             print("Error state_config")
             return None

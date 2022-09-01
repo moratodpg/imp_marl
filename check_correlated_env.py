@@ -5,15 +5,13 @@ from struct_env.pymarl_sa_struct import PymarlSAStruct
 
 if __name__ == '__main__':
 
-    n_episode = 1
+    n_episode = 100
 
     print("test new pymarl ")
-    env_1 = PymarlMAStruct_corr()
-    env_2 = PymarlMAStruct(env_type="correlated")
+    env_1 = PymarlMAStruct(env_type="correlated", state_config="all")
+    env_2 = PymarlSAStruct(env_type="correlated", state_config="all")
     env_info1 = env_1.get_env_info()
     env_info2 = env_2.get_env_info()
-    print(env_info1)
-    print(env_info2)
 
     n_actions = env_info1["n_actions"]
     n_agents = env_info1["n_agents"]
@@ -29,6 +27,7 @@ if __name__ == '__main__':
         env_1.reset()
         env_2.reset()
 
+
         terminated1 = False
         episode_reward1 = 0
         episode_reward2 = 0
@@ -36,10 +35,6 @@ if __name__ == '__main__':
         while not terminated1:
             obs1 = env_1.get_obs()
             obs2 = env_2.get_obs()
-            state = env_1.get_state()
-
-            print("env_1", np.mean(obs1), np.std(obs1), np.min(obs1), np.max(obs1))
-            print("env_2", np.mean(obs2), np.std(obs2), np.min(obs2), np.max(obs2))
 
             actions = []
             for k in range(env_1.n_agents):
@@ -49,7 +44,11 @@ if __name__ == '__main__':
                 actions.append(action)
             # print("actions", actions)
             reward1, terminated1, info1 = env_1.step(actions)
-            reward2, terminated2, info2 = env_2.step(actions)
+
+            for k, v in env_2.convert_action_dict.items():
+                if np.all(v == actions):
+                    actions_sarl=[k]
+            reward2, terminated2, info2 = env_2.step(actions_sarl)
             episode_reward1 += reward1
             episode_reward2 += reward2
         array_reward.append(episode_reward1)

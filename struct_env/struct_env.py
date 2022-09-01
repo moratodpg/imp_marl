@@ -31,7 +31,7 @@ class Struct:
         # Correlated obs = 30 per agent + 1 timestep +
         #                   80 hyperparameter states = 111
         self.obs_per_agent_multi = 31 if self.env_type is "uncorrelated" else 111
-        self.obs_total_single = 30 * self.ncomp + 1
+        self.obs_total_single = 30 * self.ncomp + 1  # used in gym env
 
         ### Loading the underlying POMDP model ###
         if self.env_type is "uncorrelated":
