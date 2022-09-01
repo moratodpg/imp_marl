@@ -21,11 +21,11 @@ class Struct:
             else config["k_comp"]
         self.env_type = config["env_type"]
         self.time = 0
-        self.ep_length = 30 # Horizon length
+        self.ep_length = 30  # Horizon length
         self.nstcomp = 30  # Crack states (fatigue hotspot damage states)
         self.nsthyperp = 80 if self.env_type is "correlated" else None  # Gaussian hyperparemeter states 
         self.nobs = 2  # Total number of observations (crack detected / crack not detected)
-        self.actions_per_agent = 3 
+        self.actions_per_agent = 3
 
         # Uncorrelated obs = 30 per agent + 1 timestep
         # Correlated obs = 30 per agent + 1 timestep +
@@ -74,7 +74,6 @@ class Struct:
             # hyperparameter marginal states
             self.alpha0 = drmodel['alpha0']
 
-
         self.agent_list = ["agent_" + str(i) for i in range(self.ncomp)]
 
         self.time_step = 0
@@ -105,7 +104,7 @@ class Struct:
         if self.env_type is "correlated":
             for i in range(self.ncomp):
                 self.observations[self.agent_list[i]] = np.concatenate(
-                    (self.observations[self.agent_list[i]], self.alphas, [self.time_step / self.ep_length]))
+                    (self.observations[self.agent_list[i]], self.alphas))
 
         return self.observations
 
@@ -115,12 +114,14 @@ class Struct:
             action_[i] = action[self.agent_list[i]]
 
         if self.env_type == "uncorrelated":
-            observation_, belief_prime, drate_prime, bc_prime, alpha_prime = \
-                self.belief_update_uncorrelated(self.beliefs, action_, self.drate)
+            observation_, belief_prime, drate_prime = \
+                self.belief_update_uncorrelated(self.beliefs, action_,
+                                                self.drate)
 
         elif self.env_type == "correlated":
-            observation_, belief_prime, drate_prime, bc_prime, alpha_prime = self.belief_update_correlated(
-                self.beliefsc, action_, self.drate, self.alphas)
+            observation_, belief_prime, drate_prime, bc_prime, alpha_prime = \
+                self.belief_update_correlated(self.beliefsc, action_,
+                                              self.drate, self.alphas)
 
         reward_ = self.immediate_cost(self.beliefs, action_, belief_prime,
                                       self.drate)
@@ -140,7 +141,7 @@ class Struct:
         if self.env_type is "correlated":
             for i in range(self.ncomp):
                 self.observations[self.agent_list[i]] = np.concatenate(
-                    (self.observations[self.agent_list[i]], self.alphas, [self.time_step / self.ep_length]))
+                    (self.observations[self.agent_list[i]], self.alphas))
 
         self.beliefs = belief_prime
         self.drate = drate_prime

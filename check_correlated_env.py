@@ -5,7 +5,7 @@ from struct_env.pymarl_sa_struct import PymarlSAStruct
 
 if __name__ == '__main__':
 
-    n_episode = 1000
+    n_episode = 1
 
     print("test new pymarl ")
     env_1 = PymarlMAStruct_corr()
@@ -28,13 +28,18 @@ if __name__ == '__main__':
     for e in range(n_episode):
         env_1.reset()
         env_2.reset()
+
         terminated1 = False
         episode_reward1 = 0
         episode_reward2 = 0
 
         while not terminated1:
-            obs = env_1.get_obs()
+            obs1 = env_1.get_obs()
+            obs2 = env_2.get_obs()
             state = env_1.get_state()
+
+            print("env_1", np.mean(obs1), np.std(obs1), np.min(obs1), np.max(obs1))
+            print("env_2", np.mean(obs2), np.std(obs2), np.min(obs2), np.max(obs2))
 
             actions = []
             for k in range(env_1.n_agents):
