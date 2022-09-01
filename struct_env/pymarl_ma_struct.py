@@ -5,7 +5,6 @@ from struct_env.struct_env import Struct
 
 
 class PymarlMAStruct(MultiAgentEnv):
-
     def __init__(self,
                  components=2,
                  # Number of structure
@@ -15,15 +14,17 @@ class PymarlMAStruct(MultiAgentEnv):
                  k_comp=None,
                  # Number of structure required (k_comp out of components)
                  state_config="obs",
-                 # State config ["obs", "drate", "all"]
+                 # State config ["obs", "drate", "alphas", "all"]
                  # Caution: obs = all observations from struct_env,
                  # not a concatenation of self.get_obs() !
-                 obs_config="single_obs",
+                 obs_config="so",
                  # Obs config=["so",  # single_obs
                  # "so_sd",  # single_obs + single_drate
                  # "ao",  # all obs
                  # "ao_sd",  # all_obs + single drate
                  # "ao_ad"], # all_obs + all drate
+                 env_type="uncorrelated",
+                 # Env type = ["uncorrelated", "correlated"]
                  seed=None):
 
         assert obs_config in ["so",
@@ -36,6 +37,8 @@ class PymarlMAStruct(MultiAgentEnv):
             "Error in state config"
         assert k_comp is None or k_comp <= components, \
             "Error in k_comp"
+        assert env_type in ["uncorrelated", "correlated"], \
+            "Error in env_type"
 
         self.discount_reward = discount_reward
         self.state_config = state_config
@@ -43,14 +46,15 @@ class PymarlMAStruct(MultiAgentEnv):
         self._seed = seed
         self.config = {"components": components,
                        "discount_reward": discount_reward,
-                       "k_comp": k_comp}
+                       "k_comp": k_comp,
+                       "env_type": env_type}
         self.struct_env = Struct(self.config)
         self.n_agents = self.struct_env.ncomp
         self.n_comp = self.struct_env.ncomp
         self.k_comp = self.struct_env.k_comp
         self.episode_limit = self.struct_env.ep_length
-        self.n_actions = self.struct_env.actions_per_agent
         self.agent_list = self.struct_env.agent_list
+        self.n_actions = self.struct_env.actions_per_agent
 
     def step(self, actions):
         """ Returns reward, terminated, info """
@@ -112,10 +116,13 @@ class PymarlMAStruct(MultiAgentEnv):
             return self.all_obs_from_struct_env()
         elif self.state_config == "drate":
             return self.get_normalized_drate()
+        elif self.state_config == "alphas":
+            return self.struct_env.alphas
         elif self.state_config == "all":
-            obs = self.all_obs_from_struct_env()
-            drate = self.get_normalized_drate()
-            return np.append(obs, drate)
+            state = self.all_obs_from_struct_env()
+            state = np.append(state, self.get_normalized_drate())
+            state = np.append(state, self.struct_env.alphas)
+            return state
         else:
             print("Error state_config")
             return None
