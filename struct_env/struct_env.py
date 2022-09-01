@@ -100,12 +100,12 @@ class Struct:
         self.observations = {}
         for i in range(self.ncomp):
             self.observations[self.agent_list[i]] = np.concatenate(
-                (self.beliefs[i], [self.time_step / 30]))
+                (self.beliefs[i], [self.time_step / self.ep_length]))
 
         if self.env_type is "correlated":
             for i in range(self.ncomp):
                 self.observations[self.agent_list[i]] = np.concatenate(
-                    (self.observations[self.agent_list[i]], self.alphas, [self.time_step / 30]))
+                    (self.observations[self.agent_list[i]], self.alphas, [self.time_step / self.ep_length]))
 
         return self.observations
 
@@ -135,12 +135,12 @@ class Struct:
         self.observations = {}
         for i in range(self.ncomp):
             self.observations[self.agent_list[i]] = np.concatenate(
-                (self.beliefs[i], [self.time_step / 30]))
+                (self.beliefs[i], [self.time_step / self.ep_length]))
 
         if self.env_type is "correlated":
             for i in range(self.ncomp):
                 self.observations[self.agent_list[i]] = np.concatenate(
-                    (self.observations[self.agent_list[i]], self.alphas, [self.time_step / 30]))
+                    (self.observations[self.agent_list[i]], self.alphas, [self.time_step / self.ep_length]))
 
         self.beliefs = belief_prime
         self.drate = drate_prime
