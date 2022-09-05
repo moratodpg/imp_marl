@@ -8,11 +8,13 @@ class Struct:
             config = {"components": 2,
                       "discount_reward": 1,
                       "k_comp": None,
-                      "env_type": "uncorrelated"}
+                      "env_type": "uncorrelated",
+                      "campaign_cost": False}
         assert "components" in config and \
                "discount_reward" in config and \
                "k_comp" in config and \
-               "env_type" in config, \
+               "env_type" in config and \
+               "campaign_cost" in config, \
             "Missing env config"
 
         self.ncomp = config["components"]
@@ -20,6 +22,7 @@ class Struct:
         self.k_comp = self.ncomp - 1 if config["k_comp"] is None \
             else config["k_comp"]
         self.env_type = config["env_type"]
+        self.campaign_cost = config["campaign_cost"]
         self.time = 0
         self.ep_length = 30  # Horizon length
         self.nstcomp = 30  # Crack states (fatigue hotspot damage states)
@@ -143,11 +146,11 @@ class Struct:
                 self.observations[self.agent_list[i]] = np.concatenate(
                     (self.observations[self.agent_list[i]], self.alphas))
 
+            self.beliefsc = bc_prime
+            self.alphas = alpha_prime
+
         self.beliefs = belief_prime
         self.drate = drate_prime
-
-        self.beliefsc = bc_prime
-        self.alphas = alpha_prime
 
         # An episode is done if the agent has reached the target
         done = self.time_step >= self.ep_length
@@ -183,14 +186,18 @@ class Struct:
         cost_system = 0
         PF = B[:, -1]
         PF_ = B_[:, -1].copy()
-
+        campaign_executed = False
         for i in range(self.ncomp):
             if a[i] == 1:
-                cost_system += -1
+                cost_system += -0.2 if self.campaign_cost else -1 # Individual inspection costs 
                 Bplus = self.P[a[i], drate[i, 0]].T.dot(B[i, :])
                 PF_[i] = Bplus[-1]
+                if self.campaign_cost and not campaign_executed:
+                    campaign_executed = True # Campaign executed
             elif a[i] == 2:
                 cost_system += - 20
+                if self.campaign_cost and not campaign_executed:
+                    campaign_executed = True # Campaign executed
         if self.ncomp < 2:  # single component setting
             PfSyS_ = PF_
             PfSyS = PF
@@ -201,6 +208,8 @@ class Struct:
             cost_system += PfSyS_ * (-10000)
         else:
             cost_system += (PfSyS_ - PfSyS) * (-10000)
+        if campaign_executed: # Assign campaign cost
+            cost_system += -5
         return cost_system
 
     def belief_update_uncorrelated(self, b, a, drate):

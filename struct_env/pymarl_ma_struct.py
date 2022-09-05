@@ -25,6 +25,8 @@ class PymarlMAStruct(MultiAgentEnv):
                  # "ao_ad"], # all_obs + all drate
                  env_type="uncorrelated",
                  # Env type = ["uncorrelated", "correlated"]
+                 campaign_cost=False
+                 # campaign_cost = [False, True]
                  seed=None):
 
         assert obs_config in ["so",
@@ -39,6 +41,8 @@ class PymarlMAStruct(MultiAgentEnv):
             "Error in k_comp"
         assert env_type in ["uncorrelated", "correlated"], \
             "Error in env_type"
+        assert campaign_cost in [True, False], \
+            "Error in campaign_cost"
 
         self.discount_reward = discount_reward
         self.state_config = state_config
@@ -47,7 +51,8 @@ class PymarlMAStruct(MultiAgentEnv):
         self.config = {"components": components,
                        "discount_reward": discount_reward,
                        "k_comp": k_comp,
-                       "env_type": env_type}
+                       "env_type": env_type,
+                       "campaign_cost": campaign_cost}
         self.struct_env = Struct(self.config)
         self.n_agents = self.struct_env.ncomp
         self.n_comp = self.struct_env.ncomp
