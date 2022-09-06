@@ -6,6 +6,7 @@ env_args:
   obs_config: so
   discount_reward: 0.95
   env_type: correlated
+  campaign_cost: False
 
 learner_log_interval: 10000
 log_interval: 10000
