@@ -12,9 +12,9 @@ if __name__ == '__main__':
                          state_obs=True,
                          state_d_rate=False,
                          state_alphas=False,
-                         obs_drate=False,
+                         obs_d_rate=False,
                          obs_multiple=False,
-                         obs_all_drate=False,
+                         obs_all_d_rate=False,
                          obs_alphas=False,
                          env_correlation=False,
                          campaign_cost=False)

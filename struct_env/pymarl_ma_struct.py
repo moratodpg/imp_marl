@@ -21,11 +21,11 @@ class PymarlMAStruct(MultiAgentEnv):
                  # State contains the concatenation of alpha
 
                  # Obs contains the obs of the agent by default
-                 obs_drate: bool = False,
+                 obs_d_rate: bool = False,
                  # Obs contains the drate of the agent
                  obs_multiple: bool = False,
                  # Obs contains the concatenation of all obs
-                 obs_all_drate: bool = False,
+                 obs_all_d_rate: bool = False,
                  # Obs contains the concatenation of all drate
                  obs_alphas: bool = False,
                  # Obs contains the alphas
@@ -39,13 +39,13 @@ class PymarlMAStruct(MultiAgentEnv):
         assert isinstance(state_obs, bool) \
                and isinstance(state_d_rate, bool) \
                and isinstance(state_alphas, bool) \
-               and isinstance(obs_drate, bool) \
+               and isinstance(obs_d_rate, bool) \
                and isinstance(obs_multiple, bool) \
-               and isinstance(obs_all_drate, bool) \
+               and isinstance(obs_all_d_rate, bool) \
                and isinstance(obs_alphas, bool) \
                and isinstance(env_correlation, bool) \
                and isinstance(campaign_cost, bool), "Error in env parameters"
-        assert not (obs_drate and obs_all_drate), "Error in env parameters"
+        assert not (obs_d_rate and obs_all_d_rate), "Error in env parameters"
         assert state_obs or state_d_rate or state_alphas, \
             "Error in env parameters"
         if not env_correlation:
@@ -60,9 +60,9 @@ class PymarlMAStruct(MultiAgentEnv):
         self.state_obs = state_obs
         self.state_d_rate = state_d_rate
         self.state_alphas = state_alphas
-        self.obs_d_rate = obs_drate
+        self.obs_d_rate = obs_d_rate
         self.obs_multiple = obs_multiple
-        self.obs_all_drate = obs_all_drate
+        self.obs_all_drate = obs_all_d_rate
         self.obs_alphas = obs_alphas
         self.env_correlation = env_correlation
         self.campaign_cost = campaign_cost
