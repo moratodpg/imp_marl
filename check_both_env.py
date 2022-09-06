@@ -53,11 +53,7 @@ if __name__ == '__main__':
             obs2 = env_2.get_obs()
             state1 = env_1.get_state()
             state2 = env_2.get_state()
-            print("obs1", len(obs1[0]))
-            print("obs2", len(obs2))
-            print("state1", len(state1))
-            print("state2", len(state2))
-            exit()
+
             actions = []
             for k in range(env_1.n_agents):
                 avail_actions = env_1.get_avail_agent_actions(k)
