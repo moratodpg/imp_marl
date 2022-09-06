@@ -25,7 +25,7 @@ class PymarlMAStruct(MultiAgentEnv):
                  # "ao_ad"], # all_obs + all drate
                  env_type="uncorrelated",
                  # Env type = ["uncorrelated", "correlated"]
-                 campaign_cost=False
+                 campaign_cost=False,
                  # campaign_cost = [False, True]
                  seed=None):
 
