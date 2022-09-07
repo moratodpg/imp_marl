@@ -1,11 +1,17 @@
 env: struct
 
 env_args:
-  components: 2
-  state_config: obs
-  obs_config: so
+  n_comp: 2
   discount_reward: 0.95
-  env_type: correlated
+  k_comp : None
+  state_obs: False
+  state_d_rate: False
+  state_alphas: False
+  obs_d_rate: False
+  obs_multiple: False
+  obs_all_d_rate: False
+  obs_alphas: False
+  env_correlation: True
   campaign_cost: False
 
 learner_log_interval: 10000

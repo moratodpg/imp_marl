@@ -1,15 +1,34 @@
 import numpy as np
 from struct_env.pymarl_ma_struct import PymarlMAStruct
-from struct_env.pymarl_ma_struct_corr import PymarlMAStruct_corr
 from struct_env.pymarl_sa_struct import PymarlSAStruct
 
 if __name__ == '__main__':
 
-    n_episode = 100
+    n_episode = 10
 
     print("test new pymarl ")
-    env_1 = PymarlMAStruct(env_type="correlated", state_config="all")
-    env_2 = PymarlSAStruct(env_type="correlated", state_config="all")
+    env_1 = PymarlMAStruct(n_comp=2,
+                           discount_reward=.95,
+                           state_obs=True,
+                           state_d_rate=True,
+                           state_alphas=True,
+                           obs_d_rate=False,
+                           obs_multiple=False,
+                           obs_all_d_rate=False,
+                           obs_alphas=False,
+                           env_correlation=True,
+                           campaign_cost=True)
+    env_2 = PymarlSAStruct(n_comp=2,
+                           discount_reward=.95,
+                           state_obs=True,
+                           state_d_rate=True,
+                           state_alphas=True,
+                           obs_drate=False,
+                           obs_multiple=False,
+                           obs_all_drate=False,
+                           obs_alphas=False,
+                           env_correlation=True,
+                           campaign_cost=True)
     env_info1 = env_1.get_env_info()
     env_info2 = env_2.get_env_info()
 
@@ -21,12 +40,9 @@ if __name__ == '__main__':
     array_reward = []
     array_reward2 = []
 
-
-
     for e in range(n_episode):
         env_1.reset()
         env_2.reset()
-
 
         terminated1 = False
         episode_reward1 = 0
@@ -35,6 +51,8 @@ if __name__ == '__main__':
         while not terminated1:
             obs1 = env_1.get_obs()
             obs2 = env_2.get_obs()
+            state1 = env_1.get_state()
+            state2 = env_2.get_state()
 
             actions = []
             for k in range(env_1.n_agents):
@@ -47,7 +65,7 @@ if __name__ == '__main__':
 
             for k, v in env_2.convert_action_dict.items():
                 if np.all(v == actions):
-                    actions_sarl=[k]
+                    actions_sarl = [k]
             reward2, terminated2, info2 = env_2.step(actions_sarl)
             episode_reward1 += reward1
             episode_reward2 += reward2
@@ -55,6 +73,6 @@ if __name__ == '__main__':
         array_reward2.append(episode_reward2)
     print(n_episode, " mean std ", np.mean(array_reward), np.std(array_reward),
           np.min(array_reward), np.max(array_reward))
-    print(n_episode, " mean std ", np.mean(array_reward2), np.std(array_reward2),
+    print(n_episode, " mean std ", np.mean(array_reward2),
+          np.std(array_reward2),
           np.min(array_reward2), np.max(array_reward2))
-

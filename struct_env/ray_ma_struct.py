@@ -14,7 +14,7 @@ class RayMaStruct(MultiAgentEnv):
         empty_config = {"config": {"components": 2}}
         config = config or empty_config
         self.struct_env = Struct({"components": config['config']["components"]})
-        self.ncomp = self.struct_env.ncomp
+        self.ncomp = self.struct_env.n_comp
 
         self.action_space \
             = gym.spaces.Discrete(self.struct_env.actions_per_agent)

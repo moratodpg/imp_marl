@@ -15,7 +15,7 @@ class GymSaStruct(gym.Env):
         # Number of components #
         self.struct_env = Struct({"components": config['config'].get("components", 2)})
         n_actions = self.struct_env.actions_per_agent
-        n_comps = self.struct_env.ncomp
+        n_comps = self.struct_env.n_comp
         self.action_space = \
             gym.spaces.Discrete(n_actions ** n_comps)
         self.observation_space = \

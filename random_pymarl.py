@@ -4,10 +4,20 @@ from struct_env.pymarl_sa_struct import PymarlSAStruct
 
 if __name__ == '__main__':
 
-    n_episode = 1
+    n_episode = 100
 
     print("test new pymarl ")
-    env = PymarlSAStruct(state_config="all", discount_reward=1)
+    env = PymarlMAStruct(n_comp=10,
+                         discount_reward=.95,
+                         state_obs=True,
+                         state_d_rate=False,
+                         state_alphas=False,
+                         obs_d_rate=False,
+                         obs_multiple=False,
+                         obs_all_d_rate=False,
+                         obs_alphas=False,
+                         env_correlation=False,
+                         campaign_cost=False)
 
     env_info = env.get_env_info()
     print(env_info)
@@ -31,7 +41,7 @@ if __name__ == '__main__':
                 avail_actions_ind = np.nonzero(avail_actions)[0]
                 action = np.random.choice(avail_actions_ind)
                 actions.append(action)
-           #print("actions", actions)
+            # print("actions", actions)
             reward, terminated, info = env.step(actions)
             episode_reward += reward
         array_reward.append(episode_reward)
