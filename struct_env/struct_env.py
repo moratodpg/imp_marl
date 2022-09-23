@@ -137,7 +137,7 @@ class Struct:
         self.observations = {}
         for i in range(self.n_comp):
             self.observations[self.agent_list[i]] = np.concatenate(
-                (self.beliefs[i], [self.time_step / self.ep_length]))
+                (belief_prime, [self.time_step / self.ep_length]))
 
         if self.env_correlation:
             self.beliefsc = bc_prime
