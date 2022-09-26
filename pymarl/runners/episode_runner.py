@@ -101,9 +101,12 @@ class EpisodeRunner:
                 "terminated": [
                     (terminated != env_info.get("episode_limit", False),)],
             }
-
+            if self.args.learner=="ddmac_learner" or self.args.learner=="comaIS_learner": # Inserting policy experiences to the buffer
+                behavior = self.mac.forward(self.batch, t=self.t, test_mode=test_mode)
+                post_transition_data["behavior"] = behavior           
+            
             self.batch.update(post_transition_data, ts=self.t)
-
+            
             self.t += 1
 
         last_data = {
