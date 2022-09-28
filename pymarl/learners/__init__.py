@@ -4,6 +4,7 @@ from .q_learner import QLearner
 from .coma_learner import COMALearner
 from .comaIS_learner import COMAISLearner
 from .ddmac_learner import DDMACLearner
+from .maven_learner import MavenLearner
 REGISTRY = {}
 
 REGISTRY["q_learner"] = QLearner

@@ -4,6 +4,10 @@ from pymarl.envs import REGISTRY as env_REGISTRY
 from functools import partial
 from pymarl.components.episode_buffer import EpisodeBatch
 import numpy as np
+from pymarl.modules.bandits.const_lr import Constant_Lr
+from pymarl.modules.bandits.uniform import Uniform
+from pymarl.modules.bandits.reinforce_hierarchial import EZ_agent as enza
+from pymarl.modules.bandits.returns_bandit import ReturnsBandit as RBandit
 
 class EpisodeRunner:
 
@@ -33,6 +37,20 @@ class EpisodeRunner:
                                  device=self.args.device)
         self.mac = mac
 
+        # Setup the noise distribution sampler
+        if self.args.mac == "maven_mac":
+            if self.args.noise_bandit:
+                if self.args.bandit_policy:
+                    self.noise_distrib = enza(self.args, logger=self.logger)
+                else:
+                    self.noise_distrib = RBandit(self.args, logger=self.logger)
+            else:
+                self.noise_distrib = Uniform(self.args)
+
+        self.noise_returns = {}
+        self.noise_test_won = {}
+        self.noise_train_won = {}
+
     def get_env_info(self):
         return self.env.get_env_info()
 
@@ -53,7 +71,12 @@ class EpisodeRunner:
         terminated = False
         episode_return = 0
         self.mac.init_hidden(batch_size=self.batch_size)
+        if self.args.mac == "maven_mac":
+            # Sample the noise at the beginning of the episode
+            self.noise = self.noise_distrib.sample(self.batch['state'][:, 0],
+                                                   test_mode)
 
+            self.batch.update({"noise": self.noise}, ts=0)
         while not terminated:
 
             pre_transition_data = {
@@ -125,10 +148,12 @@ class EpisodeRunner:
         return self.batch
 
     def save_models(self, path):
-        pass
+        if self.args.noise_bandit:
+            self.noise_distrib.save_model(path)
 
     def load_models(self, path):
-        pass
+        if self.args.mac == "maven_mac" and self.args.noise_bandit:
+            self.noise_distrib.load_model(path)
 
     def _log(self, returns, stats, prefix):
         self.logger.log_stat(prefix + "return_mean", np.mean(returns),
