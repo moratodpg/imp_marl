@@ -93,8 +93,7 @@ def run_sequential(args, logger):
         "reward": {"vshape": (1,)},
         "terminated": {"vshape": (1,), "dtype": th.uint8},
     }
-    if args.mac=="maven_mac":
-        scheme["noise"] = {"vshape": (args.noise_dim,)}
+
 
     if args.learner=="ddmac_learner" or args.learner=="comaIS_learner":
         scheme["behavior"] = {"vshape": (env_info["n_actions"],), "group": "agents", "dtype": th.float}

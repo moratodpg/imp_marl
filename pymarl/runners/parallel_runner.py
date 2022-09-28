@@ -4,10 +4,6 @@ from pymarl.components.episode_buffer import EpisodeBatch
 from multiprocessing import Pipe, Process
 import numpy as np
 import torch as th
-from pymarl.modules.bandits.const_lr import Constant_Lr
-from pymarl.modules.bandits.uniform import Uniform
-from pymarl.modules.bandits.reinforce_hierarchial import EZ_agent as enza
-from pymarl.modules.bandits.returns_bandit import ReturnsBandit as RBandit
 import time
 
 # Based (very) heavily on SubprocVecEnv from OpenAI Baselines
@@ -49,9 +45,7 @@ class ParallelRunner:
         self.log_train_stats_t = -100000
 
     def cuda(self):
-        if self.args.noise_bandit:
-            self.noise_distrib.cuda()
-
+        pass
     def setup(self, scheme, groups, preprocess, mac):
         self.new_batch = partial(EpisodeBatch, scheme, groups, self.batch_size,
                                  self.episode_limit + 1,
@@ -61,20 +55,6 @@ class ParallelRunner:
         self.scheme = scheme
         self.groups = groups
         self.preprocess = preprocess
-
-        # Setup the noise distribution sampler
-        if self.args.mac == "maven_mac":
-            if self.args.noise_bandit:
-                if self.args.bandit_policy:
-                    self.noise_distrib = enza(self.args, logger=self.logger)
-                else:
-                    self.noise_distrib = RBandit(self.args, logger=self.logger)
-            else:
-                self.noise_distrib = Uniform(self.args)
-
-        self.noise_returns = {}
-        self.noise_test_won = {}
-        self.noise_train_won = {}
 
     def get_env_info(self):
         return self.env_info
@@ -106,13 +86,6 @@ class ParallelRunner:
             pre_transition_data["obs"].append(data["obs"])
 
         self.batch.update(pre_transition_data, ts=0)
-
-        if self.args.mac == "maven_mac":
-            # Sample the noise at the beginning of the episode
-            self.noise = self.noise_distrib.sample(self.batch['state'][:, 0],
-                                                   test_mode)
-
-            self.batch.update({"noise": self.noise}, ts=0)
 
         self.t = 0
         self.env_steps_this_run = 0
@@ -242,13 +215,6 @@ class ParallelRunner:
 
         cur_returns.extend(episode_returns)
 
-        if self.args.mac == "maven_mac":
-            self._update_noise_returns(episode_returns, self.noise,
-                                       final_env_infos, test_mode)
-            self.noise_distrib.update_returns(self.batch['state'][:, 0],
-                                              self.noise, episode_returns,
-                                              test_mode, self.t_env)
-
         n_test_runs = max(1, self.args.test_nepisode // self.batch_size)* self.batch_size
         if test_mode and (len(self.test_returns) == n_test_runs):
             self._log(cur_returns, cur_stats, log_prefix)
@@ -303,9 +269,7 @@ class ParallelRunner:
             self.noise_distrib.save_model(path)
 
     def load_models(self, path):
-        if self.args.mac == "maven_mac" and self.args.noise_bandit:
-            self.noise_distrib.load_model(path)
-
+        pass
 
 def env_worker(remote, env_fn):
     # Make environment
