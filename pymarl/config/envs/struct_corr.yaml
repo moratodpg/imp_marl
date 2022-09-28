@@ -3,7 +3,7 @@ env: struct
 env_args:
   n_comp: 2
   discount_reward: 0.95
-  k_comp : None
+  k_comp : # None
   state_obs: False
   state_d_rate: False
   state_alphas: False
