@@ -17,8 +17,8 @@ class DDMACCritic(nn.Module):
         # Set up network layers
         self.fc1 = nn.Linear(input_shape, 128)
         self.fc2 = nn.Linear(128, 128)
-        # self.fc3 = nn.Linear(128, self.n_actions)
-        self.fc3 = nn.Linear(128, 1)
+        # self.fc3 = nn.Linear(128, self.n_actions) # Q-values as output
+        self.fc3 = nn.Linear(128, 1) # v-values as output
 
     def forward(self, batch, t=None):
         inputs = self._build_inputs(batch, t=t)
@@ -33,9 +33,7 @@ class DDMACCritic(nn.Module):
         ts = slice(None) if t is None else slice(t, t+1)
         inputs = []
         # state
-        inputs.append(batch["state"][:, ts].unsqueeze(2).repeat(1, 1, self.n_agents, 1))
-        # observation
-        # inputs.append(batch["obs"][:, ts])
+        inputs.append(batch["state"][:, ts].unsqueeze(2).repeat(1, 1, self.n_agents, 1)) # The state values can be fed differently here
         # actions (masked out by agent)
         actions = batch["actions_onehot"][:, ts].view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1)
         agent_mask = (1 - th.eye(self.n_agents, device=batch.device))
@@ -52,17 +50,12 @@ class DDMACCritic(nn.Module):
             last_actions = last_actions.view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1)
             inputs.append(last_actions)
 
-        # inputs.append(th.eye(self.n_agents, device=batch.device).unsqueeze(0).unsqueeze(0).expand(bs, max_t, -1, -1))
         inputs = th.cat([x.reshape(bs, max_t, self.n_agents, -1) for x in inputs], dim=-1)
         return inputs
 
     def _get_input_shape(self, scheme):
         # state
         input_shape = scheme["state"]["vshape"]
-        # observation
-        # input_shape += scheme["obs"]["vshape"]
         # actions and last actions
         input_shape += scheme["actions_onehot"]["vshape"][0] * self.n_agents * 2
-        # agent id
-        # input_shape += self.n_agents
         return input_shape

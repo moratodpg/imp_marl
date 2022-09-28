@@ -77,9 +77,7 @@ class DDMACLearner:
         v_vals = v_vals.reshape(-1, 1)
         targets_adv = targets_adv.reshape(-1, 1)
         pi = mac_out.view(-1, self.n_actions)
-        # baseline = (pi * q_vals).sum(-1).detach()
         # Calculate policy grad with mask
-        # q_taken = th.gather(q_vals, dim=1, index=actions.reshape(-1, 1)).squeeze(1)
         pi_taken = th.gather(pi, dim=1, index=actions.reshape(-1, 1)).squeeze(1)
         pi_taken[mask == 0] = 1.0
         log_pi_taken = th.log(pi_taken)
@@ -99,7 +97,7 @@ class DDMACLearner:
 
         if t_env - self.log_stats_t >= self.args.learner_log_interval:
             ts_logged = len(critic_train_stats["critic_loss"])
-            for key in ["critic_loss", "critic_grad_norm", "td_error_abs", "q_taken_mean", "target_mean"]:
+            for key in ["critic_loss", "critic_grad_norm", "td_error_abs", "v_taken_mean", "target_mean"]:
                 self.logger.log_stat(key, sum(critic_train_stats[key])/ts_logged, t_env)
 
             self.logger.log_stat("advantage_mean", (advantages * mask).sum().item() / mask.sum().item(), t_env)
@@ -115,13 +113,12 @@ class DDMACLearner:
         # Calculate td-lambda targets
         targets = build_td_lambda_targets(rewards, terminated, mask, targets_taken, self.n_agents, self.args.gamma, self.args.td_lambda)
         v_vals = th.zeros_like(target_v_vals)[:, :-1]
-        # print('targets', targets.size(), 'v_vals', v_vals.size() )
         running_log = {
             "critic_loss": [],
             "critic_grad_norm": [],
             "td_error_abs": [],
             "target_mean": [],
-            "q_taken_mean": [],
+            "v_taken_mean": [],
         }
         for t in reversed(range(rewards.size(1))):
             mask_t = mask[:, t].expand(-1, self.n_agents)
@@ -149,7 +146,7 @@ class DDMACLearner:
             running_log["critic_grad_norm"].append(grad_norm)
             mask_elems = mask_t.sum().item()
             running_log["td_error_abs"].append((masked_td_error.abs().sum().item() / mask_elems))
-            running_log["q_taken_mean"].append((v_taken * mask_t).sum().item() / mask_elems)
+            running_log["v_taken_mean"].append((v_taken * mask_t).sum().item() / mask_elems)
             running_log["target_mean"].append((targets_t * mask_t).sum().item() / mask_elems)
 
         return v_vals, targets, running_log
