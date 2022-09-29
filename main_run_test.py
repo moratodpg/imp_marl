@@ -118,8 +118,7 @@ def run_sequential_test(args, logger):
         "reward": {"vshape": (1,)},
         "terminated": {"vshape": (1,), "dtype": th.uint8},
     }
-    if args.mac=="maven_mac":
-        scheme["noise"] = {"vshape": (args.noise_dim,)}
+
     groups = {
         "agents": args.n_agents
     }
