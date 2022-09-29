@@ -2,13 +2,8 @@ import itertools
 
 import gym
 import numpy as np
-from gym import spaces
 
-from old_env.ma_struct import StructMA
-from old_env.sa_struct import StructSA
-from struct_env.gym_sa_struct import GymSaStruct
 from struct_env.pymarl_ma_struct import PymarlMAStruct
-from struct_env.ray_ma_struct import RayMaStruct
 from struct_env.struct_env import Struct
 
 if __name__ == '__main__':
