@@ -9,6 +9,7 @@ from pymarl.modules.bandits.uniform import Uniform
 from pymarl.modules.bandits.reinforce_hierarchial import EZ_agent as enza
 from pymarl.modules.bandits.returns_bandit import ReturnsBandit as RBandit
 
+
 class EpisodeRunner:
 
     def __init__(self, args, logger):
@@ -88,9 +89,17 @@ class EpisodeRunner:
 
             # Pass the entire batch of experiences up till now to the agents
             # Receive the actions for each agent at this timestep in a batch of size 1
-            actions = self.mac.select_actions(self.batch, t_ep=self.t,
-                                              t_env=self.t_env,
-                                              test_mode=test_mode)
+
+            if self.args.mac == "is_mac":
+                # Inserting policy experiences to the buffer
+                actions, behavior = self.mac.select_actions(self.batch,
+                                                            t_ep=self.t,
+                                                            t_env=self.t_env,
+                                                            test_mode=test_mode)
+            else:
+                actions = self.mac.select_actions(self.batch, t_ep=self.t,
+                                                  t_env=self.t_env,
+                                                  test_mode=test_mode)
 
             reward, terminated, env_info = self.env.step(actions[0])
             episode_return += reward
@@ -101,6 +110,8 @@ class EpisodeRunner:
                 "terminated": [
                     (terminated != env_info.get("episode_limit", False),)],
             }
+            if self.args.mac == "is_mac":
+                post_transition_data["behavior"] = behavior
 
             self.batch.update(post_transition_data, ts=self.t)
 
@@ -114,10 +125,22 @@ class EpisodeRunner:
         self.batch.update(last_data, ts=self.t)
 
         # Select actions in the last stored state
-        actions = self.mac.select_actions(self.batch, t_ep=self.t,
-                                          t_env=self.t_env,
-                                          test_mode=test_mode)
-        self.batch.update({"actions": actions}, ts=self.t)
+
+        if self.args.mac == "is_mac":
+            # Inserting policy experiences to the buffer
+            actions, behavior = self.mac.select_actions(self.batch,
+                                                        t_ep=self.t,
+                                                        t_env=self.t_env,
+                                                        test_mode=test_mode)
+            self.batch.update({"actions": actions, "behavior":behavior},
+                              ts=self.t)
+        else:
+            actions = self.mac.select_actions(self.batch, t_ep=self.t,
+                                              t_env=self.t_env,
+                                              test_mode=test_mode)
+            self.batch.update({"actions": actions, }, ts=self.t)
+
+
 
         cur_stats = self.test_stats if test_mode else self.train_stats
         cur_returns = self.test_returns if test_mode else self.train_returns

@@ -17,6 +17,7 @@ class ParallelRunner:
     def __init__(self, args, logger):
         self.args = args
         self.logger = logger
+        assert args.mac != "is_mac", "case not implemented yet"
         self.batch_size = self.args.batch_size_run
 
         # Make subprocesses for the envs

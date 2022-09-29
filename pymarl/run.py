@@ -96,6 +96,10 @@ def run_sequential(args, logger):
     if args.mac=="maven_mac":
         scheme["noise"] = {"vshape": (args.noise_dim,)}
 
+    if args.mac == "is_mac":
+        scheme["behavior"] = {"vshape": (env_info["n_actions"],),
+                              "group": "agents",
+                              "dtype": th.float}
     groups = {
         "agents": args.n_agents
     }
