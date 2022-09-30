@@ -7,12 +7,16 @@ jsonpickle==1.5.2
 munch==2.5.0
 numpy==1.21.6
 packaging==21.3
+Pillow==9.2.0
+protobuf==3.6.1
 py-cpuinfo==8.0.0
 pyparsing==3.0.9
 PyYAML==5.1
 sacred==0.8.2
+scipy==1.7.3
 six==1.16.0
 smmap==5.0.0
+tensorboard-logger==0.1.0
 torch==1.12.1
 typing_extensions==4.3.0
 wrapt==1.14.1
