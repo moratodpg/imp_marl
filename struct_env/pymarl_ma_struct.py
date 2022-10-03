@@ -45,6 +45,7 @@ class PymarlMAStruct(MultiAgentEnv):
                and isinstance(obs_alphas, bool) \
                and isinstance(env_correlation, bool) \
                and isinstance(campaign_cost, bool), "Error in env parameters"
+        assert 0 <= discount_reward <= 1, "Error in discount_reward"
         assert not (obs_d_rate and obs_all_d_rate), "Error in env parameters"
         assert state_obs or state_d_rate or state_alphas, \
             "Error in env parameters"
