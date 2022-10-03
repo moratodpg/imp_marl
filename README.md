@@ -7,9 +7,3 @@ pymarl:
 `python  3.7`
 and
 `pip install -r requirements.txt` 
-
-
-```pip install torch==0.4.1 -f https://download.pytorch.org/whl/torch_stable.html```
-
-RLLib:
-1.11
