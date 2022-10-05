@@ -10,7 +10,7 @@ Marl_struct offers a framework for DRL algorithms and structural systems environ
 
 Main developers: Pablo G. Morato & Pascal Leroy.
 
-The main code is derived from pymarl: [pymarl](https://github.com/oxwhirl/pymarl).
+The main code is derived from [pymarl](https://github.com/oxwhirl/pymarl).
 
 ## Main requirements:
 pymarl:
