@@ -21,5 +21,5 @@ and
 ## Run an experiment 
 
 ```shell
-python3 main.py --config=qmix --env-config=struct with env_args.n_comp=10 env_args.k_comp=9 use_tensorboard=True 
+python3 main.py --config=qmix --env-config=struct with env_args.n_comp=10 env_args.k_comp=9
 ```
