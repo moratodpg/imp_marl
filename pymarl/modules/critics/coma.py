@@ -14,9 +14,10 @@ class COMACritic(nn.Module):
         input_shape = self._get_input_shape(scheme)
         self.output_type = "q"
 
+        critic_size = self.args.critic_intermediate_size
         # Set up network layers
         self.fc1 = nn.Linear(input_shape, 128)
-        self.fc2 = nn.Linear(128, 128)
+        self.fc2 = nn.Linear(critic_size, 128)
         self.fc3 = nn.Linear(128, self.n_actions)
 
     def forward(self, batch, t=None):

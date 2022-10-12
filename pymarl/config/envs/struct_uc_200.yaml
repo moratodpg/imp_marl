@@ -1,0 +1,23 @@
+env: struct
+
+env_args:
+  n_comp: 200
+  discount_reward: 0.95
+  k_comp: 190
+  state_obs: True
+  state_d_rate: True
+  state_alphas: False
+  obs_d_rate: False
+  obs_multiple: False
+  obs_all_d_rate: False
+  obs_alphas: False
+  env_correlation: False
+  campaign_cost: False
+
+learner_log_interval: 100000
+log_interval: 100000
+runner_log_interval: 100000
+test_interval: 100000
+test_nepisode: 100
+test_greedy: True
+t_max: 2050000
