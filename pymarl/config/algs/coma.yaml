@@ -6,7 +6,7 @@ epsilon_finish: .01
 epsilon_anneal_time: 50000
 mask_before_softmax: False
 
-runner: "parralel"
+runner: "parallel"
 batch_size_run: 4
 buffer_size: 4
 batch_size: 4
