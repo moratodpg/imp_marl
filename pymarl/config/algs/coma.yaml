@@ -6,13 +6,10 @@ epsilon_finish: .01
 epsilon_anneal_time: 50000
 mask_before_softmax: False
 
-runner: "episode"
-#batch_size_run: 6
-
-
-buffer_size: 6
-
-batch_size: 6
+runner: "parralel"
+batch_size_run: 4
+buffer_size: 4
+batch_size: 4
 
 # update the target network every {} training steps
 target_update_interval: 200
