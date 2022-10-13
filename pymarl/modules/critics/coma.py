@@ -16,7 +16,7 @@ class COMACritic(nn.Module):
 
         critic_size = self.args.critic_intermediate_size
         # Set up network layers
-        self.fc1 = nn.Linear(input_shape, 128)
+        self.fc1 = nn.Linear(input_shape, critic_size)
         self.fc2 = nn.Linear(critic_size, 128)
         self.fc3 = nn.Linear(128, self.n_actions)
 
