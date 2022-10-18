@@ -7,12 +7,9 @@ epsilon_finish: 0.05
 epsilon_anneal_time: 5000
 
 runner: "episode"
-#batch_size_run: 6
 
 batch_size: 64
-
 buffer_size: 2000
-
 target_update_interval: 200
 
 
