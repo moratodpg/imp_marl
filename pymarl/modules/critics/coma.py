@@ -6,18 +6,26 @@ import torch.nn.functional as F
 class COMACritic(nn.Module):
     def __init__(self, scheme, args):
         super(COMACritic, self).__init__()
-
         self.args = args
         self.n_actions = args.n_actions
         self.n_agents = args.n_agents
 
         input_shape = self._get_input_shape(scheme)
+        print(input_shape)
         self.output_type = "q"
 
-        critic_size = self.args.critic_intermediate_size
+        critic_size1 = self.args.critic_intermediate_size1
+        critic_size2 = self.args.critic_intermediate_size2
+
         # Set up network layers
-        self.fc1 = nn.Linear(input_shape, critic_size)
-        self.fc2 = nn.Linear(critic_size, 128)
+        if critic_size2 == 0:
+            self.fc1 = nn.Linear(input_shape, critic_size1)
+        else:
+            self.fc1 = nn.Sequential(nn.Linear(input_shape, critic_size2),
+                        nn.ReLU(),
+                        nn.Linear(critic_size2, critic_size1))
+
+        self.fc2 = nn.Linear(critic_size1, 128)
         self.fc3 = nn.Linear(128, self.n_actions)
 
     def forward(self, batch, t=None):
