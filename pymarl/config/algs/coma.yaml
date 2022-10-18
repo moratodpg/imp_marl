@@ -26,7 +26,9 @@ critic_baseline_fn: "coma"
 critic_train_mode: "seq"
 critic_train_reps: 1
 critic_intermediate_size1: 128
+critic_intermediate_size2: 0
 
 q_nstep: 0  # 0 corresponds to default Q, 1is r + gamma*Q, etc
 
 name: "coma"
+
