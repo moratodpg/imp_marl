@@ -51,7 +51,8 @@ class DDMACLearner:
         for t in range(batch.max_seq_length - 1):
             agent_outs = self.mac.forward(batch, t=t)
             current_behavior_out.append(agent_outs)
-        current_behavior_out = th.stack(current_behavior_out, dim=1)
+        current_behavior_out = th.stack(current_behavior_out, dim=1)  # Concat over time
+        mac_out = current_behavior_out.clone()
         curr_behav = th.gather(current_behavior_out, dim=3, index=actions[:,:-1] )
         rho = th.div(curr_behav, orig_behav) # Importance sampling
         rho = ( th.prod(rho, 2, True) ).repeat(1, 1, self.n_agents, 1) # Product over components
@@ -62,12 +63,6 @@ class DDMACLearner:
         v_vals = v_vals.squeeze(3)
         actions = actions[:,:-1]
 
-        mac_out = []
-        self.mac.init_hidden(batch.batch_size)
-        for t in range(batch.max_seq_length - 1):
-            agent_outs = self.mac.forward(batch, t=t)
-            mac_out.append(agent_outs)
-        mac_out = th.stack(mac_out, dim=1)  # Concat over time
         # Mask out unavailable actions, renormalise (as in action selection)
         mac_out[avail_actions == 0] = 0
         mac_out = mac_out/mac_out.sum(dim=-1, keepdim=True)
@@ -135,7 +130,7 @@ class DDMACLearner:
             masked_td_error = td_error * mask_t
 
             # Normal L2 loss, take mean over actual data
-            loss = ( (masked_td_error ** 2)*rho_t).sum() / mask_t.sum()
+            loss = ((masked_td_error ** 2)*rho_t).sum() / mask_t.sum()
             self.critic_optimiser.zero_grad()
             loss.backward()
             grad_norm = th.nn.utils.clip_grad_norm_(self.critic_params, self.args.grad_norm_clip)
