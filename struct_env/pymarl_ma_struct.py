@@ -119,7 +119,7 @@ class PymarlMAStruct(MultiAgentEnv):
 
     def get_obs_size(self):
         """ Returns the shape of the observation """
-        return self.struct_env.obs_per_agent_multi
+        return len(self.get_obs_agent(0))
 
     def get_normalized_drate(self):
         return self.struct_env.d_rate / self.struct_env.ep_length
