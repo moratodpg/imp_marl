@@ -31,3 +31,6 @@ critic_intermediate_size2: 512
 q_nstep: 0  # 0 corresponds to default Q, 1is r + gamma*Q, etc
 
 name: "coma"
+
+use_cuda: False
+use_tensorboard: True
