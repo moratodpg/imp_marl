@@ -1,0 +1,26 @@
+# --- QMIX specific parameters ---
+
+# use epsilon greedy action selector
+action_selector: "epsilon_greedy"
+epsilon_start: 1.0
+epsilon_finish: 0.05
+epsilon_anneal_time: 5000
+
+runner: "episode"
+
+batch_size: 64
+buffer_size: 2000
+target_update_interval: 200
+
+
+agent_output_type: "q"
+learner: "q_learner"
+double_q: True
+mixer: "qmix"
+mixing_embed_dim: 32
+
+
+name: "qmix"
+
+use_cuda: False
+use_tensorboard: True
