@@ -11,7 +11,6 @@ class COMACritic(nn.Module):
         self.n_agents = args.n_agents
 
         input_shape = self._get_input_shape(scheme)
-        print(input_shape)
         self.output_type = "q"
 
         critic_size1 = self.args.critic_intermediate_size1
