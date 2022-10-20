@@ -10,7 +10,7 @@ env_args:
   obs_d_rate: False
   obs_multiple: False
   obs_all_d_rate: False
-  obs_alphas: False
+  obs_alphas: True
   env_correlation: True
   campaign_cost: False
 
