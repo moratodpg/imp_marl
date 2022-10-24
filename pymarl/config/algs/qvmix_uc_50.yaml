@@ -15,7 +15,7 @@ agent_output_type: "q"
 learner: "qv_learner"
 mixer: "qmix"
 vmixer: "vmix"
-mixing_embed_dim: 64
+mixing_embed_dim: 128
 
 
 name: "qvmix"
