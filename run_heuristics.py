@@ -1,5 +1,5 @@
 from heuristics.heuristics_intervals import Heuristics
-
+import timeit
 #### Search
 search = True 
 n_comp = 5
@@ -20,6 +20,8 @@ h1 = Heuristics(n_comp,
                  k_comp)
 
 if search:
+    starting_time = timeit.default_timer()
     h1.search(eval_size)
+    print("Time (s):", timeit.default_timer() - starting_time)
 else:
     h1.eval(eval_size, insp_int, insp_comp)
