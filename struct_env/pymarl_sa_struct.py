@@ -37,7 +37,7 @@ class PymarlSAStruct(PymarlMAStruct):
         converted_action = self.convert_action_dict[int(actions[0])]
         action_dict = {k: action for k, action in
                        zip(self.struct_env.agent_list, converted_action)}
-        _, rewards, done = self.struct_env.step(action_dict)
+        _, rewards, done, _ = self.struct_env.step(action_dict)
         return rewards[self.struct_env.agent_list[0]], done, {}
 
     def get_obs(self):

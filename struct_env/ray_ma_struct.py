@@ -30,5 +30,5 @@ class RayMaStruct(MultiAgentEnv):
     def step(
             self, action_dict: MultiAgentDict
     ) -> Tuple[MultiAgentDict, MultiAgentDict, MultiAgentDict, MultiAgentDict]:
-        observations, rewards, done = self.struct_env.step(action_dict)
+        observations, rewards, done, _ = self.struct_env.step(action_dict)
         return observations, rewards, {"__all__": done}, {}

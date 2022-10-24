@@ -1,8 +1,10 @@
 import numpy as np
 from struct_env.pymarl_ma_struct import PymarlMAStruct
 from struct_env.pymarl_sa_struct import PymarlSAStruct
+import os
 
 if __name__ == '__main__':
+    os.chdir(os.path.dirname(os.getcwd()))
 
     n_episode = 100
 

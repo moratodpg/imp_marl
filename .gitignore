@@ -318,3 +318,5 @@ delete.py
 delete
 
 launch_50.sbatch
+
+heuristics/Results/
