@@ -9,7 +9,7 @@ epsilon_anneal_time: 100000
 runner: "episode"
 #batch_size_run: 6
 
-batch_size: 32
+batch_size: 64
 
 buffer_size: 1500
 # update the target network every {} episodes
