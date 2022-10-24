@@ -14,10 +14,10 @@ env_args:
   env_correlation: False
   campaign_cost: False
 
-learner_log_interval: 100000
-log_interval: 100000
-runner_log_interval: 100000
-test_interval: 100000
+learner_log_interval: 25000
+log_interval: 25000
+runner_log_interval: 25000
+test_interval: 25000
 test_nepisode: 100
 test_greedy: True
 t_max: 2050000
