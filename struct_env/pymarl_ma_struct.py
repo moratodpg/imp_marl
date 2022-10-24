@@ -133,8 +133,7 @@ class PymarlMAStruct(MultiAgentEnv):
                 obs = v
                 idx = 1
             else:
-                obs = np.append(obs, v[:-1])
-                # remove the time from the list if not the first element
+                obs = np.append(obs, v)
         return obs
 
     def get_state(self):
