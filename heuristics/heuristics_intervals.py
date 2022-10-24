@@ -1,7 +1,9 @@
 import numpy as np
-from heuristics.struct_env_heur import Struct
 from datetime import datetime
 from os import path, makedirs
+
+from struct_env.struct_env import Struct
+
 
 class Heuristics():
     def __init__(self,
