@@ -314,3 +314,7 @@ https://www.toptal.com/developers/gitignore/api/python,pycharm
 
 delete.py
 /DCMAC_crack_single3.py
+
+heuristics/Results/
+
+delete
