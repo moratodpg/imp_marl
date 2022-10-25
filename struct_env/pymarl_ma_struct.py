@@ -86,7 +86,7 @@ class PymarlMAStruct(MultiAgentEnv):
         # actions = list
         action_dict = {k: action for k, action in
                        zip(self.struct_env.agent_list, actions)}
-        _, rewards, done = self.struct_env.step(action_dict)
+        _, rewards, done, _ = self.struct_env.step(action_dict)
         return rewards[self.struct_env.agent_list[0]], done, {}
 
     def get_obs(self):
@@ -119,7 +119,7 @@ class PymarlMAStruct(MultiAgentEnv):
 
     def get_obs_size(self):
         """ Returns the shape of the observation """
-        return self.struct_env.obs_per_agent_multi
+        return len(self.get_obs_agent(0))
 
     def get_normalized_drate(self):
         return self.struct_env.d_rate / self.struct_env.ep_length

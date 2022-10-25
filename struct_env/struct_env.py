@@ -35,8 +35,8 @@ class Struct:
         # Uncorrelated obs = 30 per agent + 1 timestep
         # Correlated obs = 30 per agent + 1 timestep +
         #                   80 hyperparameter states = 111
-        self.obs_per_agent_multi = 31 if not self.env_correlation else 111
-        self.obs_total_single = 30 * self.n_comp + 1  # used in gym env
+        self.obs_per_agent_multi = None  # Todo: check
+        self.obs_total_single = None  # Todo: check used in gym env
 
         ### Loading the underlying POMDP model ###
         if not self.env_correlation:
@@ -60,7 +60,7 @@ class Struct:
             self.b0cR = None
             self.alpha0 = None
 
-        else :
+        else:
             self.belief0[:, :] = drmodel['belief0']
             # (3 actions, 31 det rates, 30 cracks, 30 cracks)
             self.P = drmodel['P']
@@ -150,7 +150,7 @@ class Struct:
         done = self.time_step >= self.ep_length
 
         # info = {"belief": self.beliefs}
-        return self.observations, rewards, done
+        return self.observations, rewards, done, observation_
 
     def pf_sys(self, pf, k):
         """compute pf_sys for k-out-of-n components"""
