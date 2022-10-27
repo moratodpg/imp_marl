@@ -13,12 +13,14 @@ class DDMACCritic(nn.Module):
 
         input_shape = self._get_input_shape(scheme)
         self.output_type = "q" #pm To be modified?
+        
+        critic_size = self.args.critic_size
 
         # Set up network layers
-        self.fc1 = nn.Linear(input_shape, 128)
-        self.fc2 = nn.Linear(128, 128)
+        self.fc1 = nn.Linear(input_shape, critic_size)
+        self.fc2 = nn.Linear(critic_size, critic_size)
         # self.fc3 = nn.Linear(128, self.n_actions) # Q-values as output
-        self.fc3 = nn.Linear(128, 1) # v-values as output
+        self.fc3 = nn.Linear(critic_size, 1) # v-values as output
 
     def forward(self, batch, t=None):
         inputs = self._build_inputs(batch, t=t)

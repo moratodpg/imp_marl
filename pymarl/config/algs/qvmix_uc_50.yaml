@@ -1,4 +1,4 @@
-# --- IQL specific parameters ---
+# --- QVmix specific parameters ---
 
 action_selector: "epsilon_greedy"
 epsilon_start: 1.0
@@ -12,13 +12,13 @@ buffer_size: 2000
 target_update_interval: 200
 
 agent_output_type: "q"
-learner: "q_learner"
-double_q: True
-mixer: # Mixer becomes None
+learner: "qv_learner"
+mixer: "qmix"
+vmixer: "vmix"
+mixing_embed_dim: 64
 
 
-
-name: "iql"
+name: "qvmix"
 
 use_cuda: False
 use_tensorboard: True

@@ -18,7 +18,7 @@ mixer: # Mixer becomes None
 
 
 
-name: "iql"
+name: "dqn_sarl"
 
 use_cuda: False
 use_tensorboard: True
