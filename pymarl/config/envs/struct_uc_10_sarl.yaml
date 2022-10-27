@@ -1,9 +1,9 @@
 env: struct_sarl
 
 env_args:
-  n_comp: 2
+  n_comp: 10
   discount_reward: 0.95
-  k_comp:
+  k_comp: 9
   state_obs: True
   state_d_rate: True
   state_alphas: False

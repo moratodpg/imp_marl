@@ -7,9 +7,9 @@ from struct_env.pymarl_ma_struct import PymarlMAStruct
 
 class PymarlSAStruct(PymarlMAStruct):
     def __init__(self, *args, **kwargs):
-        kwargs["obs_drate"] = False  # obs are not considered in SARL
+        kwargs["obs_d_rate"] = False  # obs are not considered in SARL
         kwargs["obs_multiple"] = False  # obs are not considered in SARL
-        kwargs["obs_all_drate"] = False  # obs are not considered in SARL
+        kwargs["obs_all_d_rate"] = False  # obs are not considered in SARL
         kwargs["obs_alphas"] = False  # obs are not considered in SARL
         super().__init__(*args, **kwargs)
 
@@ -26,7 +26,7 @@ class PymarlSAStruct(PymarlMAStruct):
 
     def convert_obs_multi(self, obs_multi):
         time = obs_multi[self.struct_env.agent_list[0]][-1]
-        list_obs = [v[:-1] for k, v in obs_multi.items()]
+        list_obs = [v for k, v in obs_multi.items()]
         observation = np.concatenate(list_obs)
         observation = np.append(observation, time)
         return observation
