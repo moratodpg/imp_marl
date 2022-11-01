@@ -16,7 +16,10 @@ learner: "q_learner"
 double_q: True
 mixer: # Mixer becomes None
 
-
+agent: "rnn_sarl"
+agent_fc1: []
+agent_fc2: []
+rnn_hidden_dim: 64
 
 name: "dqn_sarl"
 
