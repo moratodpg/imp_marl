@@ -25,7 +25,8 @@ from pymarl.components.transforms import OneHot
 
 from main import _get_config, recursive_dict_update
 from pymarl.run import args_sanity_check, evaluate_sequential
-
+from sacred import SETTINGS
+SETTINGS.CONFIG.READ_ONLY_CONFIG = False
 SETTINGS[
     'CAPTURE_MODE'] = "fd"  # set to "no" if you want to see stdout/stderr in console
 logger = get_logger()
@@ -40,6 +41,8 @@ results_path = os.path.join(dirname(dirname(abspath(__file__))), "results_test")
 @ex.main
 def my_main(_run, _config, _log, env_args):
     # Setting the random seed throughout the modules
+
+
     np.random.seed(_config["seed"])
     th.manual_seed(_config["seed"])
     env_args['seed'] = _config["seed"]
@@ -161,10 +164,10 @@ def run_sequential_test(args, logger):
                 timesteps.append(int(name))
         timesteps = sorted(timesteps)
         print("timesteps",timesteps)
-        max_index = len(timesteps) - 1
+        # max_index = len(timesteps) - 1
         for idx_, timestep_to_load in enumerate(timesteps):
-            if idx_ < max_index:
-                continue
+            # if idx_ < max_index:
+            #     continue
             # if args.n_skip != 0 and idx_ % args.n_skip != 0:
             #     continue
             print("timestep_to_load", timestep_to_load)
