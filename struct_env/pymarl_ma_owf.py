@@ -4,7 +4,7 @@ from struct_env.MultiAgentEnv import MultiAgentEnv
 from struct_env.struct_owf import Struct_owf
 
 
-class PymarlMAStruct(MultiAgentEnv):
+class PymarlMAOwf(MultiAgentEnv):
     def __init__(self,
                  n_owt: int = 2,
                  # Number of structure
