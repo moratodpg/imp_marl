@@ -1,4 +1,4 @@
-env: struct
+env: owf
 
 env_args:
   n_owt : 2
