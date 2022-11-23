@@ -70,7 +70,7 @@ class Struct_owf:
         beliefs_comp = np.reshape(self.beliefs[:,:-1,:], (self.n_agents, -1))
         self.observations = {}
 
-        for i in range(self.n_agents):
+        for i in range(self.n_agents): # Shall we also add pf_sys here?
             self.observations[self.agent_list[i]] = np.concatenate(
                 (beliefs_comp[i], [self.time_step / self.ep_length]))
 
@@ -96,7 +96,7 @@ class Struct_owf:
         self.time_step += 1
         beliefs_comp = np.reshape(belief_prime[:,:-1,:], (self.n_agents, -1))
 
-        self.observations = {}
+        self.observations = {} # Shall we also add pf_sys here?
         for i in range(self.n_agents):
             self.observations[self.agent_list[i]] = np.concatenate(
                 (beliefs_comp[i], [self.time_step / self.ep_length]))
