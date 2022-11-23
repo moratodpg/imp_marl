@@ -1,7 +1,7 @@
 import numpy as np
 
 from struct_env.MultiAgentEnv import MultiAgentEnv
-from struct_env.struct_owf import Struct_owf
+from struct_env.owf_env import Struct_owf
 
 
 class PymarlMAOwf(MultiAgentEnv):
