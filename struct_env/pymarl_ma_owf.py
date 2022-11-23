@@ -93,9 +93,6 @@ class PymarlMAOwf(MultiAgentEnv):
         if self.obs_all_drate:
             obs = np.append(obs, self.get_normalized_drate())
 
-        if self.obs_alphas:
-            obs = np.append(obs, self.struct_env.alphas)
-
         return obs
 
     def get_obs_size(self):
@@ -124,8 +121,6 @@ class PymarlMAOwf(MultiAgentEnv):
             state = np.append(state, self.all_obs_from_struct_env())
         if self.state_d_rate:
             state = np.append(state, self.get_normalized_drate())
-        if self.state_alphas:
-            state = np.append(state, self.struct_env.alphas)
         return state
 
     def get_state_size(self):
