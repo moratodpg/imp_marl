@@ -11,9 +11,13 @@ class PymarlMAStruct(MultiAgentEnv):
                  # Type of the struct env, either "struct" or "owf".
                  n_comp: int = 2,
                  # Number of structure
-                 custom_param: int = None,
-                 # struct: Number of structure required (=k_comp for k_comp out of n_comp)
-                 # owf: Number of levels per wind turbine (= lev, fixed for now)
+                 custom_param: dict = None,
+                 # struct: Number of structure required
+                 #      {"k_comp": int} for k_comp out of n_comp
+                 #      Default is None, meaning k_comp=n_comp-1
+                 # owf: Number of levels per wind turbine
+                 #      {"lev": int}
+                 #      Default is 3
                  discount_reward: float = 1.,
                  # float [0,1] importance of
                  # short-time reward vs long-time reward
@@ -39,15 +43,14 @@ class PymarlMAStruct(MultiAgentEnv):
                  campaign_cost: bool = False,
                  # campaign_cost = True=campaign cost taken into account
                  seed=None):
+
+        # Check struct type and default values
+        assert struct_type == "owf" or struct_type == "struct", "Error in struct_type"
         if struct_type == "struct":
-            self.k_comp = custom_param
+            self.k_comp = custom_param.get("k_comp", None) if (custom_param is not None) else None
             assert self.k_comp is None or self.k_comp <= n_comp, "Error in k_comp"
-            self.lev = None
-        else:
-            if custom_param is None:
-                custom_param = 3
-            self.lev = custom_param
-            self.k_comp = None
+        elif struct_type == "owf":
+            self.lev = custom_param.get("lev", 3) if (custom_param is not None) else 3
             obs_alphas = False
             env_correlation = False
             state_alphas = False
@@ -93,7 +96,7 @@ class PymarlMAStruct(MultiAgentEnv):
                            "campaign_cost": campaign_cost}
             self.struct_env = Struct(self.config)
             self.n_agents = self.struct_env.n_comp
-        else:
+        elif struct_type == "owf":
             self.config = {"n_owt": n_comp,
                            "lev": self.lev,
                            "discount_reward": discount_reward,
