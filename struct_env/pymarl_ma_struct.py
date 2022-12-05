@@ -81,13 +81,24 @@ class PymarlMAStruct(MultiAgentEnv):
         self.agent_list = self.struct_env.agent_list
         self.n_actions = self.struct_env.actions_per_agent
 
+        self.action_histogram = {"action_" + str(k): 0 for k in
+                                 range(self.n_actions)}
+
     def step(self, actions):
         """ Returns reward, terminated, info """
         # actions = list
-        action_dict = {k: action for k, action in
-                       zip(self.struct_env.agent_list, actions)}
+        action_dict = {}
+        for k, action in zip(self.struct_env.agent_list, actions):
+            action_dict[k] = action
+            action_str = str(action.numpy())
+            self.action_histogram["action_" + action_str] += 1
         _, rewards, done, _ = self.struct_env.step(action_dict)
-        return rewards[self.struct_env.agent_list[0]], done, {}
+        info = {}
+        if done:
+            for k in self.action_histogram:
+                self.action_histogram[k] /= self.episode_limit * self.n_agents
+            info = self.action_histogram
+        return rewards[self.struct_env.agent_list[0]], done, info
 
     def get_obs(self):
         """ Returns all agent observations in a list """
@@ -167,6 +178,7 @@ class PymarlMAStruct(MultiAgentEnv):
 
     def reset(self):
         """ Returns initial observations and states"""
+        self.action_histogram = {"action_"+str(k): 0 for k in range(self.n_actions)}
         self.struct_env.reset()
         return self.get_obs(), self.get_state()
 
