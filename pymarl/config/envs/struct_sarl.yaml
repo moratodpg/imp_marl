@@ -3,7 +3,7 @@ env: struct_sarl
 env_args:
     n_comp: 2
     discount_reward: 0.95
-    custom_param : # None is just empty in yaml.
+    custom_param: # None is just empty in yaml.
 
     state_obs: False
     state_d_rate: False

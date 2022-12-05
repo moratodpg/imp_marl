@@ -1,4 +1,4 @@
-env: struct
+env: struct_marl
 
 env_args:
   n_comp: 2
