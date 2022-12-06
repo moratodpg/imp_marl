@@ -323,3 +323,5 @@ heuristics/Results/
 
 /sacred_cluster
 sacred_scripts/plots/
+
+sacred_scripts/remove_command.txt
