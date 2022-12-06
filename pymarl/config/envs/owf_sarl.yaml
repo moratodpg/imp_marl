@@ -1,7 +1,7 @@
-env: struct_marl
+env: struct_sarl
 
 env_args:
-  struct_type: "struct"
+  struct_type: "owf"
   n_comp: 2
   discount_reward: 0.95
   custom_param: {}

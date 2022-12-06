@@ -1,18 +1,27 @@
 import numpy as np
 
 from struct_env.MultiAgentEnv import MultiAgentEnv
+from struct_env.owf_env import Struct_owf
 from struct_env.struct_env import Struct
 
 
 class PymarlMAStruct(MultiAgentEnv):
     def __init__(self,
+                 struct_type: str = "struct",
+                 # Type of the struct env, either "struct" or "owf".
                  n_comp: int = 2,
                  # Number of structure
+                 custom_param: dict = None,
+                 # struct: Number of structure required
+                 #      {"k_comp": int} for k_comp out of n_comp
+                 #      Default is None, meaning k_comp=n_comp-1
+                 # owf: Number of levels per wind turbine
+                 #      {"lev": int}
+                 #      Default is 3
                  discount_reward: float = 1.,
                  # float [0,1] importance of
                  # short-time reward vs long-time reward
-                 k_comp: int = None,
-                 # Number of structure required (k_comp out of n_comp)
+
                  state_obs: bool = True,
                  # State contains the concatenation of obs
                  state_d_rate: bool = False,
@@ -35,7 +44,18 @@ class PymarlMAStruct(MultiAgentEnv):
                  # campaign_cost = True=campaign cost taken into account
                  seed=None):
 
-        assert k_comp is None or k_comp <= n_comp, "Error in k_comp"
+        # Check struct type and default values
+        assert struct_type == "owf" or struct_type == "struct", "Error in struct_type"
+        if struct_type == "struct":
+            self.k_comp = custom_param.get("k_comp", None) if (custom_param is not None) else None
+            assert self.k_comp is None or self.k_comp <= n_comp, "Error in k_comp"
+        elif struct_type == "owf":
+            self.lev = custom_param.get("lev", 3) if (custom_param is not None) else 3
+            assert self.lev is not None, "Error in lev"
+            obs_alphas = False
+            env_correlation = False
+            state_alphas = False
+
         assert isinstance(state_obs, bool) \
                and isinstance(state_d_rate, bool) \
                and isinstance(state_alphas, bool) \
@@ -56,7 +76,7 @@ class PymarlMAStruct(MultiAgentEnv):
                 "Error in env parameter state_alphas"
 
         self.n_comp = n_comp
-        self.k_comp = k_comp
+        self.custom_param = custom_param
         self.discount_reward = discount_reward
         self.state_obs = state_obs
         self.state_d_rate = state_d_rate
@@ -69,13 +89,22 @@ class PymarlMAStruct(MultiAgentEnv):
         self.campaign_cost = campaign_cost
         self._seed = seed
 
-        self.config = {"n_comp": n_comp,
-                       "discount_reward": discount_reward,
-                       "k_comp": k_comp,
-                       "env_correlation": env_correlation,
-                       "campaign_cost": campaign_cost}
-        self.struct_env = Struct(self.config)
-        self.n_agents = self.struct_env.n_comp
+        if struct_type == "struct":
+            self.config = {"n_comp": n_comp,
+                           "discount_reward": discount_reward,
+                           "k_comp": self.k_comp,
+                           "env_correlation": env_correlation,
+                           "campaign_cost": campaign_cost}
+            self.struct_env = Struct(self.config)
+            self.n_agents = self.struct_env.n_comp
+        elif struct_type == "owf":
+            self.config = {"n_owt": n_comp,
+                           "lev": self.lev,
+                           "discount_reward": discount_reward,
+                           "campaign_cost": campaign_cost}
+
+            self.struct_env = Struct_owf(self.config)
+            self.n_agents = self.struct_env.n_agents
 
         self.episode_limit = self.struct_env.ep_length
         self.agent_list = self.struct_env.agent_list

@@ -1,16 +1,19 @@
-env: owf
+env: struct_marl
 
 env_args:
-  n_owt : 2
-  lev : 3 # Fixed in this setting
-  discount_reward : 0.95
-  k_comp : # None
-  state_obs : True
-  state_d_rate : False
-  obs_d_rate : True
-  obs_multiple : False
-  obs_all_d_rate : False
-  campaign_cost : False
+  struct_type: "owf"
+  n_comp: 2
+  discount_reward: 0.95
+  custom_param: {}
+  state_obs: True
+  state_d_rate: False
+  state_alphas: False
+  obs_d_rate: False
+  obs_multiple: False
+  obs_all_d_rate: False
+  obs_alphas: False
+  env_correlation: False
+  campaign_cost: False
 
 learner_log_interval: 10000
 log_interval: 10000

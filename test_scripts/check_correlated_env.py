@@ -5,7 +5,7 @@ if __name__ == '__main__':
     os.chdir(os.path.dirname(os.getcwd()))
     env_1 = PymarlMAStruct(n_comp=2,
                            discount_reward=0.95,
-                           k_comp=None,
+                           custom_param=None,
                            state_obs=True,
                            state_d_rate=True,
                            state_alphas=True,

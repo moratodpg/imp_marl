@@ -55,6 +55,7 @@ class Struct_owf:
 
         self.d_rate = np.zeros((self.n_owt, self.lev, 1), dtype=int)
         self.observations = None
+        self.alphas = None # Never used
 
         # Reset struct_env.
         self.reset()
