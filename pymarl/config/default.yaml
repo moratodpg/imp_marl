@@ -4,7 +4,6 @@
 runner: "episode" # Runs 1 env for an episode
 mac: "basic_mac" # Basic controller
 env: "struct" # Environment name
-env_args: {} # Arguments for the environment
 batch_size_run: 1 # Number of environments to run in parallel
 test_nepisode: 20 # Number of episodes to test for
 test_interval: 2000 # Test after {} timesteps have passed
@@ -45,3 +44,9 @@ obs_last_action: True # Include the agent's last action (one_hot) in the observa
 # --- Experiment running params ---
 repeat_id: 1
 label: "default_label"
+
+# --- Env default values ---
+env_args:
+  custom_param:
+    k_comp: #None (will not raise error)
+    lev: #None (will raise an error)

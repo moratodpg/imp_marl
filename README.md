@@ -21,5 +21,5 @@ and
 ## Run an experiment 
 
 ```shell
-python3 main.py --config=qmix --env-config=struct with env_args.n_comp=10 env_args.custom_param=9
+python3 main.py --config=qmix --env-config=struct with env_args.n_comp=10 env_args.custom_param.k_comp=9
 ```

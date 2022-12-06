@@ -1,9 +1,10 @@
 #!/bin/bash
+# Caution: This script is for old UC/C version
 algo=$1
 id=$2
 n_comp=10
 discount_reward=100 # irrelevant for now
-custom_param=100 # irrelevant for now
+custom_param=9 # irrelevant for now
 state_obs=True
 state_d_rate=False
 state_alphas=False

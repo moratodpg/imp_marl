@@ -10,6 +10,7 @@ if __name__ == '__main__':
     print("test new pymarl ")
     env = PymarlMAStruct(struct_type="owf",
                          n_comp=2,
+                         custom_param={"lev": 3},
                          discount_reward=.95,
                          state_obs=True,
                          state_d_rate=False,

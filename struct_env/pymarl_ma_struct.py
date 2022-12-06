@@ -51,6 +51,7 @@ class PymarlMAStruct(MultiAgentEnv):
             assert self.k_comp is None or self.k_comp <= n_comp, "Error in k_comp"
         elif struct_type == "owf":
             self.lev = custom_param.get("lev", 3) if (custom_param is not None) else 3
+            assert self.lev is not None, "Error in lev"
             obs_alphas = False
             env_correlation = False
             state_alphas = False

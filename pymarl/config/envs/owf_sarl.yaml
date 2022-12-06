@@ -4,7 +4,7 @@ env_args:
   struct_type: "owf"
   n_comp: 2
   discount_reward: 0.95
-  custom_param: # None
+  custom_param: {}
   state_obs: True
   state_d_rate: False
   state_alphas: False
