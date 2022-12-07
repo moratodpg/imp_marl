@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 from struct_env.MultiAgentEnv import MultiAgentEnv
 from struct_env.owf_env import Struct_owf
@@ -113,14 +114,20 @@ class PymarlMAStruct(MultiAgentEnv):
         self.action_histogram = {"action_" + str(k): 0 for k in
                                  range(self.n_actions)}
 
+    def update_action_histogram(self, actions):
+        for k, action in zip(self.struct_env.agent_list, actions):
+            if type(action) is torch.Tensor:
+                action_str = str(action.numpy())
+            else:
+                action_str = str(action)
+            self.action_histogram["action_" + action_str] += 1
+
     def step(self, actions):
         """ Returns reward, terminated, info """
         # actions = list
-        action_dict = {}
-        for k, action in zip(self.struct_env.agent_list, actions):
-            action_dict[k] = action
-            action_str = str(action.numpy())
-            self.action_histogram["action_" + action_str] += 1
+        self.update_action_histogram(actions)
+        action_dict = {k:action
+                       for k, action in zip(self.struct_env.agent_list, actions)}
         _, rewards, done, _ = self.struct_env.step(action_dict)
         info = {}
         if done:

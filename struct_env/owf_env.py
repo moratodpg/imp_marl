@@ -109,7 +109,7 @@ class Struct_owf:
         done = self.time_step >= self.ep_length
 
         # info = {"belief": self.beliefs}
-        return self.observations, rewards, done
+        return self.observations, rewards, done, None
 
     def pf_sys(self, pf): # immediate reward (-cost), based on current damage state and action#
     #  	n = pf.size

@@ -1,16 +1,12 @@
 import numpy as np
 from struct_env.pymarl_ma_struct import PymarlMAStruct
-from struct_env.pymarl_sa_struct import PymarlSAStruct
 import os
+import torch as th
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.getcwd()))
-
     n_episode = 100
-
-    print("test new pymarl ")
     env = PymarlMAStruct(struct_type="owf",
                          n_comp=2,
-                         custom_param={"lev": 3},
                          discount_reward=.95,
                          state_obs=True,
                          state_d_rate=False,
@@ -23,8 +19,6 @@ if __name__ == '__main__':
                          campaign_cost=False)
 
     env_info = env.get_env_info()
-    print(env_info)
-
     n_actions = env_info["n_actions"]
     n_agents = env_info["n_agents"]
     array_reward = []
@@ -45,6 +39,7 @@ if __name__ == '__main__':
                 action = np.random.choice(avail_actions_ind)
                 actions.append(action)
             # print("actions", actions)
+            actions = th.from_numpy(np.array(actions))
             reward, terminated, info = env.step(actions)
             episode_reward += reward
         array_reward.append(episode_reward)

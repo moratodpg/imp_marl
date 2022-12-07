@@ -7,7 +7,8 @@ if __name__ == '__main__':
 
     n_episode = 100
 
-    env = PymarlSAStruct(n_comp=2,
+    env = PymarlSAStruct(struct_type="struct",
+                         n_comp=2,
                          discount_reward=.95,
                          state_obs=True,
                          state_d_rate=False,
@@ -39,8 +40,6 @@ if __name__ == '__main__':
             avail_actions_ind = np.nonzero(avail_actions)[0]
             action = np.random.choice(avail_actions_ind)
             actions.append(action)
-            # print("actions", actions)
-            actions = th.from_numpy(np.array(actions))
             reward, terminated, info = env.step(actions)
             episode_reward += reward
         array_reward.append(episode_reward)

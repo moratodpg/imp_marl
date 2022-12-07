@@ -1,13 +1,12 @@
 import numpy as np
-from struct_env.pymarl_sa_struct import PymarlSAStruct
+from struct_env.pymarl_ma_struct import PymarlMAStruct
 import os
 import torch as th
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.getcwd()))
 
     n_episode = 100
-
-    env = PymarlSAStruct(struct_type="owf",
+    env = PymarlMAStruct(struct_type="struct",
                          n_comp=2,
                          discount_reward=.95,
                          state_obs=True,
@@ -36,16 +35,17 @@ if __name__ == '__main__':
             state = env.get_state()
 
             actions = []
-            avail_actions = env.get_avail_agent_actions(0)
-            avail_actions_ind = np.nonzero(avail_actions)[0]
-            action = np.random.choice(avail_actions_ind)
-            actions.append(action)
+            for k in range(env.n_agents):
+                avail_actions = env.get_avail_agent_actions(k)
+                avail_actions_ind = np.nonzero(avail_actions)[0]
+                action = np.random.choice(avail_actions_ind)
+                actions.append(action)
             # print("actions", actions)
             actions = th.from_numpy(np.array(actions))
             reward, terminated, info = env.step(actions)
             episode_reward += reward
         array_reward.append(episode_reward)
-    print(n_episode, " mean std min max:", np.mean(array_reward), np.std(array_reward),
+    print(n_episode, " mean std ", np.mean(array_reward), np.std(array_reward),
           np.min(array_reward), np.max(array_reward))
 
     env.close()

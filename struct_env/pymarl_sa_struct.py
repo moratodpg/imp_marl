@@ -13,8 +13,6 @@ class PymarlSAStruct(PymarlMAStruct):
         kwargs["obs_alphas"] = False  # obs are not considered in SARL
         super().__init__(*args, **kwargs)
 
-        self.n_agents = 1
-
         n_actions = self.struct_env.actions_per_agent
         self.convert_action_dict = {}
         list_actions = \
@@ -24,6 +22,7 @@ class PymarlSAStruct(PymarlMAStruct):
         self.n_actions = self.struct_env.actions_per_agent = len(list_actions)
         self.action_histogram = {"action_" + str(k): 0 for k in
                                  range(self.n_actions)}
+        self.n_agents = 1
 
     def convert_obs_multi(self, obs_multi):
         time = obs_multi[self.struct_env.agent_list[0]][-1]
@@ -35,9 +34,7 @@ class PymarlSAStruct(PymarlMAStruct):
     def step(self, actions):
         """Returns reward, terminated, info."""
         # actions = a single action
-        for action in actions:
-            action_str = str(action.numpy())
-            self.action_histogram["action_" + action_str] += 1
+        self.update_action_histogram(actions)
         converted_action = self.convert_action_dict[int(actions[0])]
         action_dict = {k: action for k, action in
                        zip(self.struct_env.agent_list, converted_action)}
