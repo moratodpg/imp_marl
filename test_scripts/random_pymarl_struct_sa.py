@@ -1,7 +1,7 @@
 import numpy as np
 from struct_env.pymarl_sa_struct import PymarlSAStruct
 import os
-import torch as th
+
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.getcwd()))
 

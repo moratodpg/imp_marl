@@ -1,7 +1,6 @@
 import numpy as np
 from struct_env.pymarl_ma_struct import PymarlMAStruct
 import os
-import torch as th
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.getcwd()))
 
@@ -40,8 +39,6 @@ if __name__ == '__main__':
                 avail_actions_ind = np.nonzero(avail_actions)[0]
                 action = np.random.choice(avail_actions_ind)
                 actions.append(action)
-            # print("actions", actions)
-            actions = th.from_numpy(np.array(actions))
             reward, terminated, info = env.step(actions)
             episode_reward += reward
         array_reward.append(episode_reward)
