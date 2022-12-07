@@ -1,13 +1,14 @@
 import numpy as np
 from struct_env.pymarl_ma_struct import PymarlMAStruct
 from struct_env.pymarl_sa_struct import PymarlSAStruct
+import os
 
 if __name__ == '__main__':
+    os.chdir(os.path.dirname(os.getcwd()))
 
     n_episode = 10
-
-    print("test new pymarl ")
-    env_1 = PymarlMAStruct(n_comp=2,
+    env_1 = PymarlMAStruct(struct_type="struct",
+                           n_comp=2,
                            discount_reward=.95,
                            state_obs=True,
                            state_d_rate=True,
@@ -18,14 +19,15 @@ if __name__ == '__main__':
                            obs_alphas=False,
                            env_correlation=True,
                            campaign_cost=True)
-    env_2 = PymarlSAStruct(n_comp=2,
+    env_2 = PymarlSAStruct(struct_type="struct",
+                           n_comp=2,
                            discount_reward=.95,
                            state_obs=True,
                            state_d_rate=True,
                            state_alphas=True,
-                           obs_drate=False,
+                           obs_d_rate=False,
                            obs_multiple=False,
-                           obs_all_drate=False,
+                           obs_all_d_rate=False,
                            obs_alphas=False,
                            env_correlation=True,
                            campaign_cost=True)
@@ -60,9 +62,7 @@ if __name__ == '__main__':
                 avail_actions_ind = np.nonzero(avail_actions)[0]
                 action = np.random.choice(avail_actions_ind)
                 actions.append(action)
-            # print("actions", actions)
             reward1, terminated1, info1 = env_1.step(actions)
-
             for k, v in env_2.convert_action_dict.items():
                 if np.all(v == actions):
                     actions_sarl = [k]

@@ -40,12 +40,10 @@ if __name__ == '__main__':
             avail_actions_ind = np.nonzero(avail_actions)[0]
             action = np.random.choice(avail_actions_ind)
             actions.append(action)
-            # print("actions", actions)
-            actions = th.from_numpy(np.array(actions))
             reward, terminated, info = env.step(actions)
             episode_reward += reward
         array_reward.append(episode_reward)
-    print(n_episode, " mean std min max:", np.mean(array_reward), np.std(array_reward),
+    print(n_episode, " mean std ", np.mean(array_reward), np.std(array_reward),
           np.min(array_reward), np.max(array_reward))
 
     env.close()

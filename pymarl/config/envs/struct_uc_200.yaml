@@ -1,13 +1,13 @@
-env: struct_sarl
+env: struct_marl
 
 env_args:
-  struct_type: "owf"
-  n_comp: 2
+  struct_type: "struct"
+  n_comp: 200
   discount_reward: 0.95
   custom_param:
-    lev: 3
+    k_comp:  190
   state_obs: True
-  state_d_rate: False
+  state_d_rate: True
   state_alphas: False
   obs_d_rate: False
   obs_multiple: False
@@ -16,10 +16,10 @@ env_args:
   env_correlation: False
   campaign_cost: False
 
-learner_log_interval: 10000
-log_interval: 10000
-runner_log_interval: 10000
-test_interval: 10000
-test_nepisode: 30
+learner_log_interval: 25000
+log_interval: 25000
+runner_log_interval: 25000
+test_interval: 25000
+test_nepisode: 100
 test_greedy: True
-t_max: 1000000
+t_max: 2050000

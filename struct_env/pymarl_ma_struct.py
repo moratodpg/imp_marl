@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 from struct_env.MultiAgentEnv import MultiAgentEnv
 from struct_env.owf_env import Struct_owf
@@ -110,13 +111,30 @@ class PymarlMAStruct(MultiAgentEnv):
         self.agent_list = self.struct_env.agent_list
         self.n_actions = self.struct_env.actions_per_agent
 
+        self.action_histogram = {"action_" + str(k): 0 for k in
+                                 range(self.n_actions)}
+
+    def update_action_histogram(self, actions):
+        for k, action in zip(self.struct_env.agent_list, actions):
+            if type(action) is torch.Tensor:
+                action_str = str(action.numpy())
+            else:
+                action_str = str(action)
+            self.action_histogram["action_" + action_str] += 1
+
     def step(self, actions):
         """ Returns reward, terminated, info """
         # actions = list
-        action_dict = {k: action for k, action in
-                       zip(self.struct_env.agent_list, actions)}
-        _, rewards, done = self.struct_env.step(action_dict)
-        return rewards[self.struct_env.agent_list[0]], done, {}
+        self.update_action_histogram(actions)
+        action_dict = {k:action
+                       for k, action in zip(self.struct_env.agent_list, actions)}
+        _, rewards, done, _ = self.struct_env.step(action_dict)
+        info = {}
+        if done:
+            for k in self.action_histogram:
+                self.action_histogram[k] /= self.episode_limit * self.n_agents
+            info = self.action_histogram
+        return rewards[self.struct_env.agent_list[0]], done, info
 
     def get_obs(self):
         """ Returns all agent observations in a list """
@@ -162,8 +180,7 @@ class PymarlMAStruct(MultiAgentEnv):
                 obs = v
                 idx = 1
             else:
-                obs = np.append(obs, v[:-1])
-                # remove the time from the list if not the first element
+                obs = np.append(obs, v)
         return obs
 
     def get_state(self):
@@ -197,6 +214,7 @@ class PymarlMAStruct(MultiAgentEnv):
 
     def reset(self):
         """ Returns initial observations and states"""
+        self.action_histogram = {"action_"+str(k): 0 for k in range(self.n_actions)}
         self.struct_env.reset()
         return self.get_obs(), self.get_state()
 

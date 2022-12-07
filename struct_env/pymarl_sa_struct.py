@@ -13,19 +13,20 @@ class PymarlSAStruct(PymarlMAStruct):
         kwargs["obs_alphas"] = False  # obs are not considered in SARL
         super().__init__(*args, **kwargs)
 
-
         n_actions = self.struct_env.actions_per_agent
         self.convert_action_dict = {}
         list_actions = \
             list(itertools.product(range(n_actions), repeat=self.n_agents))
         for idx, i in enumerate(list_actions):
             self.convert_action_dict[idx] = np.array(i)
-
         self.n_actions = self.struct_env.actions_per_agent = len(list_actions)
+        self.action_histogram = {"action_" + str(k): 0 for k in
+                                 range(self.n_actions)}
         self.n_agents = 1
+
     def convert_obs_multi(self, obs_multi):
         time = obs_multi[self.struct_env.agent_list[0]][-1]
-        list_obs = [v[:-1] for k, v in obs_multi.items()]
+        list_obs = [v for k, v in obs_multi.items()]
         observation = np.concatenate(list_obs)
         observation = np.append(observation, time)
         return observation
@@ -33,11 +34,17 @@ class PymarlSAStruct(PymarlMAStruct):
     def step(self, actions):
         """Returns reward, terminated, info."""
         # actions = a single action
+        self.update_action_histogram(actions)
         converted_action = self.convert_action_dict[int(actions[0])]
         action_dict = {k: action for k, action in
                        zip(self.struct_env.agent_list, converted_action)}
-        _, rewards, done = self.struct_env.step(action_dict)
-        return rewards[self.struct_env.agent_list[0]], done, {}
+        _, rewards, done, _ = self.struct_env.step(action_dict)
+        info = {}
+        if done:
+            for k in self.action_histogram:
+                self.action_histogram[k] /= self.episode_limit * self.n_agents
+            info = self.action_histogram
+        return rewards[self.struct_env.agent_list[0]], done, info
 
     def get_obs(self):
         """ Returns all agent observations in a list """

@@ -12,4 +12,4 @@
 #SBATCH --array=1-2
 
 # Run your Python script
-./run_helper.sh $1 $SLURM_ARRAY_TASK_ID
+./run.sh $1 $2 $SLURM_ARRAY_TASK_ID
