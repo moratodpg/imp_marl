@@ -44,7 +44,7 @@ class GymSaStruct(gym.Env):
         #  from Struct step method to avoid this conversion
         for idx, i in enumerate(self.struct_env.agent_list):
             action_multi[i] = action_multi_list[idx]
-        obs_multi, rewards, done = self.struct_env.step(action_multi)
+        obs_multi, rewards, done, _ = self.struct_env.step(action_multi)
         observation = self.convert_obs_multi(obs_multi)
         reward = rewards[self.struct_env.agent_list[0]]
         info = {"belief": self.struct_env.agent_belief}

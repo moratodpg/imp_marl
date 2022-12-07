@@ -150,7 +150,7 @@ class Struct:
         done = self.time_step >= self.ep_length
 
         # info = {"belief": self.beliefs}
-        return self.observations, rewards, done
+        return self.observations, rewards, done, observation_
 
     def pf_sys(self, pf, k):
         """compute pf_sys for k-out-of-n components"""

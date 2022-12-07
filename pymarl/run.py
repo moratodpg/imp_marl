@@ -46,7 +46,7 @@ def run(_run, _config, _log):
     # Run and train
     run_sequential(args=args, logger=logger)
 
-    time.sleep(30) # To let sacred fileobserver write everything
+    time.sleep(300) # To let sacred fileobserver write everything
 
     # Clean up after finishing
     print("Exiting Main")
@@ -93,6 +93,7 @@ def run_sequential(args, logger):
         "reward": {"vshape": (1,)},
         "terminated": {"vshape": (1,), "dtype": th.uint8},
     }
+    print(scheme)
 
     if args.mac == "is_mac":
         scheme["behavior"] = {"vshape": (env_info["n_actions"],),
