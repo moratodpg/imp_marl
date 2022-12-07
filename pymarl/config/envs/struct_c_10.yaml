@@ -1,4 +1,4 @@
-env: struct_sarl
+env: struct_marl
 
 env_args:
   struct_type: "struct"
