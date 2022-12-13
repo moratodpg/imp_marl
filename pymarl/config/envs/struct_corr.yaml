@@ -1,9 +1,10 @@
-env: struct
+env: struct_marl
 
 env_args:
+  struct_type: "struct"
   n_comp: 2
   discount_reward: 0.95
-  k_comp: # None
+  custom_param: {}
   state_obs: False
   state_d_rate: False
   state_alphas: False
