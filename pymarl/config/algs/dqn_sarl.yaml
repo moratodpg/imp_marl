@@ -18,8 +18,8 @@ mixer: # Mixer becomes None
 
 agent: "rnn_sarl"
 agent_fc1: []
-agent_fc2: []
-rnn_hidden_dim: 128
+agent_fc2: [64]
+rnn_hidden_dim: 64
 
 obs_agent_id: False
 
