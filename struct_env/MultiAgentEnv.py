@@ -58,5 +58,6 @@ class MultiAgentEnv(object):
                     "obs_shape": self.get_obs_size(),
                     "n_actions": self.get_total_actions(),
                     "n_agents": self.n_agents,
-                    "episode_limit": self.episode_limit}
+                    "episode_limit": self.episode_limit,
+                    "unit_dim": self.unit_dim} # for qplex - unit dimension in the state
         return env_info

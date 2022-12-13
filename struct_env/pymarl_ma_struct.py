@@ -114,6 +114,8 @@ class PymarlMAStruct(MultiAgentEnv):
         self.action_histogram = {"action_" + str(k): 0 for k in
                                  range(self.n_actions)}
 
+        self.unit_dim = self.get_obs_size()
+
     def update_action_histogram(self, actions):
         for k, action in zip(self.struct_env.agent_list, actions):
             if type(action) is torch.Tensor:
@@ -229,14 +231,6 @@ class PymarlMAStruct(MultiAgentEnv):
 
     def save_replay(self):
         pass
-
-    def get_env_info(self):
-        env_info = {"state_shape": self.get_state_size(),
-                    "obs_shape": self.get_obs_size(),
-                    "n_actions": self.get_total_actions(),
-                    "n_agents": self.n_agents,
-                    "episode_limit": self.episode_limit}
-        return env_info
 
     def get_stats(self):
         return {}
