@@ -38,3 +38,6 @@ nonlinear: False  # non-linearity, for MMM2, it is True
 burn_in_period: 100
 
 name: "qplex"
+
+use_cuda: False
+use_tensorboard: True
