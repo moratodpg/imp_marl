@@ -1,0 +1,25 @@
+env: struct_sarl
+
+env_args:
+  struct_type: "struct"
+  n_comp: 2
+  discount_reward: 0.95
+  custom_param:
+    k_comp:
+  state_obs: True
+  state_d_rate: True
+  state_alphas: False
+  obs_d_rate: False
+  obs_multiple: False
+  obs_all_d_rate: False
+  obs_alphas: False
+  env_correlation: False
+  campaign_cost: False
+
+learner_log_interval: 25000
+log_interval: 25000
+runner_log_interval: 25000
+test_interval: 25000
+test_nepisode: 100
+test_greedy: True
+t_max: 2050000

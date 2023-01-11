@@ -46,6 +46,9 @@ class EpisodeRunner:
         self.env.reset()
         self.t = 0
 
+    def cuda(self):
+        pass
+
     def run(self, test_mode=False):
         self.reset()
 

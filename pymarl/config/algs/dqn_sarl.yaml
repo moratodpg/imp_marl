@@ -3,12 +3,12 @@
 action_selector: "epsilon_greedy"
 epsilon_start: 1.0
 epsilon_finish: 0.05
-epsilon_anneal_time: 5000
+epsilon_anneal_time: 50000
 
 runner: "episode"
 
 batch_size: 64
-buffer_size: 2000
+buffer_size: 1000
 target_update_interval: 200
 
 agent_output_type: "q"
@@ -17,9 +17,9 @@ double_q: True
 mixer: # Mixer becomes None
 
 agent: "rnn_sarl"
-agent_fc1: []
-agent_fc2: []
-rnn_hidden_dim: 128
+agent_fc1: [128, 256]
+agent_fc2: [256, 256]
+rnn_hidden_dim: 528
 
 obs_agent_id: False
 
