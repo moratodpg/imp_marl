@@ -18,9 +18,9 @@ agent_output_type: "q"
 learner: "dmaq_qatten_learner"
 double_q: True
 mixer: "dmaq_qatten"
-mixing_embed_dim: 32
+mixing_embed_dim: 64
 hypernet_embed: 64
-adv_hypernet_layers: 1
+adv_hypernet_layers: 2 # num layer in the paper (aL)
 adv_hypernet_embed: 64
 
 num_kernel: 4
@@ -28,7 +28,7 @@ is_minus_one: True
 is_adv_attention: True
 is_stop_gradient: True
 
-n_head: 4  # attention head number
+n_head: 10  # attention head number num of head in the paper (bH)
 attend_reg_coef: 0.001  # attention regulation coefficient  # For MMM2 and 3s5z_vs_3s6z, it is 0.001
 state_bias: True  # the constant value c(s) in the paper
 mask_dead: False
