@@ -3,8 +3,8 @@ from pymarl.components.episode_buffer import EpisodeBatch
 from pymarl.modules.critics.facmac import FACMACDiscreteCritic
 import torch as th
 from torch.optim import RMSprop, Adam
-from pymarl.modules.mixers.vdn import VDNMixer
-from pymarl.modules.mixers.qmix import QMixer
+from pymarl.modules.mixers.vdn_facmac import VDNMixer
+from pymarl.modules.mixers.qmix_facmac import QMixer
 from pymarl.modules.mixers.qmix_ablations import VDNState, QMixerNonmonotonic
 from pymarl.utils.rl_utils import build_td_lambda_targets
 
@@ -25,9 +25,9 @@ class FACMACDiscreteLearner:
         self.critic_params = list(self.critic.parameters())
         self.mixer = None
         if args.mixer is not None and self.args.n_agents > 1:  # if just 1 agent do not mix anything
-            if args.mixer == "vdn":
+            if args.mixer == "vdn_facmac":
                 self.mixer = VDNMixer()
-            elif args.mixer == "qmix":
+            elif args.mixer == "qmix_facmac":
                 self.mixer = QMixer(args)
             elif args.mixer == "vdn-s":
                 self.mixer = VDNState(args)
