@@ -3,7 +3,7 @@
 action_selector: "epsilon_greedy"
 epsilon_start: 1.0
 epsilon_finish: 0.05
-epsilon_anneal_time: 50000
+epsilon_anneal_time: 5000
 
 runner: "episode"
 
@@ -17,9 +17,9 @@ double_q: True
 mixer: # Mixer becomes None
 
 agent: "rnn_sarl"
-agent_fc1: []
-agent_fc2: [128]
-rnn_hidden_dim: 128
+agent_fc1: [128,256]
+agent_fc2: [256,128]
+rnn_hidden_dim: 256
 
 
 name: "iql"
