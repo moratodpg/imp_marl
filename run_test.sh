@@ -1,10 +1,13 @@
 #!/bin/bash
 source env/bin/activate
-alg=$1
-env=$2
-path="mypath"
-ntest= 300
-name=test_${alg}_${env}_aze123
+
+exp_dir="path"
+exp_name=$1
+alg=$(echo $exp_name | cut -d'_' -f1-3)
+env=$(echo $exp_name | cut -d'_' -f4-6)
+path=${exp_dir}${exp_name}
+ntest=$2
+name=test_${exp_name}
 python main_run_test.py --config=${alg} --env-config=${env} with test_nepisode=${ntest} checkpoint_path=${path} name=${name}
 deactivate
 
