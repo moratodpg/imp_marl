@@ -114,7 +114,7 @@ class PymarlMAStruct(MultiAgentEnv):
         self.action_histogram = {"action_" + str(k): 0 for k in
                                  range(self.n_actions)}
 
-        self.unit_dim = self.get_unit_dim()
+        self.unit_dim = self.get_unit_dim() # Qplex requirement
 
     def update_action_histogram(self, actions):
         for k, action in zip(self.struct_env.agent_list, actions):
