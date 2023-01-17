@@ -35,8 +35,7 @@ ex = Experiment("pymarl")
 ex.logger = logger
 ex.captured_out_filter = apply_backspaces_and_linefeeds
 
-results_path = os.path.join(dirname(dirname(abspath(__file__))), "results_test")
-
+results_path = os.path.join(dirname(abspath(__file__)), "results_test")
 
 @ex.main
 def my_main(_run, _config, _log, env_args):
@@ -70,8 +69,7 @@ def run_test(_run, _config, _log):
     # configure tensorboard logger
     unique_token = args.unique_token
     if args.use_tensorboard:
-        tb_logs_direc = os.path.join(dirname(dirname(abspath(__file__))),
-                                     "results_test", "tb_logs")
+        tb_logs_direc = os.path.join(results_path, "tb_logs")
         tb_exp_direc = os.path.join(tb_logs_direc, "{}").format(unique_token)
         logger.setup_tb(tb_exp_direc)
 
@@ -193,9 +191,9 @@ def run_sequential_test(args, logger):
                     print("RESET")
                     episode_batch = runner.run(test_mode=True)
                     new_big_buffer.insert_episode_batch(episode_batch)
-            runner.save_replay()
+            # runner.save_replay()
             episode_sample = new_big_buffer.sample((n_test_runs) * runner.batch_size)
-            learner.stats(episode_sample, timestep_to_load)
+            # learner.stats(episode_sample, timestep_to_load)
 
         runner.close_env()
         logger.console_logger.info("Finished testing")
