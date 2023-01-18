@@ -6,7 +6,7 @@ class RNNAgentSARL(nn.Module):
     def __init__(self, input_shape, args):
         super(RNNAgentSARL, self).__init__()
         self.args = args
-        print()
+
         fc1_list = args.agent_fc1
 
         fc1_list.append(args.rnn_hidden_dim)

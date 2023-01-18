@@ -23,7 +23,7 @@ rnn_hidden_dim: 64
 
 obs_agent_id: False
 
-name: "dqn_sarl"
+name: "dqn"
 
 use_cuda: False
 use_tensorboard: True
