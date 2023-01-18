@@ -114,7 +114,7 @@ class PymarlMAStruct(MultiAgentEnv):
         self.action_histogram = {"action_" + str(k): 0 for k in
                                  range(self.n_actions)}
 
-        self.unit_dim = self.get_obs_size()
+        self.unit_dim = self.get_unit_dim() # Qplex requirement
 
     def update_action_histogram(self, actions):
         for k, action in zip(self.struct_env.agent_list, actions):
@@ -142,6 +142,9 @@ class PymarlMAStruct(MultiAgentEnv):
         """ Returns all agent observations in a list """
         return [self.get_obs_agent(i) for i in
                 range(self.n_agents)]
+
+    def get_unit_dim(self):
+        return len(self.all_obs_from_struct_env())//self.n_agents
 
     def get_obs_agent(self, agent_id):
         """
