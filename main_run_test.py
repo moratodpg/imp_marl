@@ -108,7 +108,7 @@ def run_sequential_test(args, logger):
 
     args.n_actions = env_info["n_actions"]
     args.state_shape = env_info["state_shape"]
-
+    args.unit_dim = env_info["unit_dim"]
     # Default/Base scheme
     scheme = {
         "state": {"vshape": env_info["state_shape"]},
