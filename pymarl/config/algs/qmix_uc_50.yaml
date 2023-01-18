@@ -18,7 +18,6 @@ mixer: "qmix"
 mixing_embed_dim: 64
 
 
-
 name: "qmix"
 
 use_cuda: False
