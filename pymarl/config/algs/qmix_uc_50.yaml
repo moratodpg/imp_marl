@@ -17,11 +17,6 @@ double_q: True
 mixer: "qmix"
 mixing_embed_dim: 64
 
-agent: "rnn_sarl"
-agent_fc1: []
-agent_fc2: [64]
-rnn_hidden_dim: 128
-
 
 
 name: "qmix"
