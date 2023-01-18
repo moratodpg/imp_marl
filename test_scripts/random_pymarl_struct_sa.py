@@ -21,7 +21,6 @@ if __name__ == '__main__':
                          campaign_cost=False)
 
     env_info = env.get_env_info()
-    print(env_info)
     n_actions = env_info["n_actions"]
     n_agents = env_info["n_agents"]
     array_reward = []
