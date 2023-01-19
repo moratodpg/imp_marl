@@ -24,7 +24,7 @@ ex.captured_out_filter = apply_backspaces_and_linefeeds
 
 results_path = os.path.join(dirname(abspath(__file__)), "results")
 
-th.set_num_threads(4)
+th.set_num_threads(8)
 
 @ex.main
 def my_main(_run, _config, _log):
