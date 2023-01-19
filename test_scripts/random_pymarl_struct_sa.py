@@ -8,7 +8,7 @@ if __name__ == '__main__':
     n_episode = 100
 
     env = PymarlSAStruct(struct_type="struct",
-                         n_comp=5,
+                         n_comp=2,
                          discount_reward=.95,
                          state_obs=True,
                          state_d_rate=False,
@@ -21,7 +21,7 @@ if __name__ == '__main__':
                          campaign_cost=False)
 
     env_info = env.get_env_info()
-    print(env_info)
+    
     n_actions = env_info["n_actions"]
     n_agents = env_info["n_agents"]
     array_reward = []

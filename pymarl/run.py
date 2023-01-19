@@ -185,8 +185,13 @@ def run_sequential(args, logger):
 
             if episode_sample.device != args.device:
                 episode_sample.to(args.device)
-
-            learner.train(episode_sample, runner.t_env, episode)
+            if args.learner == "coma_learner":
+                # Online training, therefore buffer.sample()
+                # gives always the last batch_size_run played episodes
+                for i in range(args.batch_size_run):
+                    learner.train(episode_sample, runner.t_env, episode)
+            else:
+                learner.train(episode_sample, runner.t_env, episode)
 
         # Execute test runs once in a while
         n_test_runs = max(1, args.test_nepisode // runner.batch_size)
