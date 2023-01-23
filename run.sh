@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 set -x
 source env/bin/activate
 alg=$1
