@@ -7,9 +7,9 @@ epsilon_anneal_time: 50000
 mask_before_softmax: False
 
 runner: "parallel"
-batch_size_run: 8
-buffer_size: 8
-batch_size: 8
+batch_size_run: 4
+buffer_size: 4
+batch_size: 4
 
 # update the target network every {} training steps
 target_update_interval: 200
@@ -25,7 +25,7 @@ critic_q_fn: "coma"
 critic_baseline_fn: "coma"
 critic_train_mode: "seq"
 critic_train_reps: 1
-critic_intermediate_size: [512, 256, 128, 128]
+critic_intermediate_size: [2048, 1024, 512, 256, 128]
 
 q_nstep: 0  # 0 corresponds to default Q, 1is r + gamma*Q, etc
 
