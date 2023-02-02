@@ -2,7 +2,7 @@ env: struct_sarl
 
 env_args:
   struct_type: "struct"
-  n_comp: 3
+  n_comp: 5
   discount_reward: 0.95
   custom_param:
     k_comp:
