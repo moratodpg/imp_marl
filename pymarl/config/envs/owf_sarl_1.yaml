@@ -1,19 +1,19 @@
 env: struct_sarl
 
 env_args:
-  struct_type: "struct"
-  n_comp: 5
+  struct_type: "owf"
+  n_comp: 1
   discount_reward: 0.95
   custom_param:
-    k_comp:
+    lev: 3
   state_obs: True
-  state_d_rate: True
-  state_alphas: True
+  state_d_rate: False
+  state_alphas: False
   obs_d_rate: False
   obs_multiple: False
   obs_all_d_rate: False
   obs_alphas: False
-  env_correlation: True
+  env_correlation: False
   campaign_cost: False
 
 learner_log_interval: 25000
