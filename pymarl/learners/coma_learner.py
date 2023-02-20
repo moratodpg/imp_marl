@@ -93,7 +93,7 @@ class COMALearner:
 
             self.logger.log_stat("advantage_mean", (advantages * mask).sum().item() / mask.sum().item(), t_env)
             self.logger.log_stat("coma_loss", coma_loss.item(), t_env)
-            self.logger.log_stat("agent_grad_norm", grad_norm, t_env)
+            self.logger.log_stat("agent_grad_norm", grad_norm.cpu(), t_env)
             self.logger.log_stat("pi_max", (pi.max(dim=1)[0] * mask).sum().item() / mask.sum().item(), t_env)
             self.log_stats_t = t_env
 
@@ -139,7 +139,7 @@ class COMALearner:
             self.critic_training_steps += 1
 
             running_log["critic_loss"].append(loss.item())
-            running_log["critic_grad_norm"].append(grad_norm)
+            running_log["critic_grad_norm"].append(grad_norm.cpu())
             mask_elems = mask_t.sum().item()
             running_log["td_error_abs"].append((masked_td_error.abs().sum().item() / mask_elems))
             running_log["q_taken_mean"].append((q_taken * mask_t).sum().item() / mask_elems)
