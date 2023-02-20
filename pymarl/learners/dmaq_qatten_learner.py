@@ -97,6 +97,8 @@ class DMAQ_qattenLearner:
             target_next_actions = cur_max_actions.detach()
 
             cur_max_actions_onehot = th.zeros(cur_max_actions.squeeze(3).shape + (self.n_actions,))
+            if self.args.use_cuda:
+                cur_max_actions_onehot=cur_max_actions_onehot.cuda()
             cur_max_actions_onehot = cur_max_actions_onehot.scatter_(3, cur_max_actions, 1)
         else:
             # Calculate the Q-Values necessary for the target
@@ -177,7 +179,7 @@ class DMAQ_qattenLearner:
         if t_env - self.log_stats_t >= self.args.learner_log_interval:
             self.logger.log_stat("loss", loss.item(), t_env)
             self.logger.log_stat("hit_prob", hit_prob.item(), t_env)
-            self.logger.log_stat("grad_norm", grad_norm, t_env)
+            self.logger.log_stat("grad_norm", grad_norm.cpu(), t_env)
             mask_elems = mask.sum().item()
             self.logger.log_stat("td_error_abs", (masked_td_error.abs().sum().item() / mask_elems), t_env)
             self.logger.log_stat("q_taken_mean",

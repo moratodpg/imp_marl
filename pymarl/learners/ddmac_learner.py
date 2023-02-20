@@ -138,7 +138,7 @@ class DDMACLearner:
             self.critic_training_steps += 1
 
             running_log["critic_loss"].append(loss.item())
-            running_log["critic_grad_norm"].append(grad_norm)
+            running_log["critic_grad_norm"].append(grad_norm.cpu())
             mask_elems = mask_t.sum().item()
             running_log["td_error_abs"].append((masked_td_error.abs().sum().item() / mask_elems))
             running_log["v_taken_mean"].append((v_taken * mask_t).sum().item() / mask_elems)
