@@ -119,7 +119,7 @@ class PymarlMAStruct(MultiAgentEnv):
     def update_action_histogram(self, actions):
         for k, action in zip(self.struct_env.agent_list, actions):
             if type(action) is torch.Tensor:
-                action_str = str(action.numpy())
+                action_str = str(action.cpu().numpy())
             else:
                 action_str = str(action)
             self.action_histogram["action_" + action_str] += 1
