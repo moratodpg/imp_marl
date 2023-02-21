@@ -17,7 +17,7 @@ double_q: True
 mixer: # Mixer becomes None
 
 agent: "rnn_sarl"
-agent_fc1: [64,128]
+agent_fc1: [256]
 agent_fc2: [256,256]
 rnn_hidden_dim: 256
 
