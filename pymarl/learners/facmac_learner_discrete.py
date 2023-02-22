@@ -191,7 +191,7 @@ class FACMACDiscreteLearner:
         self.mac.save_models(path)
         if self.mixer is not None:
             th.save(self.mixer.state_dict(), "{}/mixer.th".format(path))
-        th.save(self.agent_optimiser.state_dict(), "{}/opt.th".format(path))
+        #th.save(self.agent_optimiser.state_dict(), "{}/opt.th".format(path))
 
     def load_models(self, path):
         self.mac.load_models(path)
@@ -199,5 +199,11 @@ class FACMACDiscreteLearner:
         self.target_mac.load_models(path)
         if self.mixer is not None:
             self.mixer.load_state_dict(th.load("{}/mixer.th".format(path), map_location=lambda storage, loc: storage))
-        self.agent_optimiser.load_state_dict(
-            th.load("{}/opt.th".format(path), map_location=lambda storage, loc: storage))
+        #self.agent_optimiser.load_state_dict(
+        #    th.load("{}/opt.th".format(path), map_location=lambda storage, loc: storage))
+
+    def n_learnable_param(self):
+        total = self.mac.n_learnable_param()
+        if self.mixer is not None:
+            total += sum(p.numel() for p in self.mixer.parameters() if p.requires_grad)
+        return total
