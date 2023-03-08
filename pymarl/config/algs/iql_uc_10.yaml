@@ -16,12 +16,6 @@ learner: "q_learner"
 double_q: True
 mixer: # Mixer becomes None
 
-agent: "rnn_sarl"
-agent_fc1: []
-agent_fc2: [128]
-rnn_hidden_dim: 128
-
-
 name: "iql"
 
 use_cuda: False
