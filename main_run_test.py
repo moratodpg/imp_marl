@@ -179,20 +179,20 @@ def run_sequential_test(args, logger):
             runner.t_env = timestep_to_load
 
             n_test_runs = max(1, args.test_nepisode // runner.batch_size)
-            new_big_buffer = ReplayBuffer(scheme, groups, n_test_runs * runner.batch_size,
-                          env_info["episode_limit"] + 1,
-                          preprocess=preprocess,
-                          device="cpu" if args.buffer_cpu_only else args.device)
+            # new_big_buffer = ReplayBuffer(scheme, groups, n_test_runs * runner.batch_size,
+            #               env_info["episode_limit"] + 1,
+            #               preprocess=preprocess,
+            #               device="cpu" if args.buffer_cpu_only else args.device)
             for i in range(n_test_runs):
                 # Run for a whole episode at a time
                 episode_batch = runner.run(test_mode=True)
-                new_big_buffer.insert_episode_batch(episode_batch)
+                # new_big_buffer.insert_episode_batch(episode_batch)
                 while episode_batch is None:
                     print("RESET")
                     episode_batch = runner.run(test_mode=True)
-                    new_big_buffer.insert_episode_batch(episode_batch)
+                    # new_big_buffer.insert_episode_batch(episode_batch)
             # runner.save_replay()
-            episode_sample = new_big_buffer.sample((n_test_runs) * runner.batch_size)
+            # episode_sample = new_big_buffer.sample((n_test_runs) * runner.batch_size)
             # learner.stats(episode_sample, timestep_to_load)
 
         runner.close_env()
