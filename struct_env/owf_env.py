@@ -181,7 +181,7 @@ class Struct_owf:
                 # At every timestep, the deterioration rate increases
 
                 ob[i, j] = 2  # ib[o] = 0 if no crack detected 1 if crack detected
-                if a[i+j] == 1:
+                if a[(self.lev-1)*i+j] == 1:
                     Obs0 = np.sum(p1 * self.O[a[(self.lev-1)*i+j], j, :, 0])
                     # self.O = Probability to observe the crack
                     Obs1 = 1 - Obs0
@@ -194,15 +194,16 @@ class Struct_owf:
                                                 replace=True, p=ob_dist)
                     b_prime[i, j, :] = p1 * self.O[a[(self.lev-1)*i+j], j, :, int(ob[i, j])] / (
                         p1.dot(self.O[a[(self.lev-1)*i+j], j, :, int(ob[i,j])]))  # belief update
-                if a[i] == 2:
+                if a[(self.lev-1)*i+j] == 2:
                     # action in b_prime has already
                     # been accounted in the env transition
                     drate_prime[i, j, 0] = 0
 
             ## Turbine level that cannot be inspected nor repaired
-            p1 = self.P[a[0], 2, drate[i, 2, 0]].T.dot(
+            p1 = self.P[0, 2, drate[i, 2, 0]].T.dot(
                     b_prime[i, 2, :])  # environment transition
             b_prime[i, 2, :] = p1
+            ob[i, 2] = 2
             # if do nothing, you update your belief without new evidences
             drate_prime[i, 2, 0] = drate[i, 2, 0] + 1
             # At every timestep, the deterioration rate increases

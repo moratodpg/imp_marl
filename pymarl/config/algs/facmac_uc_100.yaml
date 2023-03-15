@@ -2,8 +2,8 @@
 #action_range: ~
 action_selector: "gumbel"
 epsilon_start: 0.3
-epsilon_finish: 0.1
-epsilon_anneal_time: 100000
+epsilon_finish: 0.005
+epsilon_anneal_time: 50000
 
 runner: "episode"
 batch_size: 64
@@ -15,7 +15,7 @@ agent_output_type: "pi_logits"
 
 learner: "facmac_learner_discrete"
 mac: facmac_mac
-optimizer: "rmsprop" # D
+optimizer: "adam" # D
 mixer: "qmix_facmac"
 mixing_embed_dim: 128
 skip_connections: False
@@ -26,7 +26,7 @@ hyper_initialization_nonzeros: 0
 td_lambda: 0.8
 target_update_interval: 200
 target_update_mode: 'hard'
-#target_update_tau: 0.001
+target_update_tau: 0.001
 q_embed_dim: 1
 mask_before_softmax: True
 
