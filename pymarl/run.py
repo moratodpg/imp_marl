@@ -79,11 +79,11 @@ def run_sequential(args, logger):
     runner = r_REGISTRY[args.runner](args=args, logger=logger)
     # Set up schemes and groups here
     env_info = runner.get_env_info()
-
     args.n_agents = env_info["n_agents"]
-
     args.n_actions = env_info["n_actions"]
     args.state_shape = env_info["state_shape"]
+    args.unit_dim = env_info["unit_dim"]
+
     scheme = {
         "state": {"vshape": env_info["state_shape"]},
         "obs": {"vshape": env_info["obs_shape"], "group": "agents"},
@@ -170,6 +170,7 @@ def run_sequential(args, logger):
     logger.console_logger.info(
         "Beginning training for {} timesteps".format(args.t_max))
     print("start")
+    print("Number of trainable param=", learner.n_learnable_param())
     while runner.t_env <= args.t_max:
 
         # Run for a whole episode at a time
@@ -185,8 +186,13 @@ def run_sequential(args, logger):
 
             if episode_sample.device != args.device:
                 episode_sample.to(args.device)
-
-            learner.train(episode_sample, runner.t_env, episode)
+            if args.learner == "coma_learner":
+                # Online training, therefore buffer.sample()
+                # gives always the last batch_size_run played episodes
+                for i in range(args.batch_size_run):
+                    learner.train(episode_sample, runner.t_env, episode)
+            else:
+                learner.train(episode_sample, runner.t_env, episode)
 
         # Execute test runs once in a while
         n_test_runs = max(1, args.test_nepisode // runner.batch_size)

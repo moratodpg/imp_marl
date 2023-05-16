@@ -1,0 +1,25 @@
+env: struct_marl
+
+env_args:
+  struct_type: "owf"
+  n_comp: 25
+  discount_reward: 0.95
+  custom_param:
+    lev: 3
+  state_obs: True
+  state_d_rate: False
+  state_alphas: False
+  obs_d_rate: False
+  obs_multiple: False
+  obs_all_d_rate: False
+  obs_alphas: False
+  env_correlation: False
+  campaign_cost: False
+
+learner_log_interval: 25000
+log_interval: 25000
+runner_log_interval: 25000
+test_interval: 25000
+test_nepisode: 100
+test_greedy: True
+t_max: 2050000

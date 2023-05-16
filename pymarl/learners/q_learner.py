@@ -109,7 +109,7 @@ class QLearner:
 
         if t_env - self.log_stats_t >= self.args.learner_log_interval:
             self.logger.log_stat("loss", loss.item(), t_env)
-            self.logger.log_stat("grad_norm", grad_norm, t_env)
+            self.logger.log_stat("grad_norm", grad_norm.cpu(), t_env)
             mask_elems = mask.sum().item()
             self.logger.log_stat("td_error_abs", (masked_td_error.abs().sum().item() / mask_elems), t_env)
             self.logger.log_stat("q_taken_mean",
@@ -235,7 +235,7 @@ class QLearner:
         self.mac.save_models(path)
         if self.mixer is not None:
             th.save(self.mixer.state_dict(), "{}/mixer.th".format(path))
-        th.save(self.optimiser.state_dict(), "{}/opt.th".format(path))
+        #th.save(self.optimiser.state_dict(), "{}/opt.th".format(path))
 
     def load_models(self, path):
         self.mac.load_models(path)
@@ -243,4 +243,10 @@ class QLearner:
         self.target_mac.load_models(path)
         if self.mixer is not None:
             self.mixer.load_state_dict(th.load("{}/mixer.th".format(path), map_location=lambda storage, loc: storage))
-        self.optimiser.load_state_dict(th.load("{}/opt.th".format(path), map_location=lambda storage, loc: storage))
+        #self.optimiser.load_state_dict(th.load("{}/opt.th".format(path), map_location=lambda storage, loc: storage))
+
+    def n_learnable_param(self):
+        total = self.mac.n_learnable_param()
+        if self.mixer is not None:
+            total += sum(p.numel() for p in self.mixer.parameters() if p.requires_grad)
+        return total

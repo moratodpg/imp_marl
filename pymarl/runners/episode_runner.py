@@ -2,6 +2,7 @@ from pymarl.envs import REGISTRY as env_REGISTRY
 from functools import partial
 from pymarl.components.episode_buffer import EpisodeBatch
 import numpy as np
+import torch as th
 
 class EpisodeRunner:
 
@@ -45,6 +46,9 @@ class EpisodeRunner:
         self.env.reset()
         self.t = 0
 
+    def cuda(self):
+        pass
+
     def run(self, test_mode=False):
         self.reset()
 
@@ -71,9 +75,17 @@ class EpisodeRunner:
                                                             t_env=self.t_env,
                                                             test_mode=test_mode)
             else:
-                actions = self.mac.select_actions(self.batch, t_ep=self.t,
-                                                  t_env=self.t_env,
-                                                  test_mode=test_mode)
+                if getattr(self.args, "action_selector",
+                           "epsilon_greedy") == "gumbel":
+                    actions = self.mac.select_actions(self.batch, t_ep=self.t,
+                                                      t_env=self.t_env,
+                                                      test_mode=test_mode,
+                                                      explore=(not test_mode))
+                    actions = th.argmax(actions, dim=-1).long()
+                else:
+                    actions = self.mac.select_actions(self.batch, t_ep=self.t,
+                                                      t_env=self.t_env,
+                                                      test_mode=test_mode)
 
             reward, terminated, env_info = self.env.step(actions[0])
             episode_return += reward
@@ -109,9 +121,17 @@ class EpisodeRunner:
             self.batch.update({"actions": actions, "behavior":behavior},
                               ts=self.t)
         else:
-            actions = self.mac.select_actions(self.batch, t_ep=self.t,
-                                              t_env=self.t_env,
-                                              test_mode=test_mode)
+            if getattr(self.args, "action_selector",
+                       "epsilon_greedy") == "gumbel":
+                actions = self.mac.select_actions(self.batch, t_ep=self.t,
+                                                  t_env=self.t_env,
+                                                  test_mode=test_mode,
+                                                  explore=(not test_mode))
+                actions = th.argmax(actions, dim=-1).long()
+            else:
+                actions = self.mac.select_actions(self.batch, t_ep=self.t,
+                                                  t_env=self.t_env,
+                                                  test_mode=test_mode)
             self.batch.update({"actions": actions, }, ts=self.t)
 
 

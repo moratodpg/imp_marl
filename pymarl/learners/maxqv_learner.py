@@ -147,7 +147,7 @@ class MaxQVLearner:
         if t_env - self.log_stats_t >= self.args.learner_log_interval:
             self.logger.log_stat("loss", loss.item(), t_env)
             self.logger.log_stat("loss_v", loss_v.item(), t_env)
-            self.logger.log_stat("grad_norm", grad_norm, t_env)
+            self.logger.log_stat("grad_norm", grad_norm.cpu(), t_env)
             mask_elems = mask.sum().item()
             self.logger.log_stat("td_error_abs", (
                     masked_td_error.abs().sum().item() / mask_elems),
@@ -296,7 +296,7 @@ class MaxQVLearner:
         if self.mixer is not None:
             th.save(self.mixer.state_dict(), "{}/mixer.th".format(path))
             th.save(self.v_mixer.state_dict(), "{}/v_mixer.th".format(path))
-        th.save(self.optimiser.state_dict(), "{}/opt.th".format(path))
+        #th.save(self.optimiser.state_dict(), "{}/opt.th".format(path))
 
     def load_models(self, path):
         self.mac.load_models(path)
@@ -312,9 +312,9 @@ class MaxQVLearner:
             self.v_mixer.load_state_dict(th.load("{}/v_mixer.th".format(path),
                                                  map_location=lambda storage,
                                                                      loc: storage))
-        self.optimiser.load_state_dict(th.load("{}/opt.th".format(path),
-                                               map_location=lambda storage,
-                                                                   loc: storage))
+        #self.optimiser.load_state_dict(th.load("{}/opt.th".format(path),
+        #                                       map_location=lambda storage,
+        #                                                           loc: storage))
 
     def v_init_hidden(self, batch_size):
         self.v_hidden_states = self.v_agent.init_hidden().unsqueeze(0).expand(

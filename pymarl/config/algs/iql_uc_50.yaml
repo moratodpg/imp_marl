@@ -16,8 +16,6 @@ learner: "q_learner"
 double_q: True
 mixer: # Mixer becomes None
 
-
-
 name: "iql"
 
 use_cuda: False

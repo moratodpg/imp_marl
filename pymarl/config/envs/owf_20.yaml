@@ -1,13 +1,13 @@
-env: struct_sarl
+env: struct_marl
 
 env_args:
-  struct_type: "struct"
-  n_comp: 3
+  struct_type: "owf"
+  n_comp: 20
   discount_reward: 0.95
   custom_param:
-    k_comp:  2
+    lev: 3
   state_obs: True
-  state_d_rate: True
+  state_d_rate: False
   state_alphas: False
   obs_d_rate: False
   obs_multiple: False

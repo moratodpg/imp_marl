@@ -3,7 +3,7 @@ from functools import partial
 from pymarl.components.episode_buffer import EpisodeBatch
 from multiprocessing import Pipe, Process
 import numpy as np
-
+import torch as th
 # Based (very) heavily on SubprocVecEnv from OpenAI Baselines
 # https://github.com/openai/baselines/blob/master/baselines/common/vec_env/subproc_vec_env.py
 class ParallelRunner:
@@ -106,10 +106,24 @@ class ParallelRunner:
         while True:
             # Pass the entire batch of experiences up till now to the agents
             # Receive the actions for each agent at this timestep in a batch for each un-terminated env
-            actions = self.mac.select_actions(self.batch, t_ep=self.t,
-                                              t_env=self.t_env,
-                                              bs=envs_not_terminated,
-                                              test_mode=test_mode)
+            if self.args.mac == "is_mac":
+                # Inserting policy experiences to the buffer
+                actions, behavior = self.mac.select_actions(self.batch,
+                                                            t_ep=self.t,
+                                                            t_env=self.t_env,
+                                                            test_mode=test_mode)
+            else:
+                if getattr(self.args, "action_selector",
+                           "epsilon_greedy") == "gumbel":
+                    actions = self.mac.select_actions(self.batch, t_ep=self.t,
+                                                      t_env=self.t_env,
+                                                      test_mode=test_mode,
+                                                      explore=(not test_mode))
+                    actions = th.argmax(actions, dim=-1).long()
+                else:
+                    actions = self.mac.select_actions(self.batch, t_ep=self.t,
+                                                      t_env=self.t_env,
+                                                      test_mode=test_mode)
             cpu_actions = actions.to("cpu").numpy()
 
             # Update the actions taken
