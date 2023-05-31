@@ -1,4 +1,5 @@
 # Infrastructure management planning (IMP): An environment for large-scale cooperative MARL methods
+![imp](./wrappers/imp_intro.png)
 
 Currently available system environment settings:
 - k-out-of-n system with components subject to fatigue deterioration.
