@@ -1,6 +1,10 @@
-# Multi-agent (deep) reinforcement learning for structural systems (marl_struct)
+# Infrastructure management planning (IMP): An environment for large-scale cooperative MARL methods
 
-Marl_struct offers a framework for DRL algorithms and structural systems environments. In particular, the following algorithms are available:
+Currently available system environment settings:
+- k-out-of-n system with components subject to fatigue deterioration.
+- offshore wind structural system.
+
+MARL algorithms available:
 - [**QMIX**: QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning](https://arxiv.org/abs/1803.11485)
 - [**QVMIX**: QVMix and QVMix-Max: Extending the Deep Quality-Value Family of Algorithms to Cooperative Multi-Agent Reinforcement Learning](https://arxiv.org/abs/2012.12062)
 - [**QPLEX**: QPLEX: Duplex Dueling Multi-Agent Q-Learning](https://arxiv.org/abs/2008.01062)
@@ -9,7 +13,7 @@ Marl_struct offers a framework for DRL algorithms and structural systems environ
 - [**VDN**: Value-Decomposition Networks For Cooperative Multi-Agent Learning](https://arxiv.org/abs/1706.05296) 
 - [**IQL**: Independent Q-Learning](https://arxiv.org/abs/1511.08779)
 
-Main developers: Pablo G. Morato & Pascal Leroy.
+Main developers: Pascal Leroy & Pablo G. Morato.
 
 The main code is derived from [pymarl](https://github.com/oxwhirl/pymarl).
 
