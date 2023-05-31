@@ -1,9 +1,9 @@
 import numpy as np
 import torch
 
-from struct_env.MultiAgentEnv import MultiAgentEnv
-from struct_env.owf_env import Struct_owf
-from struct_env.struct_env import Struct
+from imp.MultiAgentEnv import MultiAgentEnv
+from imp.owf_env import Struct_owf
+from imp.struct_env import Struct
 
 
 class PymarlMAStruct(MultiAgentEnv):
