@@ -31,10 +31,24 @@ and
 
 ## Installation
 
-## Run an experiment 
+## Run a simple experiment 
 
 ```shell
 python3 main.py --config=qmix --env-config=struct with env_args.n_comp=10 env_args.custom_param.k_comp=9
 ```         
+## Tests
+[Tutorial](./wrappers/api_explained.md)
+
+## Create your own environment scenario
+[Tutorial](./imp/imp_add_env.md)
+
+## IMP's API explained
+
+
+## Reproduce the reported results
+
+
+## Directly retrieve the results
+
 
 ## Citation
