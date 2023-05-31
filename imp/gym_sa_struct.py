@@ -5,7 +5,7 @@ import numpy as np
 
 from gym import spaces
 
-from struct_env.struct_env import Struct
+from imp.struct_env import Struct
 
 
 class GymSaStruct(gym.Env):

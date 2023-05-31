@@ -2,7 +2,7 @@ import numpy as np
 from datetime import datetime
 from os import path, makedirs
 
-from struct_env.struct_env import Struct
+from imp.struct_env import Struct
 
 
 class Heuristics():

@@ -1,11 +1,13 @@
 import numpy as np
-from struct_env.pymarl_ma_struct import PymarlMAStruct
+from imp.pymarl_sa_struct import PymarlSAStruct
 import os
+
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.getcwd()))
 
     n_episode = 100
-    env = PymarlMAStruct(struct_type="struct",
+
+    env = PymarlSAStruct(struct_type="struct",
                          n_comp=2,
                          discount_reward=.95,
                          state_obs=True,
@@ -19,7 +21,7 @@ if __name__ == '__main__':
                          campaign_cost=False)
 
     env_info = env.get_env_info()
-
+    
     n_actions = env_info["n_actions"]
     n_agents = env_info["n_agents"]
     array_reward = []
@@ -34,11 +36,10 @@ if __name__ == '__main__':
             state = env.get_state()
 
             actions = []
-            for k in range(env.n_agents):
-                avail_actions = env.get_avail_agent_actions(k)
-                avail_actions_ind = np.nonzero(avail_actions)[0]
-                action = np.random.choice(avail_actions_ind)
-                actions.append(action)
+            avail_actions = env.get_avail_agent_actions(0)
+            avail_actions_ind = np.nonzero(avail_actions)[0]
+            action = np.random.choice(avail_actions_ind)
+            actions.append(action)
             reward, terminated, info = env.step(actions)
             episode_reward += reward
         array_reward.append(episode_reward)
