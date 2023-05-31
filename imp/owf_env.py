@@ -35,7 +35,7 @@ class Struct_owf:
 
         ### Loading the underlying POMDP model ###
 
-        drmodel = np.load('pomdp_models/owf6021.npz')
+        drmodel = np.load('imp/pomdp_models/owf6021.npz')
 
         # (n_owt, 3 levels, nstcomp crack states)
         self.belief0 = np.zeros((self.n_owt, self.lev, self.n_st_comp))
