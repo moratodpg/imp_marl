@@ -13,7 +13,7 @@ Beware that the first cell may be updated to find the logs if you chose somethin
 The name of the notebooks are self-explanatory:
 
 - [boxplots](boxplots.ipynb): create the firgure 2 of the paper with the relative boxplots.
-- [find_best_network](find_best_network.ipynb): find the best network for each run.
+- [find_best_networks](find_best_networks.ipynb): find the best network for each run.
 - [generate_table](generate_table.ipynb): generate the tables of best results the paper.
 - [plot_variance](plot_variance.ipynb): create the figure X of the paper with the variance of the results.
 - [plot_testing_time](plot_testing_time.ipynb): create the figures X and Y of the paper with the testing time.
