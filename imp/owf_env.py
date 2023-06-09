@@ -1,7 +1,9 @@
 import numpy as np
 
+from imp.imp_env import ImpEnv
 
-class Struct_owf:
+
+class Struct_owf(ImpEnv):
 
     def __init__(self, config=None):
         if config is None:
