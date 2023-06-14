@@ -40,9 +40,9 @@ class Struct:
 
         ### Loading the underlying POMDP model ###
         if not self.env_correlation:
-            drmodel = np.load('imp_marl/pomdp_models/Dr3031C10.npz')
+            drmodel = np.load('imp_env/pomdp_models/Dr3031C10.npz')
         else:
-            drmodel = np.load('imp_marl/pomdp_models/Dr3031_H08.npz')
+            drmodel = np.load('imp_env/pomdp_models/Dr3031_H08.npz')
 
         # (ncomp components, nstcomp crack states)
         self.belief0 = np.zeros((self.n_comp, self.n_st_comp))
