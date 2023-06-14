@@ -2,7 +2,7 @@ import itertools
 
 import numpy as np
 
-from imp.pymarl_ma_struct import PymarlMAStruct
+from imp_env.pymarl_ma_struct import PymarlMAStruct
 
 
 class PymarlSAStruct(PymarlMAStruct):

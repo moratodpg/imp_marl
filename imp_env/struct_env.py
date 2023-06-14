@@ -1,6 +1,6 @@
 import numpy as np
 
-from imp.imp_env import ImpEnv
+from imp_env.imp_env import ImpEnv
 
 
 class Struct(ImpEnv):
