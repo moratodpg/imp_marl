@@ -47,10 +47,10 @@ class Struct(ImpEnv):
             drmodel = np.load('imp_env/pomdp_models/Dr3031_H08.npz')
 
         # (ncomp components, nstcomp crack states)
-        self.belief0 = np.zeros((self.n_comp, self.n_st_comp))
+        self.initial_damage_proba = np.zeros((self.n_comp, self.n_st_comp))
 
         if not self.env_correlation:
-            self.belief0[:, :] = drmodel['belief0'][0, 0, :, 0]
+            self.initial_damage_proba[:, :] = drmodel['belief0'][0, 0, :, 0]
 
             # (3 actions, 10 components, 31 det rates, 30 cracks, 30 cracks)
             self.P = drmodel['P'][:, 0, :, :, :]
@@ -63,7 +63,7 @@ class Struct(ImpEnv):
             self.alpha0 = None
 
         else:
-            self.belief0[:, :] = drmodel['belief0']
+            self.initial_damage_proba[:, :] = drmodel['belief0']
             # (3 actions, 31 det rates, 30 cracks, 30 cracks)
             self.P = drmodel['P']
 
@@ -84,7 +84,7 @@ class Struct(ImpEnv):
         self.agent_list = ["agent_" + str(i) for i in range(self.n_comp)]
 
         self.time_step = 0
-        self.beliefs = self.belief0
+        self.beliefs = self.initial_damage_proba
         self.beliefsc = self.belief0c
         self.alphas = self.alpha0
         self.d_rate = np.zeros((self.n_comp, 1), dtype=int)
@@ -99,7 +99,7 @@ class Struct(ImpEnv):
 
         # Choose the agent's belief
         self.time_step = 0
-        self.beliefs = self.belief0
+        self.beliefs = self.initial_damage_proba
         self.beliefsc = self.belief0c
         self.alphas = self.alpha0
         self.d_rate = np.zeros((self.n_comp, 1), dtype=int)
