@@ -1,5 +1,5 @@
 import numpy as np
-from imp_marl.pymarl_ma_struct import PymarlMAStruct
+from imp_env.pymarl_ma_struct import PymarlMAStruct
 import os
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.getcwd()))

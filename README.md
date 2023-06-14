@@ -39,8 +39,13 @@ python3 main.py --config=qmix --env-config=struct with env_args.n_comp=10 env_ar
 ## Tests
 
 ## Tutorials
+<<<<<<< HEAD
 - [Create your own environment scenario](imp_marl/imp_add_env.md)
 - [IMP's API explained](imp_wrappers/wrapper_explained.md)
+=======
+- [Create your own environment scenario](imp_env/imp_add_env.md)
+- [IMP's API explained](./wrappers/api_explained.md)
+>>>>>>> docs
 - [Reproduce the reported results](./results_scripts/results_reproduce.md)
 - [Directly retrieve the results](./results_scripts/results_retrieve.md)
 
