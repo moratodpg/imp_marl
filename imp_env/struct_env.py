@@ -8,6 +8,7 @@ class Struct(ImpEnv):
     def __init__(self, config=None):
         """
         :param config: dict of config parameters, composed of:
+            Keys:
             n_comp: number of components
             discount_reward: discount factor for reward
             k_comp: number of components required to not fail
