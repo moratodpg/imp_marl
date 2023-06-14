@@ -1,5 +1,5 @@
 import numpy as np
-from imp.pymarl_ma_struct import PymarlMAStruct
+from imp_marl.pymarl_ma_struct import PymarlMAStruct
 import os
 
 if __name__ == '__main__':
