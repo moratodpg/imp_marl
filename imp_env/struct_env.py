@@ -55,7 +55,7 @@ class Struct(ImpEnv):
             self.transition_model = numpy_models['P'][:, 0, :, :, :]
 
             # (3 actions, 10 components, 30 cracks, 2 observations)
-            self.observation_model = numpy_models['O'][:, 0, :, :]
+            self.inspection_model = numpy_models['O'][:, 0, :, :]
 
             self.initial_damage_proba_correlated = None
             self.damage_proba_after_repair_correlated = None
@@ -67,7 +67,7 @@ class Struct(ImpEnv):
             self.transition_model = numpy_models['P']
 
             # (3 actions, 30 cracks, 2 observations)
-            self.observation_model = numpy_models['O']
+            self.inspection_model = numpy_models['O']
 
             self.initial_damage_proba_correlated = \
                 np.zeros((self.n_comp, self.alpha_size, self.proba_size))
@@ -223,7 +223,7 @@ class Struct(ImpEnv):
 
             observation[i] = 2  # ob[i] = 0 if no crack detected 1 if crack detected
             if action[i] == 1:
-                Obs0 = np.sum(p1 * self.observation_model[action[i], :, 0])
+                Obs0 = np.sum(p1 * self.inspection_model[action[i], :, 0])
                 # self.observation_model = Probability to observe the crack
                 Obs1 = 1 - Obs0
 
@@ -233,8 +233,8 @@ class Struct(ImpEnv):
                     ob_dist = np.array([Obs0, Obs1])
                     observation[i] = np.random.choice(range(0, self.n_obs), size=None,
                                              replace=True, p=ob_dist)
-                new_proba[i, :] = p1 * self.observation_model[action[i], :, int(observation[i])] / (
-                    p1.dot(self.observation_model[action[i], :, int(observation[i])]))  # belief update
+                new_proba[i, :] = p1 * self.inspection_model[action[i], :, int(observation[i])] / (
+                    p1.dot(self.inspection_model[action[i], :, int(observation[i])]))  # belief update
             if action[i] == 2:
                 # action in b_prime has already
                 # been accounted in the env transition
@@ -257,7 +257,7 @@ class Struct(ImpEnv):
             new_drate[i, 0] = drate[i, 0] + 1
 
             if a[i] == 1:
-                Obs0 = np.sum(alpha[:].dot(p1) * self.observation_model[a[i], :, 0])
+                Obs0 = np.sum(alpha[:].dot(p1) * self.inspection_model[a[i], :, 0])
                 Obs1 = 1 - Obs0
                 if Obs1 < 1e-5:
                     observation[i] = 0
@@ -265,7 +265,7 @@ class Struct(ImpEnv):
                     ob_dist = np.array([Obs0, Obs1])
                     observation[i] = np.random.choice(range(0, self.n_obs), size=None,
                                              replace=True, p=ob_dist)
-                pInsp = p1 * self.observation_model[a[i], :, int(observation[i])]  # belief update
+                pInsp = p1 * self.inspection_model[a[i], :, int(observation[i])]  # belief update
                 likAlpha = np.sum(pInsp, axis=1)  # likelihood insp alpha
                 normBel = np.tile(likAlpha, self.proba_size).reshape(
                     self.alpha_size, self.proba_size,
