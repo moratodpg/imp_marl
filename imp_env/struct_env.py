@@ -245,41 +245,40 @@ class Struct(ImpEnv):
         """Bayesian belief update based on previous belief,
          current observation, and action taken"""
 
-        b_prime = np.zeros((self.n_comp, self.proba_size))
-        bc_prime = np.zeros((self.n_comp, self.alpha_size, self.proba_size))
-        drate_prime = np.zeros((self.n_comp, 1), dtype=int)
-        alpha_prime = np.zeros((self.alpha_size))
-        alpha_prime = alpha.copy()
-        ob = np.zeros(self.n_comp)
+        new_proba = np.zeros((self.n_comp, self.proba_size))
+        new_proba_correlated = np.zeros((self.n_comp, self.alpha_size, self.proba_size))
+        new_drate = np.zeros((self.n_comp, 1), dtype=int)
+        new_alpha = alpha.copy()
+        observation = np.zeros(self.n_comp)
         for i in range(self.n_comp):
             p1 = bc[i, :, :].dot(
                 self.transition_model[a[i], drate[i, 0]])  # environment transition
-            bc_prime[i, :, :] = p1
-            drate_prime[i, 0] = drate[i, 0] + 1
+            new_proba_correlated[i, :, :] = p1
+            new_drate[i, 0] = drate[i, 0] + 1
 
             if a[i] == 1:
                 Obs0 = np.sum(alpha[:].dot(p1) * self.observation_model[a[i], :, 0])
                 Obs1 = 1 - Obs0
                 if Obs1 < 1e-5:
-                    ob[i] = 0
+                    observation[i] = 0
                 else:
                     ob_dist = np.array([Obs0, Obs1])
-                    ob[i] = np.random.choice(range(0, self.n_obs), size=None,
+                    observation[i] = np.random.choice(range(0, self.n_obs), size=None,
                                              replace=True, p=ob_dist)
-                pInsp = p1 * self.observation_model[a[i], :, int(ob[i])]  # belief update
+                pInsp = p1 * self.observation_model[a[i], :, int(observation[i])]  # belief update
                 likAlpha = np.sum(pInsp, axis=1)  # likelihood insp alpha
                 normBel = np.tile(likAlpha, self.proba_size).reshape(
                     self.alpha_size, self.proba_size,
                     order='F')  # normalization constant
-                bc_prime[i, :, :] = pInsp / normBel
-                alpha_curr = likAlpha * alpha_prime
-                alpha_prime = alpha_curr / np.sum(alpha_curr)
+                new_proba_correlated[i, :, :] = pInsp / normBel
+                alpha_curr = likAlpha * new_alpha
+                new_alpha = alpha_curr / np.sum(alpha_curr)
 
             if a[i] == 2:
-                bc_prime[i, :, :] = self.damage_proba_after_repair_correlated
-                drate_prime[i, 0] = 0
+                new_proba_correlated[i, :, :] = self.damage_proba_after_repair_correlated
+                new_drate[i, 0] = 0
 
         for i in range(self.n_comp):
-            b_prime[i, :] = alpha_prime.dot(
-                bc_prime[i, :, :])  # Belief (marginalize out alpha)
-        return ob, b_prime, drate_prime, bc_prime, alpha_prime
+            new_proba[i, :] = new_alpha.dot(
+                new_proba_correlated[i, :, :])  # Belief (marginalize out alpha)
+        return observation, new_proba, new_drate, new_proba_correlated, new_alpha
