@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Create the logs directory, which is name logs
+# Create the logs directory, which is named logs
 mkdir -p logs
 
 # Download only the logs from zenodo.
