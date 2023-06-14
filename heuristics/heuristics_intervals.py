@@ -2,7 +2,7 @@ import numpy as np
 from datetime import datetime
 from os import path, makedirs
 
-from imp_marl.struct_env import Struct
+from imp_env.struct_env import Struct
 
 
 class Heuristics():
@@ -86,7 +86,7 @@ class Heuristics():
         while not done_:
             action_ = action.copy()
             if (self.struct_env.time_step%insp_int)==0 and self.struct_env.time_step>0:
-                pf = self.struct_env.beliefs[:,-1]
+                pf = self.struct_env.damage_proba[:, -1]
                 inspection_index = (-pf).argsort()[:comp_insp]
                 for index in inspection_index:
                     action_[self.struct_env.agent_list[index]] = 1

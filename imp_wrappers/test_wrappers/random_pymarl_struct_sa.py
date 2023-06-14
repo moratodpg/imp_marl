@@ -1,12 +1,13 @@
 import numpy as np
-from imp_marl.pymarl_sa_struct import PymarlSAStruct
+from imp_env.pymarl_sa_struct import PymarlSAStruct
 import os
+
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.getcwd()))
 
     n_episode = 100
 
-    env = PymarlSAStruct(struct_type="owf",
+    env = PymarlSAStruct(struct_type="struct",
                          n_comp=2,
                          discount_reward=.95,
                          state_obs=True,
@@ -20,7 +21,7 @@ if __name__ == '__main__':
                          campaign_cost=False)
 
     env_info = env.get_env_info()
-
+    
     n_actions = env_info["n_actions"]
     n_agents = env_info["n_agents"]
     array_reward = []
