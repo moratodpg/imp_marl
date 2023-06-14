@@ -39,19 +39,13 @@ class Struct(ImpEnv):
         self.n_obs = 2  # Total number of observations (crack detected or not)
         self.actions_per_agent = 3
 
-        # Uncorrelated obs = 30 per agent + 1 timestep
-        # Correlated obs = 30 per agent + 1 timestep +
-        #                   80 hyperparameter states = 111
-        self.obs_per_agent_multi = None  # Todo: check
-        self.obs_total_single = None  # Todo: check used in gym env
-
-        ### Loading the underlying POMDP model ###
+        # Loading the underlying POMDP model
         if not self.env_correlation:
             numpy_models = np.load('imp_env/pomdp_models/Dr3031C10.npz')
         else:
             numpy_models = np.load('imp_env/pomdp_models/Dr3031_H08.npz')
 
-        # (ncomp components, nstcomp crack states)
+        # (ncomp components, proba_size cracks)
         self.initial_damage_proba = np.zeros((self.n_comp, self.proba_size))
 
         if not self.env_correlation:
@@ -79,18 +73,18 @@ class Struct(ImpEnv):
                 np.zeros((self.n_comp, self.alpha_size, self.proba_size))
             self.initial_damage_proba_correlated[:, :, :] = numpy_models['belief0c']
 
-            # conditional beliefs associated with a repair action
-            # (80 hyperparameter states, 30 crack states)
+            # conditional proba associated with a repair action
+            # (80 alphas, 30 cracks)
             self.damage_proba_after_repair_correlated = numpy_models['b0cR']
 
-            # hyperparameter marginal states
+            # alpha
             self.initial_alpha = numpy_models['alpha0']
 
         self.agent_list = ["agent_" + str(i) for i in range(self.n_comp)]
 
         self.time_step = 0
-        self.beliefs = self.initial_damage_proba
-        self.beliefsc = self.initial_damage_proba_correlated
+        self.damage_proba = self.initial_damage_proba
+        self.damage_proba_correlated = self.initial_damage_proba_correlated
         self.alphas = self.initial_alpha
         self.d_rate = np.zeros((self.n_comp, 1), dtype=int)
         self.observations = None
@@ -104,34 +98,34 @@ class Struct(ImpEnv):
 
         # Choose the agent's belief
         self.time_step = 0
-        self.beliefs = self.initial_damage_proba
-        self.beliefsc = self.initial_damage_proba_correlated
+        self.damage_proba = self.initial_damage_proba
+        self.damage_proba_correlated = self.initial_damage_proba_correlated
         self.alphas = self.initial_alpha
         self.d_rate = np.zeros((self.n_comp, 1), dtype=int)
         self.observations = {}
         for i in range(self.n_comp):
             self.observations[self.agent_list[i]] = np.concatenate(
-                (self.beliefs[i], [self.time_step / self.ep_length]))
+                (self.damage_proba[i], [self.time_step / self.ep_length]))
 
 
         return self.observations
 
     def step(self, action: dict):
-        action_ = np.zeros(self.n_comp, dtype=int)
+        action_list = np.zeros(self.n_comp, dtype=int)
         for i in range(self.n_comp):
-            action_[i] = action[self.agent_list[i]]
+            action_list[i] = action[self.agent_list[i]]
 
         if not self.env_correlation:
             observation_, belief_prime, drate_prime = \
-                self.belief_update_uncorrelated(self.beliefs, action_,
+                self.belief_update_uncorrelated(self.damage_proba, action_list,
                                                 self.d_rate)
 
         else:
             observation_, belief_prime, drate_prime, bc_prime, alpha_prime = \
-                self.belief_update_correlated(self.beliefsc, action_,
+                self.belief_update_correlated(self.damage_proba_correlated, action_list,
                                               self.d_rate, self.alphas)
 
-        reward_ = self.immediate_cost(self.beliefs, action_, belief_prime,
+        reward_ = self.immediate_cost(self.damage_proba, action_list, belief_prime,
                                       self.d_rate)
         reward = self.discount_reward ** self.time_step * reward_.item()  # Convert float64 to float
 
@@ -147,10 +141,10 @@ class Struct(ImpEnv):
                 (belief_prime[i], [self.time_step / self.ep_length]))
 
         if self.env_correlation:
-            self.beliefsc = bc_prime
+            self.damage_proba_correlated = bc_prime
             self.alphas = alpha_prime
 
-        self.beliefs = belief_prime
+        self.damage_proba = belief_prime
         self.d_rate = drate_prime
 
         # An episode is done if the agent has reached the target
@@ -160,9 +154,8 @@ class Struct(ImpEnv):
         return self.observations, rewards, done, observation_
 
     def pf_sys(self, pf, k):
-        """compute pf_sys for k-out-of-n components"""
+        """compute pf_sys, the probability of failure of the system for k-out-of-n components"""
         n = pf.size
-        # k = ncomp-1
         nk = n - k
         m = k + 1
         A = np.zeros(m + 1)
@@ -182,8 +175,7 @@ class Struct(ImpEnv):
         return PF_sys
 
     def immediate_cost(self, B, a, B_, drate):
-        """ immediate reward (-cost),
-         based on current damage state and action """
+        """ immediate reward (-cost) based on current damage state and action """
         cost_system = 0
         PF = B[:, -1]
         PF_ = B_[:, -1].copy()
