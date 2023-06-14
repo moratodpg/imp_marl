@@ -9,42 +9,40 @@ from imp_wrappers.MultiAgentEnv import MultiAgentEnv
 class PymarlMAStruct(MultiAgentEnv):
     def __init__(self,
                  struct_type: str = "struct",
-                 # Type of the struct env, either "struct" or "owf".
                  n_comp: int = 2,
-                 # Number of structure
                  custom_param: dict = None,
-                 # struct: Number of structure required
-                 #      {"k_comp": int} for k_comp out of n_comp
-                 #      Default is None, meaning k_comp=n_comp-1
-                 # owf: Number of levels per wind turbine
-                 #      {"lev": int}
-                 #      Default is 3
                  discount_reward: float = 1.,
-                 # float [0,1] importance of
-                 # short-time reward vs long-time reward
-
                  state_obs: bool = True,
-                 # State contains the concatenation of obs
                  state_d_rate: bool = False,
-                 # State contains the concatenation of drate
-                 state_alphas: bool = False,
-                 # State contains the concatenation of alpha
-
-                 # Obs contains the obs of the agent by default
-                 obs_d_rate: bool = False,
-                 # Obs contains the drate of the agent
+                 state_alphas: bool = False,                 obs_d_rate: bool = False,
                  obs_multiple: bool = False,
-                 # Obs contains the concatenation of all obs
                  obs_all_d_rate: bool = False,
-                 # Obs contains the concatenation of all drate
                  obs_alphas: bool = False,
-                 # Obs contains the alphas
                  env_correlation: bool = False,
-                 # env_correlation: True=correlated, False=uncorrelated
                  campaign_cost: bool = False,
-                 # campaign_cost = True=campaign cost taken into account
                  seed=None):
-
+        """
+        :param struct_type: (str) Type of the struct env, either "struct" or "owf".
+        :param n_comp: (int) Number of structure
+        :param custom_param: (dict)
+            struct: Number of structure required
+                    {"k_comp": int} for k_comp out of n_comp
+                    Default is None, meaning k_comp=n_comp-1
+             owf: Number of levels per wind turbine
+                    {"lev": int}
+                    Default is 3
+        :param discount_reward: (float) Discount factor [0,1[
+        :param state_obs: (bool) State contains the concatenation of obs
+        :param state_d_rate: (bool) State contains the concatenation of drate
+        :param state_alphas: (bool) State contains the concatenation of alpha
+        :param obs_d_rate: (bool) Obs contains the drate of the agent
+        :param obs_multiple: (bool) Obs contains the concatenation of all obs
+        :param obs_all_d_rate: (bool) Obs contains the concatenation of all drate
+        :param obs_alphas: (bool) Obs contains the alphas
+        :param env_correlation: (bool) env_correlation: True=correlated, False=uncorrelated
+        :param campaign_cost: (bool) campaign_cost = True=campaign cost taken into account
+        :param seed: (int) seed for the random number generator
+        """
         # Check struct type and default values
         assert struct_type == "owf" or struct_type == "struct", "Error in struct_type"
         if struct_type == "struct":
@@ -117,6 +115,10 @@ class PymarlMAStruct(MultiAgentEnv):
         self.unit_dim = self.get_unit_dim() # Qplex requirement
 
     def update_action_histogram(self, actions):
+        """
+        :param actions: list of actions
+        Update the action histogram for logging.
+        """
         for k, action in zip(self.struct_env.agent_list, actions):
             if type(action) is torch.Tensor:
                 action_str = str(action.cpu().numpy())
@@ -125,8 +127,11 @@ class PymarlMAStruct(MultiAgentEnv):
             self.action_histogram["action_" + action_str] += 1
 
     def step(self, actions):
-        """ Returns reward, terminated, info """
-        # actions = list
+        """
+        :param actions: list of actions
+        Returns reward, terminated, info
+        """
+
         self.update_action_histogram(actions)
         action_dict = {k:action
                        for k, action in zip(self.struct_env.agent_list, actions)}
@@ -139,17 +144,22 @@ class PymarlMAStruct(MultiAgentEnv):
         return rewards[self.struct_env.agent_list[0]], done, info
 
     def get_obs(self):
-        """ Returns all agent observations in a list """
+        """ Returns all agent observations in a list. """
         return [self.get_obs_agent(i) for i in
                 range(self.n_agents)]
 
     def get_unit_dim(self):
+        """
+        Returns the dimension of the unit observation.
+        Used by QPLEX.
+        """
         return len(self.all_obs_from_struct_env())//self.n_agents
 
-    def get_obs_agent(self, agent_id):
+    def get_obs_agent(self, agent_id: int):
         """
+        :param agent_id: id of the agent (int in range(self.n_agents))
         Returns observation for agent_id
-        agent_id = integer in range (self.n_agents)
+
         """
         agent_name = self.struct_env.agent_list[agent_id]
 
@@ -170,13 +180,17 @@ class PymarlMAStruct(MultiAgentEnv):
         return obs
 
     def get_obs_size(self):
-        """ Returns the shape of the observation """
+        """ Returns the size of the observation. """
         return len(self.get_obs_agent(0))
 
     def get_normalized_drate(self):
+        """ Returns the normalized d_rate. """
         return self.struct_env.d_rate / self.struct_env.ep_length
 
     def all_obs_from_struct_env(self):
+        """
+        Returns all observations concatenated in a single vector.
+        """
         # Concatenate all obs with a single time.
         idx = 0
         obs = None
@@ -189,6 +203,7 @@ class PymarlMAStruct(MultiAgentEnv):
         return obs
 
     def get_state(self):
+        """ Returns the state of the environment. """
         state = []
         if self.state_obs:
             state = np.append(state, self.all_obs_from_struct_env())
@@ -203,6 +218,7 @@ class PymarlMAStruct(MultiAgentEnv):
         return len(self.get_state())
 
     def get_avail_actions(self):
+        """ Returns the available actions of all agents in a list. """
         avail_actions = []
         for agent_id in range(self.n_agents):
             avail_agent = self.get_avail_agent_actions(agent_id)
@@ -218,7 +234,7 @@ class PymarlMAStruct(MultiAgentEnv):
         return self.struct_env.actions_per_agent
 
     def reset(self):
-        """ Returns initial observations and states"""
+        """ Returns initial observations and states """
         self.action_histogram = {"action_"+str(k): 0 for k in range(self.n_actions)}
         self.struct_env.reset()
         return self.get_obs(), self.get_state()
@@ -230,6 +246,7 @@ class PymarlMAStruct(MultiAgentEnv):
         pass
 
     def seed(self):
+        """ Returns the random seed """
         return self._seed
 
     def save_replay(self):
