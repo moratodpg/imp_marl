@@ -23,7 +23,7 @@ from pymarl.controllers import REGISTRY as mac_REGISTRY
 from pymarl.components.episode_buffer import ReplayBuffer
 from pymarl.components.transforms import OneHot
 
-from main import _get_config, recursive_dict_update
+from train_with_pymarl import _get_config, recursive_dict_update
 from pymarl.run import args_sanity_check, evaluate_sequential
 from sacred import SETTINGS
 SETTINGS.CONFIG.READ_ONLY_CONFIG = False
@@ -222,7 +222,7 @@ if __name__ == '__main__':
 
     # Get the defaults from default.yaml
     with open(
-            os.path.join(os.path.dirname(__file__), "pymarl/config", "default.yaml"),
+            os.path.join(os.path.dirname(__file__), "config", "default.yaml"),
             "r") as f:
         try:
             config_dict = yaml.load(f)

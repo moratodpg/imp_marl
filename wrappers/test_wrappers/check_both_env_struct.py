@@ -1,6 +1,6 @@
 import numpy as np
-from imp.pymarl_ma_struct import PymarlMAStruct
-from imp.pymarl_sa_struct import PymarlSAStruct
+from imp_marl.pymarl_ma_struct import PymarlMAStruct
+from imp_marl.pymarl_sa_struct import PymarlSAStruct
 import os
 
 if __name__ == '__main__':

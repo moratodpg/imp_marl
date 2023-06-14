@@ -5,7 +5,7 @@ import numpy as np
 from ray.rllib import MultiAgentEnv
 from ray.rllib.utils.typing import MultiAgentDict
 
-from imp.struct_env import Struct
+from imp_marl.struct_env import Struct
 
 
 class RayMaStruct(MultiAgentEnv):
