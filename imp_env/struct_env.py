@@ -6,6 +6,14 @@ from imp_env.imp_env import ImpEnv
 class Struct(ImpEnv):
 
     def __init__(self, config=None):
+        """
+        :param config: dict of config parameters, composed of:
+            n_comp: number of components
+            discount_reward: discount factor for reward
+            k_comp: number of components required to not fail
+            env_correlation: whether the damage probability is correlated or not
+            campaign_cost: whether to include campaign cost in reward
+        """
         if config is None:
             config = {"n_comp": 2,
                       "discount_reward": 1,
