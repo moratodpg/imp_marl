@@ -205,41 +205,41 @@ class Struct(ImpEnv):
             cost_system += -5
         return cost_system
 
-    def belief_update_uncorrelated(self, b, a, drate):
+    def belief_update_uncorrelated(self, proba, action, drate):
         """Bayesian belief update based on
          previous belief, current observation, and action taken"""
-        b_prime = np.zeros((self.n_comp, self.proba_size))
-        b_prime[:] = b
-        ob = np.zeros(self.n_comp)
-        drate_prime = np.zeros((self.n_comp, 1), dtype=int)
+        new_proba = np.zeros((self.n_comp, self.proba_size))
+        new_proba[:] = proba
+        observation = np.zeros(self.n_comp)
+        new_drate = np.zeros((self.n_comp, 1), dtype=int)
         for i in range(self.n_comp):
-            p1 = self.transition_model[a[i], drate[i, 0]].T.dot(
-                b_prime[i, :])  # environment transition
+            p1 = self.transition_model[action[i], drate[i, 0]].T.dot(
+                new_proba[i, :])  # environment transition
 
-            b_prime[i, :] = p1
+            new_proba[i, :] = p1
             # if do nothing, you update your belief without new evidences
-            drate_prime[i, 0] = drate[i, 0] + 1
+            new_drate[i, 0] = drate[i, 0] + 1
             # At every timestep, the deterioration rate increases
 
-            ob[i] = 2  # ib[o] = 0 if no crack detected 1 if crack detected
-            if a[i] == 1:
-                Obs0 = np.sum(p1 * self.observation_model[a[i], :, 0])
-                # self.O = Probability to observe the crack
+            observation[i] = 2  # ob[i] = 0 if no crack detected 1 if crack detected
+            if action[i] == 1:
+                Obs0 = np.sum(p1 * self.observation_model[action[i], :, 0])
+                # self.observation_model = Probability to observe the crack
                 Obs1 = 1 - Obs0
 
                 if Obs1 < 1e-5:
-                    ob[i] = 0
+                    observation[i] = 0
                 else:
                     ob_dist = np.array([Obs0, Obs1])
-                    ob[i] = np.random.choice(range(0, self.n_obs), size=None,
+                    observation[i] = np.random.choice(range(0, self.n_obs), size=None,
                                              replace=True, p=ob_dist)
-                b_prime[i, :] = p1 * self.observation_model[a[i], :, int(ob[i])] / (
-                    p1.dot(self.observation_model[a[i], :, int(ob[i])]))  # belief update
-            if a[i] == 2:
+                new_proba[i, :] = p1 * self.observation_model[action[i], :, int(observation[i])] / (
+                    p1.dot(self.observation_model[action[i], :, int(observation[i])]))  # belief update
+            if action[i] == 2:
                 # action in b_prime has already
                 # been accounted in the env transition
-                drate_prime[i, 0] = 0
-        return ob, b_prime, drate_prime
+                new_drate[i, 0] = 0
+        return observation, new_proba, new_drate
 
     def belief_update_correlated(self, bc, a, drate, alpha):
         """Bayesian belief update based on previous belief,
