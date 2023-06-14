@@ -1,5 +1,5 @@
 # Infrastructure management planning (IMP): An environment for large-scale cooperative MARL methods
-![imp](./wrappers/imp_intro.png)
+![imp](imp_intro.png)
 
 **Abstract**: *We introduce an open-source multi-agent reinforcement learning (MARL) environment for Infrastructure Management Planning (IMP), offering a platform for benchmarking the scalability of cooperative MARL methods in real-world engineering applications. In IMP, each agent should plan inspection and repair actions on a component in order to control the risk of a multi-component engineering system failure, influenced by the components' damage condition. While the cost associated with local maintenance actions should be minimised, all agents must also effectively cooperate to minimise the common system risk. Through IMP, we encourage both the implementation of additional engineering systems and further development of (MA)RL algorithms in a common publicly available simulation framework.*
 
@@ -40,7 +40,7 @@ python3 main.py --config=qmix --env-config=struct with env_args.n_comp=10 env_ar
 
 ## Tutorials
 - [Create your own environment scenario](imp_marl/imp_add_env.md)
-- [IMP's API explained](./wrappers/api_explained.md)
+- [IMP's API explained](imp_wrappers/wrapper_explained.md)
 - [Reproduce the reported results](./results_scripts/results_reproduce.md)
 - [Directly retrieve the results](./results_scripts/results_retrieve.md)
 
