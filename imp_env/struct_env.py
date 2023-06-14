@@ -1,7 +1,9 @@
 import numpy as np
 
+from imp_env.imp_env import ImpEnv
 
-class Struct:
+
+class Struct(ImpEnv):
 
     def __init__(self, config=None):
         if config is None:
