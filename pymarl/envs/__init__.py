@@ -1,7 +1,7 @@
 from functools import partial
-from imp.MultiAgentEnv import MultiAgentEnv
-from imp.pymarl_ma_struct import PymarlMAStruct
-from imp.pymarl_sa_struct import PymarlSAStruct
+from imp_marl.MultiAgentEnv import MultiAgentEnv
+from imp_marl.pymarl_ma_struct import PymarlMAStruct
+from imp_marl.pymarl_sa_struct import PymarlSAStruct
 
 import sys
 import os
