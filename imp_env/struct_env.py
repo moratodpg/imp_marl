@@ -33,13 +33,10 @@ class Struct(ImpEnv):
             else config["k_comp"]
         self.env_correlation = config["env_correlation"]
         self.campaign_cost = config["campaign_cost"]
-        self.time = 0
         self.ep_length = 30  # Horizon length
-        self.n_st_comp = 30  # Crack states (fatigue hotspot damage states)
-        self.n_st_hyperp = 80 if self.env_correlation else None
-        # Gaussian hyperparemeter states
-        self.n_obs = 2
-        # Total number of observations (crack detected / crack not detected)
+        self.proba_size = 30  # Crack states (fatigue hotspot damage states)
+        self.alpha_size = 80 if self.env_correlation else None  # alpha
+        self.n_obs = 2  # Total number of observations (crack detected or not)
         self.actions_per_agent = 3
 
         # Uncorrelated obs = 30 per agent + 1 timestep
@@ -50,51 +47,51 @@ class Struct(ImpEnv):
 
         ### Loading the underlying POMDP model ###
         if not self.env_correlation:
-            drmodel = np.load('imp_env/pomdp_models/Dr3031C10.npz')
+            numpy_models = np.load('imp_env/pomdp_models/Dr3031C10.npz')
         else:
-            drmodel = np.load('imp_env/pomdp_models/Dr3031_H08.npz')
+            numpy_models = np.load('imp_env/pomdp_models/Dr3031_H08.npz')
 
         # (ncomp components, nstcomp crack states)
-        self.initial_damage_proba = np.zeros((self.n_comp, self.n_st_comp))
+        self.initial_damage_proba = np.zeros((self.n_comp, self.proba_size))
 
         if not self.env_correlation:
-            self.initial_damage_proba[:, :] = drmodel['belief0'][0, 0, :, 0]
+            self.initial_damage_proba[:, :] = numpy_models['belief0'][0, 0, :, 0]
 
             # (3 actions, 10 components, 31 det rates, 30 cracks, 30 cracks)
-            self.P = drmodel['P'][:, 0, :, :, :]
+            self.transition_model = numpy_models['P'][:, 0, :, :, :]
 
             # (3 actions, 10 components, 30 cracks, 2 observations)
-            self.O = drmodel['O'][:, 0, :, :]
+            self.observation_model = numpy_models['O'][:, 0, :, :]
 
-            self.belief0c = None
-            self.b0cR = None
-            self.alpha0 = None
+            self.initial_damage_proba_correlated = None
+            self.damage_proba_after_repair_correlated = None
+            self.initial_alpha = None
 
         else:
-            self.initial_damage_proba[:, :] = drmodel['belief0']
+            self.initial_damage_proba[:, :] = numpy_models['belief0']
             # (3 actions, 31 det rates, 30 cracks, 30 cracks)
-            self.P = drmodel['P']
+            self.transition_model = numpy_models['P']
 
             # (3 actions, 30 cracks, 2 observations)
-            self.O = drmodel['O']
+            self.observation_model = numpy_models['O']
 
-            self.belief0c = \
-                np.zeros((self.n_comp, self.n_st_hyperp, self.n_st_comp))
-            self.belief0c[:, :, :] = drmodel['belief0c']
+            self.initial_damage_proba_correlated = \
+                np.zeros((self.n_comp, self.alpha_size, self.proba_size))
+            self.initial_damage_proba_correlated[:, :, :] = numpy_models['belief0c']
 
             # conditional beliefs associated with a repair action
             # (80 hyperparameter states, 30 crack states)
-            self.b0cR = drmodel['b0cR']
+            self.damage_proba_after_repair_correlated = numpy_models['b0cR']
 
             # hyperparameter marginal states
-            self.alpha0 = drmodel['alpha0']
+            self.initial_alpha = numpy_models['alpha0']
 
         self.agent_list = ["agent_" + str(i) for i in range(self.n_comp)]
 
         self.time_step = 0
         self.beliefs = self.initial_damage_proba
-        self.beliefsc = self.belief0c
-        self.alphas = self.alpha0
+        self.beliefsc = self.initial_damage_proba_correlated
+        self.alphas = self.initial_alpha
         self.d_rate = np.zeros((self.n_comp, 1), dtype=int)
         self.observations = None
 
@@ -108,8 +105,8 @@ class Struct(ImpEnv):
         # Choose the agent's belief
         self.time_step = 0
         self.beliefs = self.initial_damage_proba
-        self.beliefsc = self.belief0c
-        self.alphas = self.alpha0
+        self.beliefsc = self.initial_damage_proba_correlated
+        self.alphas = self.initial_alpha
         self.d_rate = np.zeros((self.n_comp, 1), dtype=int)
         self.observations = {}
         for i in range(self.n_comp):
@@ -194,7 +191,7 @@ class Struct(ImpEnv):
         for i in range(self.n_comp):
             if a[i] == 1:
                 cost_system += -0.2 if self.campaign_cost else -1 # Individual inspection costs 
-                Bplus = self.P[a[i], drate[i, 0]].T.dot(B[i, :])
+                Bplus = self.transition_model[a[i], drate[i, 0]].T.dot(B[i, :])
                 PF_[i] = Bplus[-1]
                 if self.campaign_cost and not campaign_executed:
                     campaign_executed = True # Campaign executed
@@ -219,12 +216,12 @@ class Struct(ImpEnv):
     def belief_update_uncorrelated(self, b, a, drate):
         """Bayesian belief update based on
          previous belief, current observation, and action taken"""
-        b_prime = np.zeros((self.n_comp, self.n_st_comp))
+        b_prime = np.zeros((self.n_comp, self.proba_size))
         b_prime[:] = b
         ob = np.zeros(self.n_comp)
         drate_prime = np.zeros((self.n_comp, 1), dtype=int)
         for i in range(self.n_comp):
-            p1 = self.P[a[i], drate[i, 0]].T.dot(
+            p1 = self.transition_model[a[i], drate[i, 0]].T.dot(
                 b_prime[i, :])  # environment transition
 
             b_prime[i, :] = p1
@@ -234,7 +231,7 @@ class Struct(ImpEnv):
 
             ob[i] = 2  # ib[o] = 0 if no crack detected 1 if crack detected
             if a[i] == 1:
-                Obs0 = np.sum(p1 * self.O[a[i], :, 0])
+                Obs0 = np.sum(p1 * self.observation_model[a[i], :, 0])
                 # self.O = Probability to observe the crack
                 Obs1 = 1 - Obs0
 
@@ -244,8 +241,8 @@ class Struct(ImpEnv):
                     ob_dist = np.array([Obs0, Obs1])
                     ob[i] = np.random.choice(range(0, self.n_obs), size=None,
                                              replace=True, p=ob_dist)
-                b_prime[i, :] = p1 * self.O[a[i], :, int(ob[i])] / (
-                    p1.dot(self.O[a[i], :, int(ob[i])]))  # belief update
+                b_prime[i, :] = p1 * self.observation_model[a[i], :, int(ob[i])] / (
+                    p1.dot(self.observation_model[a[i], :, int(ob[i])]))  # belief update
             if a[i] == 2:
                 # action in b_prime has already
                 # been accounted in the env transition
@@ -256,20 +253,20 @@ class Struct(ImpEnv):
         """Bayesian belief update based on previous belief,
          current observation, and action taken"""
 
-        b_prime = np.zeros((self.n_comp, self.n_st_comp))
-        bc_prime = np.zeros((self.n_comp, self.n_st_hyperp, self.n_st_comp))
+        b_prime = np.zeros((self.n_comp, self.proba_size))
+        bc_prime = np.zeros((self.n_comp, self.alpha_size, self.proba_size))
         drate_prime = np.zeros((self.n_comp, 1), dtype=int)
-        alpha_prime = np.zeros((self.n_st_hyperp))
+        alpha_prime = np.zeros((self.alpha_size))
         alpha_prime = alpha.copy()
         ob = np.zeros(self.n_comp)
         for i in range(self.n_comp):
             p1 = bc[i, :, :].dot(
-                self.P[a[i], drate[i, 0]])  # environment transition
+                self.transition_model[a[i], drate[i, 0]])  # environment transition
             bc_prime[i, :, :] = p1
             drate_prime[i, 0] = drate[i, 0] + 1
 
             if a[i] == 1:
-                Obs0 = np.sum(alpha[:].dot(p1) * self.O[a[i], :, 0])
+                Obs0 = np.sum(alpha[:].dot(p1) * self.observation_model[a[i], :, 0])
                 Obs1 = 1 - Obs0
                 if Obs1 < 1e-5:
                     ob[i] = 0
@@ -277,17 +274,17 @@ class Struct(ImpEnv):
                     ob_dist = np.array([Obs0, Obs1])
                     ob[i] = np.random.choice(range(0, self.n_obs), size=None,
                                              replace=True, p=ob_dist)
-                pInsp = p1 * self.O[a[i], :, int(ob[i])]  # belief update
+                pInsp = p1 * self.observation_model[a[i], :, int(ob[i])]  # belief update
                 likAlpha = np.sum(pInsp, axis=1)  # likelihood insp alpha
-                normBel = np.tile(likAlpha, self.n_st_comp).reshape(
-                    self.n_st_hyperp, self.n_st_comp,
+                normBel = np.tile(likAlpha, self.proba_size).reshape(
+                    self.alpha_size, self.proba_size,
                     order='F')  # normalization constant
                 bc_prime[i, :, :] = pInsp / normBel
                 alpha_curr = likAlpha * alpha_prime
                 alpha_prime = alpha_curr / np.sum(alpha_curr)
 
             if a[i] == 2:
-                bc_prime[i, :, :] = self.b0cR
+                bc_prime[i, :, :] = self.damage_proba_after_repair_correlated
                 drate_prime[i, 0] = 0
 
         for i in range(self.n_comp):
