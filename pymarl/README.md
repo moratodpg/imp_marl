@@ -69,6 +69,7 @@ To test the agents at testing time, use the `run_test.sh` file.
 
 # Reproduce our results
 To reproduce the results in the paper, you need to train the agents with the `run.sh` file and specifying the seed.
-The seeds are available in the [logs file](plots/README.md) that you have to download.
-You just have to add `seed=xxxxx` at the end of the python command in the `run.sh` file.
+The seeds are available in the [logs file](../results_scripts/download_logs.sh) that you have to download.
+The seed can be found in the corresponding config.json file.
+You just have to then add `seed=xxxxx` at the end of the python command in the `run.sh` file.
 
