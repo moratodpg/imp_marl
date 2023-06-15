@@ -1,49 +1,43 @@
 # IMP-MARL: a Suite of Environments for Large-scale Infrastructure Management Planning via MARL
-![imp](imp_intro.png)
+
 
 **IMP-MARL** offers a platform for benchmarking the scalability of cooperative MARL methods in real-world engineering applications.
 
 In IMP-MARL, you can:
-- Implement your own infrastructure management planning (IMP) environment or execute an IMP environment available => [imp_env](./imp_env/)
-- Generate IMP policies through state-of-the-art MARL methods. The environments can be integrated with typical ecosystems via wrappers => [imp_wrappers](./imp_wrappers/)
-- Compute expert-based heuristic policies => [heuristics](./heuristics/)
+- [Implement your own infrastructure management planning (IMP) environment or execute an available IMP environment](./imp_env/).
+- [Train IMP policies through state-of-the-art MARL methods. The environments can be integrated with typical ecosystems via wrappers](./imp_wrappers/).
+- [Compute expert-based heuristic policies](./heuristics/)
 
 Additionally, you will be able to:
-- Retrieve the results of a benchmark campaign, where MARL methods are assessed in terms of scalibility.
+- Retrieve the results of a benchmark campaign, where MARL methods are assessed in terms of scalability.
 - Reproduce our experiments.
 
+This repository has been developed and is maintained by Pascal Leroy & Pablo G. Morato.
+
+![imp](imp_intro.png)
+
 ## Main requirements:
-pymarl:
-`python  3.7`
-and
-`pip install -r requirements.txt` 
+To work with our environments, one only needs to install [Numpy](https://numpy.org/install/).
 
-## Installation:
-Clone the repository from GitHub:
-`git clone https://github.com/moratodpg/imp_marl.git`
-
-Access IMP_MARL
-`cd imp_marl`
-
-If you will run experiments relying on pymarl, install the required packages:
-`./pymarl/install_venv.sh`
-
-Otherwise, only numpy is required:
-`pip install numpy`
+However, to reproduce our results, more packages are required and installation instructions are provided [here](pymarl/README.md).
 
 ## Tutorials
-- [Create your own environment scenario](./imp_env/new_imp_env_tutorial.ipynb)
+- [Create your own environment scenario](imp_env/new_imp_env_tutorial.ipynb)
 - [IMP's API explained](imp_wrappers/wrapper_explained.md)
-- [Reproduce the reported results](./results_scripts/README.md)
-- [Retrieve directly the results](./results_scripts/README.md)
+- [Train agents like in the paper](pymarl/README.md)
+- [Reproduce the reported results](results_scripts/README.md)
+- [Retrieve directly the results](results_scripts/README.md)
 
 ## Sets of environments available:
-- (Correlated and uncorrelated) k-out-of-n system with components subject to fatigue deterioration => [struct](./imp_env/struct_env.py)
-- Offshore wind structural system with components subject to fatigue deterioration. => [owf](./imp_env/owf_env.py)
+- [(Correlated and uncorrelated) k-out-of-n system with components subject to fatigue deterioration.](./imp_env/struct_env.py)
+- [Offshore wind structural system with components subject to fatigue deterioration.](./imp_env/owf_env.py)
 
-*A campaign cost can be activated in any environment.
+**Note: A campaign cost can be activated in any environment.**
 
-## MARL algorithms available:
+## PyMarl algorithms available:
+
+To train agents with PyMarl and one of the following algorithms, instructions are available [here](pymarl/README.md):
+
 - [**QMIX**: QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning](https://arxiv.org/abs/1803.11485)
 - [**QVMIX**: QVMix and QVMix-Max: Extending the Deep Quality-Value Family of Algorithms to Cooperative Multi-Agent Reinforcement Learning](https://arxiv.org/abs/2012.12062)
 - [**QPLEX**: QPLEX: Duplex Dueling Multi-Agent Q-Learning](https://arxiv.org/abs/2008.01062)
@@ -52,7 +46,7 @@ Otherwise, only numpy is required:
 - [**VDN**: Value-Decomposition Networks For Cooperative Multi-Agent Learning](https://arxiv.org/abs/1706.05296) 
 - [**IQL**: Independent Q-Learning](https://arxiv.org/abs/1511.08779)
 
-The main code is derived from [pymarl](https://github.com/oxwhirl/pymarl).
+The main code is derived from [PyMarl original implementation](https://github.com/oxwhirl/pymarl).
 
 ## Expert-knowledge baselines available:
 - [Expert-based heuristic strategies](https://www.sciencedirect.com/science/article/pii/S0167473017302138)
@@ -101,13 +95,6 @@ while not done:
     obs, rewards, done, insp_outcomes = env_.step(action_) # Transitions
     rewards_sum += rewards['agent_0'] # Accumulating rewards
 print(rewards_sum) # Result    
-```
-
-## Run a simple experiment via pymarl
-
-```shell
-python3 main.py --config=qmix --env-config=struct with env_args.n_comp=10 env_args.custom_param.k_comp=9
-```         
+```   
 
 ## Citation
-Main developers: Pascal Leroy & Pablo G. Morato.
