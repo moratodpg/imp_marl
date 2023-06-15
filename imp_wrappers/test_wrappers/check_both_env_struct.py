@@ -1,10 +1,9 @@
 import numpy as np
-from imp_env.pymarl_ma_struct import PymarlMAStruct
-from imp_env.pymarl_sa_struct import PymarlSAStruct
+from imp_wrappers.pymarl_ma_struct import PymarlMAStruct
+from imp_wrappers.pymarl_sa_struct import PymarlSAStruct
 import os
 
 if __name__ == '__main__':
-    os.chdir(os.path.dirname(os.getcwd()))
 
     n_episode = 10
     env_1 = PymarlMAStruct(struct_type="struct",

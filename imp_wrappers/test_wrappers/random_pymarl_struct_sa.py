@@ -1,5 +1,5 @@
 import numpy as np
-from imp_env.pymarl_sa_struct import PymarlSAStruct
+from imp_wrappers.pymarl_sa_struct import PymarlSAStruct
 import os
 
 if __name__ == '__main__':

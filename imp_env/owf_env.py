@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 
 from imp_env.imp_env import ImpEnv
@@ -39,7 +41,9 @@ class Struct_owf(ImpEnv):
         self.actions_per_agent = 3
 
         # Loading the underlying POMDP model
-        numpy_models = np.load('imp_env/pomdp_models/owf6021.npz')
+        numpy_models = np.load(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'pomdp_models/owf6021.npz'))
 
         # (n_owt, 3 levels, nstcomp crack states)
         self.initial_damage_proba = np.zeros((self.n_owt, self.lev, self.proba_size))
