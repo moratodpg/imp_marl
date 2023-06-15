@@ -1,12 +1,12 @@
 import copy
-from pymarl.components.episode_buffer import EpisodeBatch
-from pymarl.modules.critics.facmac import FACMACDiscreteCritic
+from components.episode_buffer import EpisodeBatch
+from modules.critics.facmac import FACMACDiscreteCritic
 import torch as th
 from torch.optim import RMSprop, Adam
-from pymarl.modules.mixers.vdn_facmac import VDNMixer
-from pymarl.modules.mixers.qmix_facmac import QMixer
-from pymarl.modules.mixers.qmix_ablations import VDNState, QMixerNonmonotonic
-from pymarl.utils.rl_utils import build_td_lambda_targets
+from modules.mixers.vdn_facmac import VDNMixer
+from modules.mixers.qmix_facmac import QMixer
+from modules.mixers.qmix_ablations import VDNState, QMixerNonmonotonic
+from utils.rl_utils import build_td_lambda_targets
 
 
 class FACMACDiscreteLearner:

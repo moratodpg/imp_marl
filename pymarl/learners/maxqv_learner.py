@@ -2,11 +2,11 @@ import copy
 import torch as th
 from torch.optim import RMSprop
 
-from pymarl.components.episode_buffer import EpisodeBatch
-from pymarl.modules.mixers.vdn import VDNMixer
-from pymarl.modules.mixers.qmix import QMixer
-from pymarl.modules.mixers.vmix import VMixer
-from pymarl.modules.agents import RNNVAgent
+from components.episode_buffer import EpisodeBatch
+from modules.mixers.vdn import VDNMixer
+from modules.mixers.qmix import QMixer
+from modules.mixers.vmix import VMixer
+from modules.agents import RNNVAgent
 
 
 class MaxQVLearner:

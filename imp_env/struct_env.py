@@ -1,5 +1,5 @@
 import numpy as np
-
+import os
 from imp_env.imp_env import ImpEnv
 
 
@@ -41,10 +41,15 @@ class Struct(ImpEnv):
         self.actions_per_agent = 3
 
         # Loading the underlying POMDP model
+
         if not self.env_correlation:
-            numpy_models = np.load('imp_env/pomdp_models/Dr3031C10.npz')
+            numpy_models = np.load(os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                'pomdp_models/Dr3031C10.npz'))
         else:
-            numpy_models = np.load('imp_env/pomdp_models/Dr3031_H08.npz')
+            numpy_models = np.load(os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                'pomdp_models/Dr3031_H08.npz'))
 
         # (ncomp components, proba_size cracks)
         self.initial_damage_proba = np.zeros((self.n_comp, self.proba_size))

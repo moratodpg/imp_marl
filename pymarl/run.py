@@ -5,15 +5,15 @@ import time
 import threading
 import torch as th
 from types import SimpleNamespace as SN
-from pymarl.utils.logging import Logger
-from pymarl.utils.timehelper import time_left, time_str
+from utils.logging import Logger
+from utils.timehelper import time_left, time_str
 from os.path import dirname, abspath
 
-from pymarl.learners import REGISTRY as le_REGISTRY
-from pymarl.runners import REGISTRY as r_REGISTRY
-from pymarl.controllers import REGISTRY as mac_REGISTRY
-from pymarl.components.episode_buffer import ReplayBuffer
-from pymarl.components.transforms import OneHot
+from learners import REGISTRY as le_REGISTRY
+from runners import REGISTRY as r_REGISTRY
+from controllers import REGISTRY as mac_REGISTRY
+from components.episode_buffer import ReplayBuffer
+from components.transforms import OneHot
 
 
 def run(_run, _config, _log):

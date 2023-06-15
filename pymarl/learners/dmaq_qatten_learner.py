@@ -1,7 +1,7 @@
 import copy
-from pymarl.components.episode_buffer import EpisodeBatch
-from pymarl.modules.mixers.dmaq_general import DMAQer
-from pymarl.modules.mixers.dmaq_qatten import DMAQ_QattenMixer
+from components.episode_buffer import EpisodeBatch
+from modules.mixers.dmaq_general import DMAQer
+from modules.mixers.dmaq_qatten import DMAQ_QattenMixer
 import torch.nn.functional as F
 import torch as th
 from torch.optim import RMSprop

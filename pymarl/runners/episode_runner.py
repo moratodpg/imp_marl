@@ -1,6 +1,6 @@
-from pymarl.envs import REGISTRY as env_REGISTRY
+from envs import REGISTRY as env_REGISTRY
 from functools import partial
-from pymarl.components.episode_buffer import EpisodeBatch
+from components.episode_buffer import EpisodeBatch
 import numpy as np
 import torch as th
 
