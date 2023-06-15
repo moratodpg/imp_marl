@@ -2,9 +2,9 @@
 
 ## Interface imp_env.py
 
-An IMP environment is implemented as a class and includes two main methods: (i) reset and (ii) step. This is already provided in the interface class, https://github.com/moratodpg/imp_marl/blob/main/imp_env/imp_env.py.
+An IMP environment is implemented as a class and includes two main methods: (i) reset and (ii) step. This is already provided in the interface class, [imp_env](imp_env.py).
 
-These methods are included by default because the wrappers (https://github.com/moratodpg/imp_marl/tree/main/imp_wrappers) that will integrate your IMP environment with typical MARL ecosystems needs their definition.
+These methods are included by default because the [wrappers](../imp_wrappers) that will integrate your IMP environment with typical MARL ecosystems needs their definition.
 
 Additionally, you can include any other relevant methods in your environment.
 
@@ -15,4 +15,4 @@ from imp_env.imp_env import ImpEnv
 class NewEnv(ImpEnv):
 ```
 
-A tutorial is provided in , explaining the steps to create an environment in a simplified exercise.
+Feel free to follow the [tutorial](new_imp_env_tutorial.ipynb), where the steps to create an environment are explained in a simple exercise.
