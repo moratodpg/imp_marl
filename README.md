@@ -18,7 +18,14 @@ and
 `pip install -r requirements.txt` 
 
 ## Installation:
+clone the repository from GitHub:
+`python  3.7`
 
+## Tutorials
+- [Create your own environment scenario](./imp_env/new_imp_env_tutorial.ipynb)
+- [IMP's API explained](imp_wrappers/wrapper_explained.md)
+- [Reproduce the reported results](./results_scripts/README.md)
+- [Retrieve directly the results](./results_scripts/README.md)
 
 ## Sets of environments available:
 - (Correlated and uncorrelated) k-out-of-n system with components subject to fatigue deterioration => [struct](./imp_env/struct_env.py)
@@ -40,13 +47,53 @@ The main code is derived from [pymarl](https://github.com/oxwhirl/pymarl).
 ## Expert-knowledge baselines available:
 - [Expert-based heuristic strategies](https://www.sciencedirect.com/science/article/pii/S0167473017302138)
 
-## Tutorials
-- [Create your own environment scenario](./imp_env/new_imp_env_tutorial.ipynb)
-- [IMP's API explained](imp_wrappers/wrapper_explained.md)
-- [Reproduce the reported results](./results_scripts/README.md)
-- [Retrieve directly the results](./results_scripts/README.md)
+## Run an IMP environment 
+```
+import numpy
+from imp_env.struct_env import Struct
 
-## Run a simple experiment 
+# Define the environment 
+config = {
+    'n_comp': 3,
+    'discount_reward': 0.95,
+    'k_comp': 2,
+    'env_correlation': False,
+    'campaign_cost': False
+}
+
+# Initialise the environment
+env_ = Struct(config)
+
+# Specify actions for the agents. 
+# For instance: do-nothing, inspection, repair.
+action_ = {
+    'agent_0' : 0,
+    'agent_1' : 1,
+    'agent_2' : 2,
+}
+
+# Transition one time step according to the specified action
+obs, rewards, done, insp_outcomes = env_.step(action_)
+print(rewards) # Note that the rewards are common to all agents
+
+# Reset the environment
+initial_obs = env_.reset() #The initial observations can be retrieved
+
+# Simulate one episode selecting always the action do-nothing
+action_ = {
+    'agent_0' : 0,
+    'agent_1' : 0,
+    'agent_2' : 0,
+}
+done = False
+rewards_sum = 0
+while not done:
+    obs, rewards, done, insp_outcomes = env_.step(action_) # Transitions
+    rewards_sum += rewards['agent_0'] # Accumulating rewards
+print(rewards_sum) # Result    
+```
+
+## Run a simple experiment via pymarl
 
 ```shell
 python3 main.py --config=qmix --env-config=struct with env_args.n_comp=10 env_args.custom_param.k_comp=9
