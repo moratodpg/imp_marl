@@ -1,7 +1,7 @@
 import copy
-from pymarl.components.episode_buffer import EpisodeBatch
-from pymarl.modules.critics.coma import COMACritic
-from pymarl.utils.rl_utils import build_td_lambda_targets
+from components.episode_buffer import EpisodeBatch
+from modules.critics.coma import COMACritic
+from utils.rl_utils import build_td_lambda_targets
 import torch as th
 from torch.optim import RMSprop
 

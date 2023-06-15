@@ -10,10 +10,10 @@ from sacred.observers import FileStorageObserver, RunObserver
 from sacred.utils import apply_backspaces_and_linefeeds
 import sys
 import torch as th
-from pymarl.utils.logging import get_logger
 import yaml
 
-from pymarl.run import run
+from run import run
+from utils.logging import get_logger
 
 SETTINGS['CAPTURE_MODE'] = "fd" # set to "no" if you want to see stdout/stderr in console
 logger = get_logger()

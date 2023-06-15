@@ -4,7 +4,7 @@ from sacred import Experiment, SETTINGS
 from sacred.observers import FileStorageObserver, RunObserver
 from sacred.utils import apply_backspaces_and_linefeeds
 import sys
-from pymarl.utils.logging import get_logger
+from utils.logging import get_logger
 import yaml
 
 import datetime
@@ -14,17 +14,17 @@ import time
 import threading
 import torch as th
 from types import SimpleNamespace as SN
-from pymarl.utils.logging import Logger
+from utils.logging import Logger
 from os.path import dirname, abspath
 
-from pymarl.learners import REGISTRY as le_REGISTRY
-from pymarl.runners import REGISTRY as r_REGISTRY
-from pymarl.controllers import REGISTRY as mac_REGISTRY
-from pymarl.components.episode_buffer import ReplayBuffer
-from pymarl.components.transforms import OneHot
+from learners import REGISTRY as le_REGISTRY
+from runners import REGISTRY as r_REGISTRY
+from controllers import REGISTRY as mac_REGISTRY
+from components.episode_buffer import ReplayBuffer
+from components.transforms import OneHot
 
 from train_with_pymarl import _get_config, recursive_dict_update
-from pymarl.run import args_sanity_check, evaluate_sequential
+from run import args_sanity_check, evaluate_sequential
 from sacred import SETTINGS
 SETTINGS.CONFIG.READ_ONLY_CONFIG = False
 SETTINGS[

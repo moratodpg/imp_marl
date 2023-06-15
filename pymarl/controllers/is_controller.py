@@ -1,4 +1,4 @@
-from pymarl.controllers import BasicMAC
+from controllers import BasicMAC
 
 
 class ISMAC(BasicMAC):
