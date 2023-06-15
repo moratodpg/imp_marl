@@ -18,8 +18,17 @@ and
 `pip install -r requirements.txt` 
 
 ## Installation:
-clone the repository from GitHub:
-`python  3.7`
+Clone the repository from GitHub:
+`git clone https://github.com/moratodpg/imp_marl.git`
+
+Access IMP_MARL
+`cd imp_marl`
+
+If you will run experiments relying on pymarl, install the required packages:
+`./pymarl/install_venv.sh`
+
+Otherwise, only numpy is required:
+`pip install numpy`
 
 ## Tutorials
 - [Create your own environment scenario](./imp_env/new_imp_env_tutorial.ipynb)
