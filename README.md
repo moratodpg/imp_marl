@@ -52,48 +52,16 @@ The main code is derived from [PyMarl original implementation](https://github.co
 
 ## Run an IMP environment 
 ```
-import numpy
-from imp_env.struct_env import Struct
+env = Struct({'n_comp': 3,
+               'discount_reward': 0.95,
+               'k_comp': 2,
+               'env_correlation': False,
+               'campaign_cost': False})
 
-# Define the environment 
-config = {
-    'n_comp': 3,
-    'discount_reward': 0.95,
-    'k_comp': 2,
-    'env_correlation': False,
-    'campaign_cost': False
-}
-
-# Initialise the environment
-env_ = Struct(config)
-
-# Specify actions for the agents. 
-# For instance: do-nothing, inspection, repair.
-action_ = {
-    'agent_0' : 0,
-    'agent_1' : 1,
-    'agent_2' : 2,
-}
-
-# Transition one time step according to the specified action
-obs, rewards, done, insp_outcomes = env_.step(action_)
-print(rewards) # Note that the rewards are common to all agents
-
-# Reset the environment
-initial_obs = env_.reset() #The initial observations can be retrieved
-
-# Simulate one episode selecting always the action do-nothing
-action_ = {
-    'agent_0' : 0,
-    'agent_1' : 0,
-    'agent_2' : 0,
-}
-done = False
-rewards_sum = 0
+obs, rewards_sum, done = env.reset(), 0, False
 while not done:
-    obs, rewards, done, insp_outcomes = env_.step(action_) # Transitions
-    rewards_sum += rewards['agent_0'] # Accumulating rewards
-print(rewards_sum) # Result    
+    actions = {f"agent_{i}": random.randint(0,2) for i in range(3)}
+    obs, rewards, done, insp_outcomes = env.step(actions) 
 ```   
 
 ## Citation
