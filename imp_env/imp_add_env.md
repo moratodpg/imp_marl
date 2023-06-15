@@ -1,9 +1,18 @@
-# imp add env
+# Add your IMP environment
 
-Placeholder for tutorial to add env.
+## Interface imp_env.py
 
-Should first explain the interface (imp_env.py) and then how to modify it.
+An IMP environment is implemented as a class and includes two main methods: (i) reset and (ii) step. This is already provided in the interface class, [imp_env](imp_env.py).
 
-Mention that it is only the dynamic and most of the work is done in the wrapper.
+These methods are included by default because the [wrappers](../imp_wrappers) that will integrate your IMP environment with typical MARL ecosystems needs their definition.
 
-add docccsss
+Additionally, you can include any other relevant methods in your environment.
+
+To create a new IMP environment `NewEnv`, inherit imp_env:
+```
+from imp_env.imp_env import ImpEnv 
+
+class NewEnv(ImpEnv):
+```
+
+Feel free to follow the [tutorial](new_imp_env_tutorial.ipynb), where the steps to create an environment are explained in a simple exercise.

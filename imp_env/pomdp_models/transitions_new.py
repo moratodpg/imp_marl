@@ -3,7 +3,7 @@ import scipy.stats as stats
 import math
 
 
-class Pomdp:
+class Transitions:
 
     def __init__(self, config=None):
         self.T = config["T"]
@@ -34,11 +34,11 @@ class Pomdp:
             d0 = dt
         return
 
-    def transition_model(self, n_dstates=30):
-        self.n_dstates = n_dstates
+    def transition_model(self, n_bins=30):
+        self.n_bins = n_bins
         self.d_interv = 1e-100
         interv_start = math.log(1e-4)
-        interv_step = (math.log(self.dcrit) - math.log(1e-4)) / (n_dstates - 2)
+        interv_step = (math.log(self.dcrit) - math.log(1e-4)) / (n_bins - 2)
         interv_end = math.log(self.dcrit)
         interv_transf = np.exp(
             np.arange(interv_start, interv_end + interv_step, interv_step))
@@ -51,11 +51,11 @@ class Pomdp:
         H, _ = np.histogram(self.dd[0, :], self.d_interv)
         self.b0 = H / nsamples
 
-        self.T0 = np.zeros((det_rates, n_dstates, n_dstates))
+        self.T0 = np.zeros((det_rates, n_bins, n_bins))
         for i in range(det_rates - 1):
             D = self.dd[i, :]  # Samples a at det. rate i
             D_ = self.dd[i + 1, :]  # Samples a at det. rate i+1
-            for j in range(n_dstates):
+            for j in range(n_bins):
                 countd = (D > self.d_interv[j]) & (D < self.d_interv[j + 1])
                 Dnext = D_[countd]
                 if countd.sum() < 1:
@@ -65,14 +65,14 @@ class Pomdp:
                     self.T0[i, j, :] = H / countd.sum()
         self.T0[-1,] = self.T0[-2,]
 
-        self.Tr = np.zeros((det_rates, n_dstates, n_dstates))
-        self.Tr = np.tile(self.b0, (det_rates, n_dstates, 1))
+        self.Tr = np.zeros((det_rates, n_bins, n_bins))
+        self.Tr = np.tile(self.b0, (det_rates, n_bins, 1))
 
         return self.d_interv
 
     def inspection_model(self, pod_insp=8):
 
-        dobs = np.zeros((self.n_dstates, 2))
+        dobs = np.zeros((self.n_bins, 2))
         d_ref = (self.d_interv[0:-1] + self.d_interv[1:]) / 2
         d_ref[-1] = 21
         pod = stats.expon.cdf(d_ref, 0, pod_insp)
