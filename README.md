@@ -7,7 +7,8 @@ In IMP-MARL, you can:
 - Implement your own infrastructure management planning (IMP) environment or execute an IMP environment available => [imp_env](./imp_env/)
 - Generate IMP policies through state-of-the-art MARL methods. The environments can be integrated with typical ecosystems via wrappers => [imp_wrappers](./imp_wrappers/)
 - Compute expert-based heuristic policies => [heuristics](./heuristics/)
-Additionally, you can also:
+
+Additionally, you will be able to:
 - Retrieve the results of a benchmark campaign, where MARL methods are assessed in terms of scalibility.
 - Reproduce our experiments.
 
