@@ -5,7 +5,7 @@
 
 alg=$1
 env=$2
-python main.py --config=${alg} --env-config=${env} with name=${alg}_${env} test_nepisode=-1
+python train_with_pymarl.py --config=${alg} --env-config=${env} with name=${alg}_${env} test_nepisode=-1
 
 #conda deactivate
 #deactivate

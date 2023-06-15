@@ -30,7 +30,7 @@ python main.py --config=alg_config_file --env-config=env_config_file with name=a
 ```
 
 # Train agents like in the paper
-For the paper, we have several config files in the `config/alg` folder.
+To train like we did in the paper, we have several config files in the `config/alg` folder.
 
 | QMIX       | QVMix       | QPLEX       |   COMA        | FACMAC      | IQL            | DQN      |
 |------------|-------------|-------------|---------------|-------------|----------------|----------|
@@ -66,4 +66,6 @@ To test the agents at testing time, use the `run_test.sh` file.
 ```bash
 ./run_test.sh experiment_name n_test_epsiode
 ```
+
+
 
