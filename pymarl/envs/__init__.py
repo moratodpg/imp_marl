@@ -3,10 +3,6 @@ from imp_wrappers.MultiAgentEnv import MultiAgentEnv
 from imp_wrappers.pymarl_ma_struct import PymarlMAStruct
 from imp_wrappers.pymarl_sa_struct import PymarlSAStruct
 
-import sys
-import os
-
-
 
 def env_fn(env, **kwargs) -> MultiAgentEnv:
     return env(**kwargs)
