@@ -3,7 +3,7 @@
 # Installation
 More packages are required for PyMarl.
 
-To reproduce paper result, you need **python 3.7!!**
+To reproduce the results in our paper, you will need **python 3.7!!**
 
 Conda:
 ```
@@ -16,7 +16,7 @@ Virtual environment:
 ```
 
 # Configuration files
-All the configuration files are in the folder `config`.
+All the configuration files are stored in the folder `config`.
 There are two config folders: [alg](config/alg) and [envs](config/envs).
 The `alg` folder contains the config for each algorithm.
 The `envs` folder contains the config for each environment.
@@ -67,8 +67,8 @@ To test the agents at testing time, use the `run_test.sh` file.
 ./run_test.sh experiment_name n_test_epsiode
 ```
 
-# Reproducing the results
+# Reproduce our results
 To reproduce the results in the paper, you need to train the agents with the `run.sh` file and specifying the seed.
 The seeds are available in the [logs file](plots/README.md) that you have to download.
-You just have to add `sedd=xxxxx` at the end of the python command in the `run.sh` file.
+You just have to add `seed=xxxxx` at the end of the python command in the `run.sh` file.
 
