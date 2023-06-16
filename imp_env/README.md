@@ -17,4 +17,4 @@ class NewEnv(ImpEnv):
 
 Feel free to follow this [tutorial](new_imp_env_tutorial.ipynb), where the steps to create an environment are explained in a simple exercise.
 
-You can also check the [guidelines](./pomdp_models/generate_transitions.ipynb) to generate and store your own transition model.
+You can also check the [guidelines](./pomdp_models/generate_transitions.ipynb) for generating and storing your own transition model.
