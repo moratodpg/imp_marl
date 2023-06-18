@@ -1,5 +1,3 @@
-# Interface for IMP environment
-
 class ImpEnv(object):
     """ Interface for creating IMP environments.
 
