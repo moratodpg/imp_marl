@@ -16,6 +16,6 @@ class ImpEnv(object):
         Returns damage probabilities, reward, terminated, inspection_infos and transitions the environment one time step.
 
         Args:
-            action: A dictionary containing the actions assigned by each agent.
+            action: Dictionary containing the actions assigned by each agent.
         """
         raise NotImplementedError
