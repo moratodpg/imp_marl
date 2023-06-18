@@ -36,7 +36,7 @@ class Struct(ImpEnv):
         step
         pf_sys
         immediate_cost
-        belief_update_uncorrelated:
+        belief_update_uncorrelated
         belief_update_correlated
     """
     def __init__(self, config=None):
