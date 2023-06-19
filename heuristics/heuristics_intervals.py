@@ -26,6 +26,8 @@ class Heuristics():
         self.env_correlation = env_correlation
         self.campaign_cost = campaign_cost
         self._seed = seed
+        if seed is not None:
+            np.random.seed(seed)
 
         self.config = {"n_comp": n_comp,
                        "discount_reward": discount_reward,
@@ -58,11 +60,20 @@ class Heuristics():
                          "insp_interv": insp_list[ind_opt],
                          "insp_comp": comp_list[ind_opt]}
         
+        if not self.env_correlation:
+            corr_file = 'uc'
+        else:
+            corr_file = 'c'
+        if not self.campaign_cost:
+            camp_file = 'ref'
+        else:
+            camp_file = 'camp'
         path_results = "heuristics/Results"
         isExist = path.exists(path_results)
         if not isExist:
             makedirs(path_results)
-        np.savez('heuristics/Results/heuristics_'+ self.date_record, ret_total = ret_total, opt_heur = self.opt_heur)
+        np.savez('heuristics/Results/heuristics_'+ str(self.n_comp) + '_' + str(self.k_comp) + corr_file + camp_file + '_' + self.date_record,
+                  ret_total = ret_total, opt_heur = self.opt_heur, config=self.config, seed_test=self._seed)
         return self.opt_heur
 
     def eval(self, eval_size, insp_int, comp_insp):
