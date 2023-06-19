@@ -144,7 +144,7 @@ class Struct_owf(ImpEnv):
         # An episode is done if the agent has reached the target
         done = self.time_step >= self.ep_length
 
-        return self.observations, rewards, done, None
+        return self.observations, rewards, done, inspection
 
     def pf_sys(self, pf): 
         """ Computes the system failure probability as the sum of the failure risk of all wind tubines.
