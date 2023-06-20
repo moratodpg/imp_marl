@@ -38,7 +38,7 @@ Once downloaded, you need to find the seeds corresponding to the experiments we 
 
 The full list of possible algorithm and environment combination can be found [here](EXEC_PYMARL.MD).
 
-# Example
+# Reproduce one experiment
 
 You want to reproduce the results of QMIX in the k-out-of-n environment with 5 agents and correlations.
 
@@ -48,12 +48,24 @@ You first need the seeds. Go to the [find seed](results_scripts/find_seed.ipynb)
 
 You will obtain:
 
+```
+480809709
+505233690
+302946203
+545849197
+197414500
+132396701
+608786979
+842290689
+426355796
+850722379
+```
 
-To train with the seed=XXX, you need to execute this, after activating your environment:
+To train with the seed=197414500, you need to execute the training script, after activating your environment:
 
 ```
 conda activate imp_marl_pymarl
-python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=XXX
+python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=197414500
 conda deactivate
 ```
 
@@ -61,6 +73,6 @@ or
 
 ```
 conda activate imp_marl_pymarl
-python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=XXX
+python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=197414500
 conda deactivate
 ````
