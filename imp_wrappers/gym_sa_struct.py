@@ -7,7 +7,6 @@ from gym import spaces
 
 from imp_env.struct_env import Struct
 
-
 class GymSaStruct(gym.Env):
     def __init__(self, config=None):
         empty_config = {"config": {"components": 2}}
