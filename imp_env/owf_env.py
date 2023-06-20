@@ -1,3 +1,5 @@
+""" Defines the offshore wind farm (owf) class."""
+
 import os
 import numpy as np
 from imp_env.imp_env import ImpEnv

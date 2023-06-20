@@ -1,3 +1,5 @@
+""" Interface for creating IMP environments. """
+
 import numpy as np
 import os
 from imp_env.imp_env import ImpEnv
