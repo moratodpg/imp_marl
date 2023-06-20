@@ -14,7 +14,7 @@ Additionally, you will be able to:
 
 This repository has been developed and is maintained by Pascal Leroy & Pablo G. Morato.
 
-Please consider opening an issue or a PR to help us improve this repository.
+Please consider opening an issue or a pull request to help us improve this repository.
 
 ![imp](imp_intro.png)
 
