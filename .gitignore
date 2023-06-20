@@ -331,3 +331,5 @@ results_scripts/plots/
 results_scripts/logs/
 results_scripts/MARL_logs.zip
 /pymarl/results/
+
+imp_env/pomdp_models/model.npz
