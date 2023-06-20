@@ -1,3 +1,4 @@
+""" Class for the transition model of an IMP problem. """
 import numpy as np
 import scipy.stats as stats
 import math
