@@ -76,3 +76,5 @@ conda activate imp_marl_pymarl
 python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=197414500
 conda deactivate
 ````
+
+A results folder will be created with your results.
