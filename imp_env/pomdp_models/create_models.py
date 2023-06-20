@@ -4,7 +4,7 @@ import scipy.stats as stats
 import math
 
 
-class Transitions:
+class CreateModels:
 
     def __init__(self, config=None):
         self.T = config["T"]
