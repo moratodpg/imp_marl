@@ -3,8 +3,16 @@
 **TO REPRODUCE THE RESULTS IN THE PAPER, PLEASE FOLLOW THE INSTRUCTIONS IN [REPROD_EXP.md](../REPROD_EXP.md).**
 
 # Installation
-More packages are required for PyMarl.
 
+## Git
+
+Pull the repository:
+```
+gh repo clone moratodpg/imp_marl
+cd imp_marl
+```
+
+## Requirements
 To reproduce the results in our paper, you will need **python 3.7!!**
 
 Conda:
