@@ -1,8 +1,8 @@
 # Reproduce the results from the paper
 
-This is a guide for a step by step reproduction of the results from the paper.
+This is a step-by-step guide for reproducing of the results presented in the paper.
 
-It may be redundant with the information from others files.
+It may be redundant with the information from others files but the goal here is to have all the instructions in a single file.
 
 # Installation
 To reproduce the results in our paper, you will need **python 3.7!!**
@@ -72,9 +72,9 @@ conda deactivate
 or 
 
 ```
-conda activate imp_marl_pymarl
+source env/bin/activate
 python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=197414500
-conda deactivate
+deactivate
 ````
 
 A results folder will be created with your results.
