@@ -1,5 +1,7 @@
 # Using pymarl wrapper to execute MARL algorithms
 
+**TO REPRODUCE THE RESULTS IN THE PAPER, PLEASE FOLLOW THE INSTRUCTIONS IN [REPROD_EXP.md](REPROD_EXP.md).**
+
 # Installation
 More packages are required for PyMarl.
 
