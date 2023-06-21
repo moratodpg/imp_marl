@@ -36,11 +36,11 @@ However, to reproduce our results, more packages are required and installation i
 **Note: A campaign cost can be activated in any environment.**
 
 ## Available wrappers with examples: 
-- Ready: [**PyMarl**](imp_wrappers/[pymarl_ma_struct.py) 
-- WIP: [**Gym**]() 
-- WIP: [**PettingZoo**]() 
-- WIP: [**MARLlib**]() 
-- WIP: [**TorchRL**]() 
+- Ready: [**PyMarl**](imp_wrappers/[pymarl_ma_struct.py): Multi and single agent wrappers.
+- WIP: [**Gym**](): single-agent wrapper.
+- WIP: [**PettingZoo**]() : multi-agent wrapper.
+- WIP: [**MARLlib**](): TBD
+- WIP: [**TorchRL**](): TBD
 
 ## PyMarl algorithms available:
 
