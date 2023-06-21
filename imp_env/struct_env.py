@@ -1,19 +1,57 @@
+""" Interface for creating IMP environments. """
+
 import numpy as np
 import os
 from imp_env.imp_env import ImpEnv
 
 
 class Struct(ImpEnv):
+    """ k-out-of-n system (struct) class. 
 
+    Attributes:
+        n_comp: Integer indicating the number of components.
+        discount_reward: Float indicating the discount factor.
+        k_comp: Integer indicating the number 'k' (out of n) components in the system.
+        env_correlation: Boolean indicating whether the initial damage prob are correlated among components.
+        campaign_cost: Boolean indicating whether a global campaign cost is considered in the reward model.
+        ep_length: Integer indicating the number of time steps in the finite horizon.
+        proba_size: Integer indicating the number of bins considered in the discretisation of the damage probability.
+        alpha_size: Integer indicating the number of bins considered in the discretisation of the correlation factor.
+        n_obs_inspection: Integer indicating the number of potential outcomes resulting from an inspection.
+        actions_per_agent: Integer indicating the number of actions that an agent can take.
+        initial_damage_proba: Numpy array containing the initial damage probability.
+        transition_model: Numpy array containing the transition model that drives the environment dynamics.
+        inspection_model: Numpy array containing the inspection model.
+        initial_alpha: Numpy array contaning the containing the initial correlation factor.
+        initial_damage_proba_correlated: Numpy array containing the initial damage probability given the correlation factor.
+        damage_proba_after_repair_correlated: Numpy array containing the initial damage probability given the correlation factor after a repair is conducted.
+        agent_list: Dictionary categorising the number of agents.
+        time_step: Integer indicating the current time step.
+        damage_proba: Numpy array contatining the current damage probability.
+        damage_proba_correlated: Numpy array contatining the current damage probability given the correlation factor.
+        alphas: Numpy array contatining the current correlation factor.
+        d_rate: Numpy array contatining the current deterioration rate.
+        observations: Dictionary listing the observations received by the agents in the Dec-POMDP.
+
+    Methods: 
+        reset
+        step
+        pf_sys
+        immediate_cost
+        belief_update_uncorrelated
+        belief_update_correlated
+    """
     def __init__(self, config=None):
-        """
-        :param config: dict of config parameters, composed of:
-            Keys:
-            n_comp: number of components
-            discount_reward: discount factor for reward
-            k_comp: number of components required to not fail
-            env_correlation: whether the damage probability is correlated or not
-            campaign_cost: whether to include campaign cost in reward
+        """ Initialises the class according to the provided config instructions.
+
+        Args:
+            config: Dictionary containing config parameters.
+                Keys:
+                    n_comp: Number of components.
+                    discount_reward: Discount factor. 
+                    k_comp: Number of components required to not fail.
+                    env_correlation: Whether the damage probability is correlated or not.
+                    campaign_cost: Whether to include campaign cost in reward.
         """
         if config is None:
             config = {"n_comp": 2,
@@ -34,14 +72,13 @@ class Struct(ImpEnv):
             else config["k_comp"]
         self.env_correlation = config["env_correlation"]
         self.campaign_cost = config["campaign_cost"]
-        self.ep_length = 30  # Horizon length
-        self.proba_size = 30  # Crack states (fatigue hotspot damage states)
-        self.alpha_size = 80 if self.env_correlation else None  # alpha
-        self.n_obs_inspection = 2  # Total number of possible information received from inspection (crack detected or not)
+        self.ep_length = 30  
+        self.proba_size = 30  
+        self.alpha_size = 80 if self.env_correlation else None 
+        self.n_obs_inspection = 2  
         self.actions_per_agent = 3
 
-        # Loading the underlying POMDP model
-
+        # Loading the underlying transition and inspection models
         if not self.env_correlation:
             numpy_models = np.load(os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
@@ -93,16 +130,19 @@ class Struct(ImpEnv):
         self.damage_proba_correlated = self.initial_damage_proba_correlated
         self.alphas = self.initial_alpha
         self.d_rate = np.zeros((self.n_comp, 1), dtype=int)
-        self.observations = None  # obs of the DecPomdp
-
-        # Reset the environment
+        self.observations = None  
+        
         self.reset()
 
     def reset(self):
+        """ Resets the environment to its initial step.
+
+        Returns:
+            observations: Dictionary with the damage probability received by the agents.
+        """
         # We need the following line to seed self.np_random
         # super().reset(seed=seed)
 
-        # Choose the agent's belief
         self.time_step = 0
         self.damage_proba = self.initial_damage_proba
         self.damage_proba_correlated = self.initial_damage_proba_correlated
@@ -117,6 +157,17 @@ class Struct(ImpEnv):
         return self.observations
 
     def step(self, action: dict):
+        """ Transitions the environment by one time step based on the selected actions. 
+
+        Args:
+            action: Dictionary containing the actions assigned by each agent.
+
+        Returns:
+            observations: Dictionary with the damage probability received by the agents.
+            rewards: Dictionary with the rewards received by the agents.
+            done: Boolean indicating whether the final time step in the horizon has been reached.
+            inspection: Integers indicating which inspection outcomes have been collected.
+        """
         action_list = np.zeros(self.n_comp, dtype=int)
         for i in range(self.n_comp):
             action_list[i] = action[self.agent_list[i]]
@@ -156,11 +207,18 @@ class Struct(ImpEnv):
         # An episode is done if the agent has reached the target
         done = self.time_step >= self.ep_length
 
-        # info = {"belief": self.beliefs}
         return self.observations, rewards, done, inspection
 
     def pf_sys(self, pf, k):
-        """compute pf_sys, the probability of failure of the system for k-out-of-n components"""
+        """ Computes the system failure probability pf_sys for k-out-of-n components
+        
+        Args:
+            pf: Numpy array with components' failure probability.
+            k: Integer indicating k (out of n) components.
+        
+        Returns:
+            PF_sys: Numpy array with the system failure probability.
+        """
         n = pf.size
         nk = n - k
         m = k + 1
@@ -181,7 +239,17 @@ class Struct(ImpEnv):
         return PF_sys
 
     def immediate_cost(self, B, a, B_, drate):
-        """ immediate reward (-cost) based on current damage state and action """
+        """ Computes the immediate reward (negative cost) based on current (and next) damage probability and action selected
+        
+            Args:
+                B: Numpy array with current damage probability.
+                a: Numpy array with actions selected.
+                B_: Numpy array with the next time step damage probability.
+                d_rate: Numpy array with current deterioration rates.
+            
+            Returns:
+                cost_system: Float indicating the reward received.
+        """
         cost_system = 0
         PF = B[:, -1]
         PF_ = B_[:, -1].copy()
@@ -207,13 +275,24 @@ class Struct(ImpEnv):
             cost_system += PfSyS_ * (-10000)
         else:
             cost_system += (PfSyS_ - PfSyS) * (-10000)
-        if campaign_executed: # Assign campaign cost
+        if campaign_executed: 
             cost_system += -5
         return cost_system
 
     def belief_update_uncorrelated(self, proba, action, drate):
-        """Bayesian belief update based on
-         previous belief, current observation, and action taken"""
+        """ Transitions the environment based on the current damage prob, actions selected, and current deterioration rate
+            In this case, the initial damage prob are not correlated among components.
+        
+        Args:
+            proba: Numpy array with current damage probability.
+            action: Numpy array with actions selected.
+            drate: Numpy array with current deterioration rates.
+
+        Returns:
+            inspection: Integers indicating which inspection outcomes have been collected.
+            new_proba: Numpy array with the next time step damage probability.
+            new_drate: Numpy array with the next time step deterioration rate.
+        """
         new_proba = np.zeros((self.n_comp, self.proba_size))
         new_proba[:] = proba
         inspection = np.zeros(self.n_comp)
@@ -248,9 +327,22 @@ class Struct(ImpEnv):
         return inspection, new_proba, new_drate
 
     def belief_update_correlated(self, bc, a, drate, alpha):
-        """Bayesian belief update based on previous belief,
-         current observation, and action taken"""
+        """ Transitions the environment based on the current damage prob, actions selected, and current deterioration rate
+            In this case, the initial damage prob are correlated among components.
+        
+        Args:
+            bc: Numpy array with current damage probability conditional on correlation factor.
+            a: Numpy array with actions selected.
+            drate: Numpy array with current deterioration rates.
+            alpha: Numpy array with current correlation factor.
 
+        Returns:
+            inspection: Integers indicating which inspection outcomes have been collected.
+            new_proba: Numpy array with the next time step damage probability.
+            new_drate: Numpy array with the next time step deterioration rate.
+            new_proba_correlated: Numpy array with the next probability conditional on correlation factor.
+            new_alpha: Numpy array with the next correlation factor.
+        """
         new_proba = np.zeros((self.n_comp, self.proba_size))
         new_proba_correlated = np.zeros((self.n_comp, self.alpha_size, self.proba_size))
         new_drate = np.zeros((self.n_comp, 1), dtype=int)
@@ -258,7 +350,7 @@ class Struct(ImpEnv):
         inspection = np.zeros(self.n_comp)
         for i in range(self.n_comp):
             p1 = bc[i, :, :].dot(
-                self.transition_model[a[i], drate[i, 0]])  # environment transition
+                self.transition_model[a[i], drate[i, 0]])  # Environment transition
             new_proba_correlated[i, :, :] = p1
             new_drate[i, 0] = drate[i, 0] + 1
 
@@ -272,10 +364,10 @@ class Struct(ImpEnv):
                     inspection[i] = np.random.choice(range(0, self.n_obs_inspection), size=None,
                                                       replace=True, p=ins_dist)
                 pInsp = p1 * self.inspection_model[a[i], :, int(inspection[i])]  # belief update
-                likAlpha = np.sum(pInsp, axis=1)  # likelihood insp alpha
+                likAlpha = np.sum(pInsp, axis=1)  # Likelihood insp alpha
                 normBel = np.tile(likAlpha, self.proba_size).reshape(
                     self.alpha_size, self.proba_size,
-                    order='F')  # normalization constant
+                    order='F')  # Normalisation constant
                 new_proba_correlated[i, :, :] = pInsp / normBel
                 alpha_curr = likAlpha * new_alpha
                 new_alpha = alpha_curr / np.sum(alpha_curr)
@@ -286,5 +378,5 @@ class Struct(ImpEnv):
 
         for i in range(self.n_comp):
             new_proba[i, :] = new_alpha.dot(
-                new_proba_correlated[i, :, :])  # Belief (marginalize out alpha)
+                new_proba_correlated[i, :, :])  # Marginalize out alpha)
         return inspection, new_proba, new_drate, new_proba_correlated, new_alpha
