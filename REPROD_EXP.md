@@ -25,7 +25,7 @@ Several script are in notebook, so you will need to [install jupyter notebook](h
 
 ## Install the packages of imp_marl
 
-You need to install the packages of this repository.
+You need to install the packages of this repository, **don't forget to activate your python environment**.
 
 The `-e` allows you to modify any package and use it without reinstalling it.
 
@@ -85,7 +85,7 @@ conda deactivate
 or 
 
 ```
-source env/bin/activate
+source pymarl/imp_marl_venv/bin/activate
 python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=843209078
 deactivate
 ````
