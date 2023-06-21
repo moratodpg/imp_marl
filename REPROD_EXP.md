@@ -36,7 +36,7 @@ unzip results_scripts/logs/MARL_logs/struct_uc.zip
 
 Once downloaded, you need to find the seeds corresponding to the experiments we made in the paper with the [appropriate notebook](results_scripts/find_seed.ipynb).
 
-The full list of possible algorithm and environment combination can be found [here](EXEC_PYMARL.MD).
+The full list of possible algorithm and environment combination can be found [here](EXEC_PYMARL.md).
 
 # Reproduce one experiment
 

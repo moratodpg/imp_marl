@@ -38,7 +38,7 @@ However, to reproduce our results, more packages are required and installation i
 
 ## PyMarl algorithms available:
 
-To train agents with PyMarl and one of the following algorithms, instructions are available [here](EXEC_PYMARL.MD):
+To train agents with PyMarl and one of the following algorithms, instructions are available [here](EXEC_PYMARL.md):
 
 - [**QMIX**: QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning](https://arxiv.org/abs/1803.11485)
 - [**QVMIX**: QVMix and QVMix-Max: Extending the Deep Quality-Value Family of Algorithms to Cooperative Multi-Agent Reinforcement Learning](https://arxiv.org/abs/2012.12062)
