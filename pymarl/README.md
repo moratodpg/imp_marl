@@ -1,3 +1,3 @@
 # PYMARL
 
-[PYMARL guide.](EXEC_PYMARL.MD)
+[PYMARL guide.](../EXEC_PYMARL.MD)
