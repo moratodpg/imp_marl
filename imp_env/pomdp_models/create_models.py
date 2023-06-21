@@ -1,9 +1,10 @@
+""" Class for the transition model of an IMP problem. """
 import numpy as np
 import scipy.stats as stats
 import math
 
 
-class Transitions:
+class CreateModels:
 
     def __init__(self, config=None):
         self.T = config["T"]

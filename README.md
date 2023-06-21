@@ -14,6 +14,8 @@ Additionally, you will be able to:
 
 This repository has been developed and is maintained by Pascal Leroy & Pablo G. Morato.
 
+Please consider opening an issue or a pull request to help us improve this repository.
+
 ![imp](imp_intro.png)
 
 ## Main requirements:
@@ -22,7 +24,7 @@ To work with our environments, one only needs to install [Numpy](https://numpy.o
 However, to reproduce our results, more packages are required and installation instructions are provided [here](pymarl/README.md).
 
 ## Tutorials
-- [Create your own environment scenario](imp_env/new_imp_env_tutorial.ipynb)
+- [Create your own IMP environment scenario](imp_env/new_imp_env_tutorial.ipynb)
 - [IMP's API explained](imp_wrappers/wrapper_explained.md)
 - [Train agents like in the paper and/or **reproduce** the results](EXEC_PYMARL.md)
 - [Retrieve directly the results](results_scripts/README.md)

@@ -15,4 +15,6 @@ from imp_env.imp_env import ImpEnv
 class NewEnv(ImpEnv):
 ```
 
-Feel free to follow the [tutorial](new_imp_env_tutorial.ipynb), where the steps to create an environment are explained in a simple exercise.
+Feel free to follow this [tutorial](new_imp_env_tutorial.ipynb), where the steps to create an environment are explained in a simple exercise.
+
+You can also check the [guidelines](./pomdp_models/generate_models.ipynb) for generating and storing your own transition model.
