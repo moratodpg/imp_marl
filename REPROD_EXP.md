@@ -1,4 +1,4 @@
-# Reproduce the results from the paper
+# Reproduce the paper results
 
 This is a step-by-step guide for reproducing of the results presented in the paper.
 
@@ -40,6 +40,7 @@ The full list of possible algorithm and environment combination can be found [he
 
 # Reproduce one experiment
 
+## Train the agents
 You want to reproduce the results of QMIX in the k-out-of-n environment with 5 agents and correlations.
 
 Therefore, alg = `qmix_uc_10` and env = `struct_c_5`.
@@ -77,4 +78,9 @@ python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 w
 deactivate
 ````
 
+## Test the agents
+
 A results folder will be created with your results.
+
+You now needs to execute a the tests to obtain the results.
+

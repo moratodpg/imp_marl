@@ -26,7 +26,7 @@ However, to reproduce our results, more packages are required and installation i
 ## Tutorials
 - [Create your own IMP environment scenario](imp_env/new_imp_env_tutorial.ipynb)
 - [IMP's API explained](imp_wrappers/wrapper_explained.md)
-- [**Reproduce** the results of the paper](REPROD_EXP.md)
+- [**Reproduce** the paper results](REPROD_EXP.md)
 - [Retrieve directly the results](results_scripts/README.md)
 - [Train your own MARL agents with PyMarl](EXEC_PYMARL.md)
 
