@@ -1,6 +1,6 @@
 # Using pymarl wrapper to execute MARL algorithms
 
-**TO REPRODUCE THE RESULTS IN THE PAPER, PLEASE FOLLOW THE INSTRUCTIONS IN [REPROD_EXP.md](REPROD_EXP.md).**
+**TO REPRODUCE THE RESULTS IN THE PAPER, PLEASE FOLLOW THE INSTRUCTIONS IN [REPROD_EXP.md](../REPROD_EXP.md).**
 
 # Installation
 More packages are required for PyMarl.
@@ -30,7 +30,7 @@ pip install -e .
 
 # Configuration files
 All the configuration files are stored in the folder `pymarl/config`.
-There are two config folders: [alg](pymarl/config/alg) and [envs](pymarl/config/envs).
+There are two config folders: [alg](pymarl/config/alg) and [envs](config/envs).
 The `alg` folder contains the config for each algorithm.
 The `envs` folder contains the config for each environment.
 
@@ -81,4 +81,4 @@ To test the agents at testing time, use the `run_test.sh` file.
 ```
 
 # Reproduce our results
-To reproduce the results in the paper, follow the instructions in [REPROD_EXP.md](REPROD_EXP.md).
+To reproduce the results in the paper, follow the instructions in [REPROD_EXP.md](../REPROD_EXP.md).

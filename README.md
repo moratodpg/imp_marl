@@ -28,7 +28,7 @@ However, to reproduce our results, more packages are required and installation i
 - [IMP's API explained](imp_wrappers/wrapper_explained.md)
 - [**Reproduce** the paper results](REPROD_EXP.md)
 - [Retrieve directly the results](results_scripts/README.md)
-- [Train your own MARL agents with PyMarl](EXEC_PYMARL.md)
+- [Train your own MARL agents with PyMarl](pymarl/EXEC_PYMARL.md)
 
 ## Sets of environments available:
 - [(Correlated and uncorrelated) k-out-of-n system with components subject to fatigue deterioration.](./imp_env/struct_env.py)
@@ -38,7 +38,7 @@ However, to reproduce our results, more packages are required and installation i
 
 ## PyMarl algorithms available:
 
-To train agents with PyMarl and one of the following algorithms, instructions are available [here](EXEC_PYMARL.md):
+To train agents with PyMarl and one of the following algorithms, instructions are available [here](pymarl/EXEC_PYMARL.md):
 
 - [**QMIX**: QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning](https://arxiv.org/abs/1803.11485)
 - [**QVMIX**: QVMix and QVMix-Max: Extending the Deep Quality-Value Family of Algorithms to Cooperative Multi-Agent Reinforcement Learning](https://arxiv.org/abs/2012.12062)

@@ -2,7 +2,7 @@
 
 The PyMarl code is derived from [PyMarl original implementation](https://github.com/oxwhirl/pymarl).
 
-All the information to run PyMarl algorithms can be found in the [PYMARL guide](../EXEC_PYMARL.md).
+All the information to run PyMarl algorithms can be found in the [PYMARL guide](EXEC_PYMARL.md).
 
 # Implemented algorithms
 
