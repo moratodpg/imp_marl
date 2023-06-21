@@ -63,7 +63,7 @@ You will obtain:
 540410252
 ```
 
-To train with the seed=197414500, you need to execute the training script, after activating your environment:
+To train with the seed=843209078, you need to execute the training script, after activating your environment:
 
 ```
 conda activate imp_marl_pymarl
