@@ -51,16 +51,16 @@ You first need the seeds. Go to the [find seed](results_scripts/find_seed.ipynb)
 You will obtain:
 
 ```
-480809709
-505233690
-302946203
-545849197
-197414500
-132396701
-608786979
-842290689
-426355796
-850722379
+604251540
+622798568
+214664275
+846103983
+843209078
+442054166
+512556830
+655969730
+854845478
+540410252
 ```
 
 To train with the seed=197414500, you need to execute the training script, after activating your environment:
