@@ -1,3 +1,5 @@
+""" Test the two PyMarl wrapper with the same struct parameters. """
+
 import numpy as np
 from imp_wrappers.pymarl_ma_struct import PymarlMAStruct
 from imp_wrappers.pymarl_sa_struct import PymarlSAStruct

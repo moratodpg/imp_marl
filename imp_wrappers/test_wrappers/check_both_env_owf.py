@@ -1,13 +1,12 @@
+""" Test the two PyMarl wrapper with the same owf parameters. """
+
 import numpy as np
-
-import os
-
 from imp_wrappers.pymarl_ma_struct import PymarlMAStruct
 from imp_wrappers.pymarl_sa_struct import PymarlSAStruct
 
 if __name__ == '__main__':
 
-    n_episode = 10
+    n_episode = 1000
     env_1 = PymarlMAStruct(struct_type="owf",
                            n_comp=2,
                            discount_reward=.95,

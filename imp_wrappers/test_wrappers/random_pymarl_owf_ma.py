@@ -1,6 +1,7 @@
+""" Demonstration of the PymarlMAStruct wrapper with random actions. """
+
 import numpy as np
 from imp_wrappers.pymarl_ma_struct import PymarlMAStruct
-import os
 
 if __name__ == '__main__':
     n_episode = 100
