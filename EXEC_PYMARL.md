@@ -17,6 +17,17 @@ Virtual environment:
 ./pymarl/install_venv.sh
 ```
 
+## Install the packages of imp_marl
+
+You need to install the packages of this repository.
+
+The `-e` allows you to modify any package and use it without reinstalling it.
+
+```
+pip install -e .
+```
+
+
 # Configuration files
 All the configuration files are stored in the folder `pymarl/config`.
 There are two config folders: [alg](pymarl/config/alg) and [envs](pymarl/config/envs).
@@ -70,12 +81,4 @@ To test the agents at testing time, use the `run_test.sh` file.
 ```
 
 # Reproduce our results
-To reproduce the results in the paper, you need to train the agents with the `run.sh` file and specifying the seed.
-
-The seeds are available in the [logs file](results_scripts/download_logs.sh) that need to be downloaded.
-
-The seed can be found in the corresponding config.json file of each experiments and a [script](placeholder) is provided to retrieve any seed based on the config files described.
-
-You just have to then add `seed=xxxxx` at the end of the python command in the `run.sh` file.
-
-A complete guide for the step by step is provided [here](placeholder).
+To reproduce the results in the paper, follow the instructions in [REPROD_EXP.md](REPROD_EXP.md).
