@@ -7,6 +7,8 @@ It may be redundant with the information from others files but the goal here is 
 In this guide, we consider that the current working directory of the terminal is in `/imp_marl/`.
 
 # Installation
+
+## Requirements
 To reproduce the results in our paper, you will need **python 3.7!!**
 
 Conda:
@@ -20,6 +22,17 @@ or Virtual environment (make sure you execute the script with a python 3.7 versi
 ```
 
 Several script are in notebook, so you will need to [install jupyter notebook](https://jupyter.org/install).
+
+## Install the packages of imp_marl
+
+You need to install the packages of this repository.
+
+The `-e` allows you to modify any package and use it without reinstalling it.
+
+```
+pip install -e .
+```
+# Reproduce one experiment
 
 ## Retrieve seeds to execute to reproduce
 
@@ -38,8 +51,6 @@ unzip results_scripts/logs/MARL_logs/struct_uc.zip -d results_scripts/logs/MARL_
 Once downloaded, you need to find the seeds corresponding to the experiments we made in the paper with the [appropriate notebook](results_scripts/find_seed.ipynb).
 
 The full list of possible algorithm and environment combination can be found [here](EXEC_PYMARL.md).
-
-# Reproduce one experiment
 
 ## Train the agents
 You want to reproduce the results of QMIX in the k-out-of-n environment with 5 agents and correlations.
@@ -81,7 +92,10 @@ deactivate
 
 ## Test the agents
 
-A results folder will be created with your results.
+A results folder will be created with your results and you will find the train networks in the `results/models` folder.
 
-You now needs to execute a the tests to obtain the results.
+You now needs to execute the test run to obtain the results.
 
+```
+./pymarl/run_test.sh qmix_uc_10_struct_c_5__yyyy-mm-dd-hh-mm-ss 10000
+```
