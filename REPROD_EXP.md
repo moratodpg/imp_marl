@@ -74,11 +74,11 @@ You will obtain:
 540410252
 ```
 
-To train with the seed=197414500, you need to execute the training script, after activating your environment:
+To train with the seed=843209078, you need to execute the training script, after activating your environment:
 
 ```
 conda activate imp_marl_pymarl
-python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=197414500
+python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=843209078
 conda deactivate
 ```
 
@@ -86,7 +86,7 @@ or
 
 ```
 source env/bin/activate
-python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=197414500
+python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=843209078
 deactivate
 ````
 
