@@ -4,9 +4,17 @@ This is a step-by-step guide for reproducing of the results presented in the pap
 
 It may be redundant with the information from others files but the goal here is to have all the instructions in a single file.
 
-In this guide, we consider that the current working directory of the terminal is in `/imp_marl/`.
+In this guide, we consider that the current working directory of the terminal is the main folder `/imp_marl/`.
 
 # Installation
+
+## Git
+
+Pull the repository:
+```
+gh repo clone moratodpg/imp_marl
+cd imp_marl
+```
 
 ## Requirements
 To reproduce the results in our paper, you will need **python 3.7!!**
