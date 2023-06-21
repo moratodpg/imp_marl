@@ -1,9 +1,10 @@
 # How to retrieve the data
 
-To retrieve the logs, you need to download the data from [here](TBD).
+To retrieve the logs, you need to download the data from [Zenodo](https://zenodo.org/record/8032339).
+
 The experiments are in the three zip files.
 
-Unzip them, typically in `results_scripts/logs`.
+We created a script to aumontate the download and unzip process: [download_logs.sh](download_logs.sh).
 
 Then, you can run the notebooks in the following order:
 

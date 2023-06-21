@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# WARNING: this script considers you are in the results_scripts folder.
+
 # Create the logs directory, which is named logs
 mkdir -p logs
 
