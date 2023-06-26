@@ -1,4 +1,4 @@
-from imp_wrappers.pettingzoo_env import ParallelEnv
+from pettingzoo.utils.env import ParallelEnv 
 
 from imp_env.owf_env import Struct_owf
 from imp_env.struct_env import Struct
