@@ -4,7 +4,7 @@ To retrieve the logs, you need to download the data from [Zenodo](https://zenodo
 
 The experiments are in the three zip files.
 
-We created a script to aumontate the download and unzip process: [download_logs.sh](download_logs.sh).
+We created a script to automate the download and unzip process: [download_logs.sh](download_logs.sh).
 
 Then, you can run the notebooks in the following order:
 
