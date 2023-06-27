@@ -5,7 +5,7 @@
 
 In IMP-MARL, you can:
 - [Implement your own infrastructure management planning (IMP) environment or execute an available IMP environment](./imp_env/).
-- [Train IMP policies through state-of-the-art MARL methods. The environments can be integrated with typical ecosystems via wrappers](imp_wrapper/).
+- [Train IMP policies through state-of-the-art MARL methods. The environments can be integrated with typical ecosystems via wrappers](imp_wrappers/).
 - [Compute expert-based heuristic policies](./heuristics/)
 
 Additionally, you will be able to:
@@ -26,7 +26,7 @@ However, to reproduce our results, more packages are required and installation i
 ## Tutorials
 - [Create your own IMP environment scenario](imp_env/new_imp_env_tutorial.ipynb)
 - [IMP's API explained](imp_wrappers/wrapper_explained.md)
-- [**Reproduce** the paper results](REPROD_EXP.md)
+- [Train agents like in the paper and/or **reproduce** the results](pymarl/README.md)
 - [Retrieve directly the results](results_scripts/README.md)
 - [Train your own MARL agents with PyMarl](pymarl/EXEC_PYMARL.md)
 
