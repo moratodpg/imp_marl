@@ -1,9 +1,10 @@
 # How to retrieve the data
 
-To retrieve the logs, you need to download the data from [here](TBD).
+To retrieve the logs, you need to download the data from [Zenodo](https://zenodo.org/record/8032339).
+
 The experiments are in the three zip files.
 
-Unzip them, typically in `results_scripts/logs`.
+We created a script to automate the download and unzip process: [download_logs.sh](download_logs.sh).
 
 Then, you can run the notebooks in the following order:
 
@@ -12,7 +13,7 @@ Beware that the first cell may be updated to find the logs if you chose somethin
 
 The name of the notebooks are self-explanatory:
 
-- [box_plots](box_plots.ipynb): create the firgure 2 of the paper with the relative boxplots.
+- [box_plots](box_plots.ipynb): create the Figure 2 of the paper with the relative boxplots.
 - [find_best_networks](find_best_networks.ipynb): find the best network for each run.
 - [generate_table](generate_table.ipynb): generate the tables of best results the paper.
 - [plot_learning_curves](plot_learning_curves.ipynb): create the figure X and Y of the paper with the learning curves.

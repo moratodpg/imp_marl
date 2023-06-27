@@ -1,10 +1,10 @@
 #!/bin/bash
 
-python3 -m venv env
+python3 -m venv pymarl/imp_marl_venv
 
-source env/bin/activate
+source pymarl/imp_marl_venv/bin/activate
 
 python -m pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r pymarl/requirements.txt
 
 deactivate
