@@ -18,7 +18,7 @@ from utils.logging import get_logger
 SETTINGS['CAPTURE_MODE'] = "fd" # set to "no" if you want to see stdout/stderr in console
 logger = get_logger()
 
-ex = Experiment("pymarl")
+ex = Experiment("pymarl_wrapper")
 ex.logger = logger
 ex.captured_out_filter = apply_backspaces_and_linefeeds
 

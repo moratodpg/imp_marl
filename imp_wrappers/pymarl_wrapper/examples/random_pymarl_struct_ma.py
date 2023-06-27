@@ -1,12 +1,12 @@
-""" Demonstration of the PymarlMAStruct wrapper with random actions. """
+""" Demonstration of the PymarlMAStruct wrapper with random actions for struct. """
 
 import numpy as np
-from imp_wrappers.pymarl.pymarl_wrap_sa_struct import PymarlSAStruct
+from imp_wrappers.pymarl_wrapper.pymarl_wrap_ma_struct import PymarlMAStruct
+
 if __name__ == '__main__':
 
     n_episode = 100
-
-    env = PymarlSAStruct(struct_type="owf",
+    env = PymarlMAStruct(struct_type="struct",
                          n_comp=2,
                          discount_reward=.95,
                          state_obs=True,
@@ -35,10 +35,11 @@ if __name__ == '__main__':
             state = env.get_state()
 
             actions = []
-            avail_actions = env.get_avail_agent_actions(0)
-            avail_actions_ind = np.nonzero(avail_actions)[0]
-            action = np.random.choice(avail_actions_ind)
-            actions.append(action)
+            for k in range(env.n_agents):
+                avail_actions = env.get_avail_agent_actions(k)
+                avail_actions_ind = np.nonzero(avail_actions)[0]
+                action = np.random.choice(avail_actions_ind)
+                actions.append(action)
             reward, terminated, info = env.step(actions)
             episode_reward += reward
         array_reward.append(episode_reward)

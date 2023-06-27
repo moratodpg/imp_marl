@@ -1,7 +1,7 @@
-""" Demonstration of the PymarlMAStruct wrapper with random actions. """
+""" Demonstration of the PymarlMAStruct wrapper with random actions for owf. """
 
 import numpy as np
-from imp_wrappers.pymarl.pymarl_wrap_ma_struct import PymarlMAStruct
+from imp_wrappers.pymarl_wrapper.pymarl_wrap_ma_struct import PymarlMAStruct
 
 if __name__ == '__main__':
     n_episode = 100
