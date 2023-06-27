@@ -5,7 +5,7 @@ import torch
 
 from imp_env.owf_env import Struct_owf
 from imp_env.struct_env import Struct
-from imp_wrappers.MultiAgentEnv import MultiAgentEnv
+from pymarl.envs.MultiAgentEnv import MultiAgentEnv
 
 
 class PymarlMAStruct(MultiAgentEnv):

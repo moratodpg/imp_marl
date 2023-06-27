@@ -1,9 +1,8 @@
 """ Test the two PyMarl wrapper with the same struct parameters. """
 
 import numpy as np
-from imp_wrappers.pymarl_ma_struct import PymarlMAStruct
-from imp_wrappers.pymarl_sa_struct import PymarlSAStruct
-import os
+from imp_wrappers.pymarl.pymarl_ma_struct import PymarlMAStruct
+from imp_wrappers.pymarl.pymarl_sa_struct import PymarlSAStruct
 
 if __name__ == '__main__':
 

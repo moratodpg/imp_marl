@@ -1,11 +1,11 @@
-import itertools
+""" Gymnasium wrapper for IMP environments. """
 
-import gym
+import itertools
+import gymnasium as gym
 import numpy as np
 
-from gym import spaces
-
 from imp_env.struct_env import Struct
+from imp_env.owf_env import Struct_owf
 
 class GymSaStruct(gym.Env):
     def __init__(self, config=None):

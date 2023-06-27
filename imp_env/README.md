@@ -4,7 +4,7 @@
 
 An IMP environment is implemented as a class and includes two main methods: (i) reset and (ii) step. This is already provided in the interface class, [imp_env](imp_env.py).
 
-These methods are included by default because the [wrappers](../imp_wrappers) that will integrate your IMP environment with typical MARL ecosystems needs their definition.
+These methods are included by default because the [wrappers](../imp_wrapper) that will integrate your IMP environment with typical MARL ecosystems needs their definition.
 
 Additionally, you can include any other relevant methods in your environment.
 
