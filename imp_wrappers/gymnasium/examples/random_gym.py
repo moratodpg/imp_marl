@@ -18,7 +18,7 @@ if __name__ == '__main__':
                       obs_alphas=False,
                       env_correlation=False,
                       campaign_cost=False)
-    array_reward= []
+    array_reward = []
     for i in range(n_episode):
         observation, info = env.reset()
         terminated = False

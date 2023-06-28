@@ -1,6 +1,6 @@
 """ Gymnasium wrapper for IMP environments. """
-import itertools
 
+import itertools
 import gymnasium as gym
 # gymnasium==0.28.1
 import numpy as np
