@@ -2,7 +2,7 @@
 
 import itertools
 import gymnasium as gym
-# gymnasium==0.28.1
+# Example coded with gymnasium==0.28.1
 import numpy as np
 from gymnasium import spaces
 
