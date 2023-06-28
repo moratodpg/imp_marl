@@ -24,7 +24,7 @@ if __name__ == '__main__':
         terminated = False
         episode_reward = 0
         while not terminated:
-            action = env.action_space.sample()  # agent policy that uses the observation and info
+            action = env.action_space.sample()
             observation, reward, terminated, truncated, info = env.step(action)
             terminated = terminated or truncated
             episode_reward += reward
