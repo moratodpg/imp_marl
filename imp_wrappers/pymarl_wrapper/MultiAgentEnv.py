@@ -1,4 +1,5 @@
 """ MultiAgentEnv is the base class for PyMarl environments. """
+
 class MultiAgentEnv(object):
 
     def step(self, actions):
