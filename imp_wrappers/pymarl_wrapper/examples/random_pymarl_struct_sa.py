@@ -2,13 +2,10 @@
 
 import numpy as np
 from imp_wrappers.pymarl_wrapper.pymarl_wrap_sa_struct import PymarlSAStruct
-import os
 
 if __name__ == '__main__':
-    os.chdir(os.path.dirname(os.getcwd()))
 
-    n_episode = 100
-
+    n_episode = 10000
     env = PymarlSAStruct(struct_type="struct",
                          n_comp=2,
                          discount_reward=.95,
@@ -23,7 +20,6 @@ if __name__ == '__main__':
                          campaign_cost=False)
 
     env_info = env.get_env_info()
-    
     n_actions = env_info["n_actions"]
     n_agents = env_info["n_agents"]
     array_reward = []
