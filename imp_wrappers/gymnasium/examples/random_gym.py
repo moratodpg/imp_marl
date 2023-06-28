@@ -4,7 +4,7 @@ from imp_wrappers.gymnasium.gym_wrap_sa_struct import GymSaStruct
 import numpy as np
 
 if __name__ == '__main__':
-    n_episode = 10000
+    n_episode = 100
 
     env = GymSaStruct(struct_type="struct",
                       n_comp=2,

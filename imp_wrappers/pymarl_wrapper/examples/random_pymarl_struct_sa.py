@@ -5,7 +5,7 @@ from imp_wrappers.pymarl_wrapper.pymarl_wrap_sa_struct import PymarlSAStruct
 
 if __name__ == '__main__':
 
-    n_episode = 10000
+    n_episode = 100
     env = PymarlSAStruct(struct_type="struct",
                          n_comp=2,
                          discount_reward=.95,
