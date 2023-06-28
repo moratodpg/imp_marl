@@ -1,6 +1,6 @@
 # --- Defaults ---
 
-# --- pymarl_wrapper options ---
+# --- pymarl options ---
 runner: "episode" # Runs 1 env for an episode
 mac: "basic_mac" # Basic controller
 env: "struct" # Environment name
