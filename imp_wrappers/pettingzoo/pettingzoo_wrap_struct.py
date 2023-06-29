@@ -132,7 +132,13 @@ class PettingZooStruct(ParallelEnv):
         return self.struct_env.observations, {}
 
     def step(self, actions):
-        pass
+
+        _, rewards, done, _ = self.struct_env.step(actions)
+
+        observations = self.struct_env.observations
+        terminations = {agent: done for agent in self.struct_env.agent_list}
+
+        return observations, rewards, terminations, {}, {}
 
     def render(self):
         pass
