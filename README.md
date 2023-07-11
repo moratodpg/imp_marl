@@ -37,10 +37,10 @@ However, to reproduce our results, more packages are required and installation i
 **Note: A campaign cost can be activated in any environment.**
 
 ## Available wrappers with examples: 
-- Ready: [**PyMarl**](imp_wrappers/pymarl_wrapper/pymarl_ma_struct.py): Multi and single agent wrappers.
+- Ready: [**PyMarl**](imp_wrappers/pymarl_wrapper): [Multi](imp_wrappers/pymarl_wrapper/pymarl_wrap_ma_struct.py) and [single](imp_wrappers/pymarl_wrapper/pymarl_wrap_sa_struct.py) agent wrappers.
 - Ready: [**Gymnasium**](imp_wrappers/gymnasium/gym_wrap_sa_struct.py): Single-agent wrapper.
 - Ready: [**PettingZoo**](imp_wrappers/pettingzoo/pettingzoo_wrap_struct.py) : Multi-agent wrapper.
-- Ready: [**Rllib example**](examples/rllib/rllib_example.py): Single-agent training with RLLib and Gymnasium wrapper.
+- Ready: [**Rllib example**](imp_wrappers/examples/rllib/rllib_example.py): Single-agent training with RLLib and Gymnasium wrapper.
 - WIP: [**MARLlib example**](): TBD
 - WIP: [**TorchRL example**](): TBD
 
