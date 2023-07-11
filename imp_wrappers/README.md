@@ -16,4 +16,3 @@ Examples of the use of these wrappers can be found in the [examples](examples) d
 
 ## Example of wrapper usage:
 - [RLLib](examples/rllib/rllib_example.py)
-- [TorchRL](examples/torchrl/torchrl_example.py)
