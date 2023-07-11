@@ -1,14 +1,16 @@
 import itertools
 import numpy as np
+from gymnasium import spaces
+
 from imp_env.owf_env import Struct_owf
 from imp_env.struct_env import Struct
-from pettingzoo.utils.env import ParallelEnv 
+from pettingzoo.utils.env import ParallelEnv
+
+
+# Example coded with pettingzoo-1.23.1
+
 
 class PettingZooStruct(ParallelEnv):
-    metadata = {
-        "name": "struct",
-    }
-
     def __init__(self,
                  struct_type: str = "struct",
                  n_comp: int = 2,
@@ -26,13 +28,6 @@ class PettingZooStruct(ParallelEnv):
         """
         Initialize the environment like in PyMARL.
         """
-
-        # SARL so disable obs
-        obs_d_rate = False
-        obs_multiple = False
-        obs_all_d_rate = False
-        obs_alphas = False
-
         # Check struct type and default values
         assert struct_type == "owf" or struct_type == "struct", "Error in struct_type"
         if struct_type == "struct":
@@ -97,58 +92,58 @@ class PettingZooStruct(ParallelEnv):
             self.n_agents = self.struct_env.n_agents
 
         self.episode_limit = self.struct_env.ep_length
-        self.agent_list = self.struct_env.agent_list
         self.n_actions = self.struct_env.actions_per_agent
 
         self.action_histogram = {"action_" + str(k): 0 for k in
                                  range(self.n_actions)}
 
-        n_actions = self.struct_env.actions_per_agent
-        self.convert_action_dict = {}
-        list_actions = \
-            list(itertools.product(range(n_actions), repeat=self.n_agents))
-        for idx, i in enumerate(list_actions):
-            self.convert_action_dict[idx] = np.array(i)
-        self.n_actions = len(list_actions)
-        self.n_agents = 1
+        self.agents = self.struct_env.agent_list
+        self.possible_agents = self.struct_env.agent_list
 
-        self.struct_env.reset()
+        self.observation_spaces = {
+            agent: spaces.Box(low=-np.inf, high=np.inf,
+                              shape=(len(self.get_obs_agent(agent)),),
+                              dtype=np.float32) for agent in
+            self.agents
+        }
 
-        # Gymnasium attributes
-        self.possible_agents = self.agent_list
-
-        # self.action_space = spaces.Discrete(self.n_actions)
-
-        # state = self.get_state()
-        # self.observation_space = spaces.Box(low=-np.inf, high=np.inf,
-        #                                     shape=(len(state),),
-        #                                     dtype=np.float32)
-        self.render_mode = None
+        self.action_spaces = {
+            agent: spaces.Discrete(3) for agent in self.agents
+        }
 
     def reset(self, seed=None, options=None):
         # super().reset(seed=seed)
         self.struct_env.reset()
         self.agents = self.possible_agents[:]
-        return self.struct_env.observations, {}
+        observations = {
+            agent: self.get_obs_agent(agent)
+            for agent in self.agents
+        }
+        return observations, {}
 
     def step(self, actions):
-
         _, rewards, done, _ = self.struct_env.step(actions)
 
-        observations = self.struct_env.observations
-        terminations = {agent: done for agent in self.struct_env.agent_list}
-
-        return observations, rewards, terminations, {}, {}
-
-    def render(self):
-        pass
+        observations = {
+            agent: self.get_obs_agent(agent)
+            for agent in self.agents
+        }
+        if done:
+            self.agents = []
+        terminations = {agent: done for agent in self.agents}
+        truncations = {agent: False for agent in self.agents}
+        infos = {agent: {} for agent in self.agents}
+        return observations, rewards, terminations, truncations, infos
 
     def observation_space(self, agent):
         return self.observation_spaces[agent]
 
     def action_space(self, agent):
         return self.action_spaces[agent]
-    
+
+    def state(self):
+        return self.get_state()
+
     def get_state(self):
         """ Returns the state of the environment. """
         state = []
@@ -176,20 +171,20 @@ class PettingZooStruct(ParallelEnv):
     def get_normalized_drate(self):
         """ Returns the normalized d_rate. """
         return self.struct_env.d_rate / self.struct_env.ep_length
-    
+
     def get_obs(self):
         """ Returns all agent observations in a list. """
         return [self.get_obs_agent(i) for i in
-                range(self.n_agents)]
+                self.agents]
 
-    def get_obs_agent(self, agent_id: int):
+    def get_obs_agent(self, agent_id: str):
         """
         Returns observation for agent_id
 
         Args:
             agent_id: id of the agent (int in range(self.n_agents)).
         """
-        agent_name = self.struct_env.agent_list[agent_id]
+        agent_name = agent_id
 
         if self.obs_multiple:
             obs = self.all_obs_from_struct_env()

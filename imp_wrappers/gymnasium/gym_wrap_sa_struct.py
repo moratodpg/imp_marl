@@ -138,7 +138,7 @@ class GymSaStruct(gym.Env):
         info = {}
 
         return self.get_state(), rewards[
-            self.struct_env.agent_list[0]], done, False, info
+            self.struct_env.agent_list[0]], done, {}, info
 
     def get_state(self):
         """ Returns the state of the environment. """
