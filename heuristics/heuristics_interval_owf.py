@@ -2,10 +2,10 @@ import numpy as np
 from datetime import datetime
 from os import path, makedirs
 
-from struct_env.owf_env import Struct_owf
+from imp_env.owf_env import Struct_owf
 
 
-class Heuristics():
+class HeuristicsOwf():
     def __init__(self,
                  n_owt: int = 2,
                  # Number of structure

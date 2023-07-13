@@ -1,4 +1,4 @@
-from heuristics.heuristics_intervals import Heuristics
+from heuristics.heuristics_intervals_struct import HeuristicsStruct
 import timeit
 
 if __name__ == '__main__':
@@ -15,16 +15,16 @@ if __name__ == '__main__':
     insp_comp = 5
 
 
-    h1 = Heuristics(n_comp,
-                     # Number of structure
-                     discount_reward,
-                     # float [0,1] importance of
-                     # short-time reward vs long-time reward
-                     k_comp)
+    heuristic = HeuristicsStruct(n_comp,
+                                 # Number of structure
+                                 discount_reward,
+                                 # float [0,1] importance of
+                                 # short-time reward vs long-time reward
+                                 k_comp)
 
     if search:
         starting_time = timeit.default_timer()
-        h1.search(eval_size)
+        heuristic.search(eval_size)
         print("Time (s):", timeit.default_timer() - starting_time)
     else:
-        h1.eval(eval_size, insp_int, insp_comp)
+        heuristic.eval(eval_size, insp_int, insp_comp)
