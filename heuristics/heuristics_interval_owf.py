@@ -87,7 +87,7 @@ class HeuristicsOwf():
         while not done_:
             action_ = action.copy()
             if (self.struct_env.time_step%insp_int)==0 and self.struct_env.time_step>0:
-                beliefs_comp = np.reshape(self.struct_env.beliefs[:,:-1,:], (self.struct_env.n_agents, -1))
+                beliefs_comp = np.reshape(self.struct_env.damage_proba[:,:-1,:], (self.struct_env.n_agents, -1))
                 pf = beliefs_comp[:,-1]
                 inspection_index = (-pf).argsort()[:comp_insp]
                 for index in inspection_index:
