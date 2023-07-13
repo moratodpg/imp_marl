@@ -5,7 +5,7 @@
 
 In IMP-MARL, you can:
 - [Implement your own infrastructure management planning (IMP) environment or execute an available IMP environment](./imp_env/).
-- [Train IMP policies through state-of-the-art MARL methods. The environments can be integrated with typical ecosystems via wrappers](./imp_wrappers/).
+- [Train IMP policies through state-of-the-art MARL methods. The environments can be integrated with typical ecosystems via wrappers](imp_wrappers/).
 - [Compute expert-based heuristic policies](./heuristics/)
 
 Additionally, you will be able to:
@@ -26,7 +26,7 @@ However, to reproduce our results, more packages are required and installation i
 ## Tutorials
 - [Create your own IMP environment scenario](imp_env/new_imp_env_tutorial.ipynb)
 - [IMP's API explained](imp_wrappers/wrapper_explained.md)
-- [**Reproduce** the paper results](REPROD_EXP.md)
+- [Train agents like in the paper and/or **reproduce** the results](pymarl/README.md)
 - [Retrieve directly the results](results_scripts/README.md)
 - [Train your own MARL agents with PyMarl](pymarl/EXEC_PYMARL.md)
 
@@ -37,11 +37,12 @@ However, to reproduce our results, more packages are required and installation i
 **Note: A campaign cost can be activated in any environment.**
 
 ## Available wrappers with examples: 
-- Ready: [**PyMarl**](imp_wrappers/[pymarl_ma_struct.py): Multi and single agent wrappers.
-- WIP: [**Gym**](): single-agent wrapper.
-- WIP: [**PettingZoo**]() : multi-agent wrapper.
-- WIP: [**MARLlib**](): TBD
-- WIP: [**TorchRL**](): TBD
+- Ready: [**PyMarl**](imp_wrappers/pymarl_wrapper): [Multi](imp_wrappers/pymarl_wrapper/pymarl_wrap_ma_struct.py) and [single](imp_wrappers/pymarl_wrapper/pymarl_wrap_sa_struct.py) agent wrappers.
+- Ready: [**Gymnasium**](imp_wrappers/gymnasium/gym_wrap_sa_struct.py): Single-agent wrapper.
+- Ready: [**PettingZoo**](imp_wrappers/pettingzoo/pettingzoo_wrap_struct.py) : Multi-agent wrapper.
+- Ready: [**Rllib example**](imp_wrappers/examples/rllib/rllib_example.py): Single-agent training with RLLib and Gymnasium wrapper.
+- WIP: [**MARLlib example**](): TBD
+- WIP: [**TorchRL example**](): TBD
 
 ## PyMarl algorithms available:
 

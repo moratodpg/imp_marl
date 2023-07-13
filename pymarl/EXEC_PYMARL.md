@@ -74,7 +74,7 @@ Use the `run.sh` file to train the agents like in the paper:
 Caution: Uncomment the right line in `run.sh` to use your own virtual environment.
 
 ```bash
-./pymarl/run.sh alg_config_name env_config_name
+./pymarl_wrapper/run.sh alg_config_name env_config_name
 ```
 
 # Test the agents
@@ -85,7 +85,7 @@ To test the agents at training time, you need to modify `run.sh` file.
 To test the agents at testing time, use the `run_test.sh` file.
 
 ```bash
-./pymarl/run_test.sh experiment_name n_test_epsiode
+./pymarl_wrapper/run_test.sh experiment_name n_test_epsiode
 ```
 
 # Reproduce our results

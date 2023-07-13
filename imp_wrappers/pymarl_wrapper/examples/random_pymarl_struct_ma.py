@@ -1,10 +1,12 @@
+""" Demonstration of the PymarlMAStruct wrapper with random actions for struct. """
+
 import numpy as np
-from imp_wrappers.pymarl_ma_struct import PymarlMAStruct
-import os
+from imp_wrappers.pymarl_wrapper.pymarl_wrap_ma_struct import PymarlMAStruct
 
 if __name__ == '__main__':
+
     n_episode = 100
-    env = PymarlMAStruct(struct_type="owf",
+    env = PymarlMAStruct(struct_type="struct",
                          n_comp=2,
                          discount_reward=.95,
                          state_obs=True,
@@ -18,6 +20,7 @@ if __name__ == '__main__':
                          campaign_cost=False)
 
     env_info = env.get_env_info()
+
     n_actions = env_info["n_actions"]
     n_agents = env_info["n_agents"]
     array_reward = []

@@ -1,7 +1,7 @@
 from functools import partial
-from imp_wrappers.MultiAgentEnv import MultiAgentEnv
-from imp_wrappers.pymarl_ma_struct import PymarlMAStruct
-from imp_wrappers.pymarl_sa_struct import PymarlSAStruct
+from imp_wrappers.pymarl_wrapper.MultiAgentEnv import MultiAgentEnv
+from imp_wrappers.pymarl_wrapper.pymarl_wrap_ma_struct import PymarlMAStruct
+from imp_wrappers.pymarl_wrapper.pymarl_wrap_sa_struct import PymarlSAStruct
 
 
 def env_fn(env, **kwargs) -> MultiAgentEnv:
