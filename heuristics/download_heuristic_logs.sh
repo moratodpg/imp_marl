@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# WARNING: this script considers you are in the results_scripts folder.
+# WARNING: this script considers you are in the heuristics folder.
 
-# Create the logs directory, which is named logs
+# Create the logs directory, which is named heuristic_logs
 mkdir -p heuristic_logs
 
-# Download only the logs from zenodo.
+# Download only the heuristic logs from zenodo.
 wget https://zenodo.org/record/8032339/files/heur_logs.zip
 
 # Unzip the logs
