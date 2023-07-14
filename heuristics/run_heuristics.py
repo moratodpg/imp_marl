@@ -4,30 +4,34 @@ import timeit
 
 if __name__ == '__main__':
 
-    search = True
-    env = "owf"  # "struct" or "owf"
-    eval_size = 2000
+    search = False
+    env = "struct"  # "struct" or "owf"
+    eval_size = 1500
 
     if env == "struct":
         n_comp = 5
         discount_reward = 0.95
         k_comp = 4
-        env_correlation=False
-        campaign_cost=False
+        env_correlation = False
+        campaign_cost = False
+        seed_test = 0
         heuristic = HeuristicsStruct(n_comp=n_comp,
                                      discount_reward=discount_reward,
                                      k_comp=k_comp,
                                      env_correlation=env_correlation,
-                                     campaign_cost=campaign_cost)
+                                     campaign_cost=campaign_cost,
+                                     seed = seed_test)
     elif env == "owf":
         n_owt = 2
         discount_reward = 0.95
         lev = 3
         campaign_cost = False
+        seed_test = 0
         heuristic = HeuristicsOwf(n_owt=n_owt,
                                   lev=lev,
                                   discount_reward=discount_reward,
-                                  campaign_cost=False)
+                                  campaign_cost=False,
+                                  seed = seed_test)
     else:
         heuristic = None
 
