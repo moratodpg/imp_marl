@@ -8,7 +8,7 @@ This script takes as input via its first lines the parameters of the environment
 
 Execute the script `download_heuristic_logs.sh` to retrieve the logs of the experiments conducted in the paper.
 
-**To reproduce** the results, please specify the seed and heuristics corresponding to the environment of interest. You can find those in the stored numpy files stored in heur_search folder.
+**To reproduce** the results, please specify the seed and heuristics corresponding to the environment of interest. You can find those in the numpy files stored in heur_search folder.
 
 For instance, to retrieve the test results of the environment uncorrelated 4-out-of-5:
 
