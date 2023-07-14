@@ -20,7 +20,7 @@ if __name__ == '__main__':
                                      k_comp=k_comp,
                                      env_correlation=env_correlation,
                                      campaign_cost=campaign_cost,
-                                     seed = seed_test)
+                                     seed=seed_test)
     elif env == "owf":
         n_owt = 2
         discount_reward = 0.95
@@ -31,7 +31,7 @@ if __name__ == '__main__':
                                   lev=lev,
                                   discount_reward=discount_reward,
                                   campaign_cost=False,
-                                  seed = seed_test)
+                                  seed=seed_test)
     else:
         heuristic = None
 
