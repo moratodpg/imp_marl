@@ -20,20 +20,23 @@ policy_mapping_dict = {
 class MarllibImpMarl(MultiAgentEnv):
 
     def __init__(self,
-                 struct_type: str = "struct",
-                 n_comp: int = 2,
-                 custom_param: dict = None,
-                 discount_reward: float = 1.,
-                 state_obs: bool = True,
-                 state_d_rate: bool = False,
-                 state_alphas: bool = False,
-                 obs_d_rate: bool = False,
-                 obs_multiple: bool = False,
-                 obs_all_d_rate: bool = False,
-                 obs_alphas: bool = False,
-                 env_correlation: bool = False,
-                 campaign_cost: bool = False):
+                 env_config: dict
+                 ):
+        struct_type = env_config["struct_type"]
+        n_comp = env_config["n_comp"]
+        custom_param = env_config["custom_param"]
+        discount_reward = env_config["discount_reward"]
+        state_obs = env_config["state_obs"]
+        state_d_rate = env_config["state_d_rate"]
+        state_alphas = env_config["state_alphas"]
+        obs_d_rate = env_config["obs_d_rate"]
+        obs_multiple = env_config["obs_multiple"]
+        obs_all_d_rate = env_config["obs_all_d_rate"]
+        obs_alphas = env_config["obs_alphas"]
+        env_correlation = env_config["env_correlation"]
+        campaign_cost = env_config["campaign_cost"]
 
+        # See in PymarlMAStruct the default values for the parameters
         self.env = PymarlMAStruct(
             struct_type=struct_type,
             n_comp=n_comp,
@@ -57,9 +60,8 @@ class MarllibImpMarl(MultiAgentEnv):
         n_actions = env_info['n_actions']
         state_shape = env_info['state_shape']
         self.observation_space = GymDict({
-            "obs": Box(-2.0, 2.0, shape=(obs_shape,)),
-            "state": Box(-2.0, 2.0, shape=(state_shape,)),
-            "action_mask": Box(-2.0, 2.0, shape=(n_actions,))
+            "obs": Box(-np.inf, np.inf, shape=(obs_shape,), dtype=np.float64),
+            "state": Box(-np.inf, np.inf, shape=(state_shape,), dtype=np.float64),
         })
         self.action_space = Discrete(n_actions)
 
@@ -71,14 +73,11 @@ class MarllibImpMarl(MultiAgentEnv):
         for agent_index in range(self.num_agents):
             obs_one_agent = obs_smac[agent_index]
             state_one_agent = state_smac
-            action_mask_one_agent = np.array(self.env.get_avail_agent_actions(agent_index)).astype(np.float32)
             agent_index = "agent_{}".format(agent_index)
             obs_dict[agent_index] = {
                 "obs": obs_one_agent,
                 "state": state_one_agent,
-                "action_mask": action_mask_one_agent,
             }
-
         return obs_dict
 
     def step(self, actions):
@@ -95,12 +94,10 @@ class MarllibImpMarl(MultiAgentEnv):
         for agent_index in range(self.num_agents):
             obs_one_agent = obs_smac[agent_index]
             state_one_agent = state_smac
-            action_mask_one_agent = np.array(self.env.get_avail_agent_actions(agent_index)).astype(np.float32)
             agent_index = "agent_{}".format(agent_index)
             obs_dict[agent_index] = {
                 "obs": obs_one_agent,
-                "state": state_one_agent,
-                "action_mask": action_mask_one_agent
+                "state": state_one_agent
             }
             reward_dict[agent_index] = reward
 

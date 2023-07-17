@@ -315,7 +315,7 @@ https://www.toptal.com/developers/gitignore/api/python,pycharm
 delete.py
 /DCMAC_crack_single3.py
 
-delete
+delete.py
 
 launch_50.sbatch
 
@@ -336,3 +336,4 @@ results_scripts/MARL_logs.zip
 imp_env/pomdp_models/model.npz
 /heuristics/heuristic_logs/
 /heuristics/heur_logs.zip
+/imp_wrappers/marllib/examples/exp_results/
