@@ -17,6 +17,7 @@ policy_mapping_dict = {
     },
 }
 
+
 class MarllibImpMarl(MultiAgentEnv):
 
     def __init__(self,
@@ -61,7 +62,8 @@ class MarllibImpMarl(MultiAgentEnv):
         state_shape = env_info['state_shape']
         self.observation_space = GymDict({
             "obs": Box(-np.inf, np.inf, shape=(obs_shape,), dtype=np.float64),
-            "state": Box(-np.inf, np.inf, shape=(state_shape,), dtype=np.float64),
+            "state": Box(-np.inf, np.inf, shape=(state_shape,),
+                         dtype=np.float64),
         })
         self.action_space = Discrete(n_actions)
 
