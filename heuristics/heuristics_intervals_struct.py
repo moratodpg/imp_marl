@@ -5,7 +5,7 @@ from os import path, makedirs
 from imp_env.struct_env import Struct
 
 
-class Heuristics():
+class HeuristicsStruct():
     def __init__(self,
                  n_comp: int = 2,
                  # Number of structure
