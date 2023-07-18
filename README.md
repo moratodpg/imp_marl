@@ -27,8 +27,9 @@ However, to reproduce our results, more packages are required and installation i
 - [Create your own IMP environment scenario](imp_env/new_imp_env_tutorial.ipynb)
 - [IMP's API explained](imp_wrappers/wrapper_explained.md)
 - [Train agents like in the paper and/or **reproduce** the results](pymarl/README.md)
-- [Retrieve directly the results](results_scripts/README.md)
+- [Retrieve the results of the paper](results_scripts/README.md)
 - [Train your own MARL agents with PyMarl](pymarl/EXEC_PYMARL.md)
+- [Reproduce the results of the paper](REPROD_EXP.md)
 
 ## Sets of environments available:
 - [(Correlated and uncorrelated) k-out-of-n system with components subject to fatigue deterioration.](./imp_env/struct_env.py)
@@ -77,6 +78,8 @@ while not done:
 
 ## Citation
 If you use IMP-MARL in your work, please consider citing our paper:
+
+[IMP-MARL: a Suite of Environments for Large-scale Infrastructure Management Planning via MARL](https://arxiv.org/abs/2306.11551)
 ```
 @misc{leroy2023impmarl,
       title={IMP-MARL: a Suite of Environments for Large-scale Infrastructure Management Planning via MARL}, 
