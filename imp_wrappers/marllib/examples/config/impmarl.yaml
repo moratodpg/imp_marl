@@ -1,0 +1,25 @@
+# Default config files.
+# MARLLIB env_args follows the same hierarchy as config files in pymarl/config/envs
+
+env: impmarl
+
+env_args:
+  struct_type: "struct"
+  n_comp: 2
+  discount_reward: 0.95
+  custom_param:
+    k_comp: 1
+  state_obs: True
+  state_d_rate: True
+  state_alphas: False
+  obs_d_rate: False
+  obs_multiple: False
+  obs_all_d_rate: False
+  obs_alphas: False
+  env_correlation: False
+  campaign_cost: False
+
+mask_flag: False
+global_state_flag: True
+opp_action_in_cc: True
+agent_level_batch_update: False

@@ -42,7 +42,7 @@ However, to reproduce our results, more packages are required and installation i
 - Ready: [**Gymnasium**](imp_wrappers/gymnasium/gym_wrap_sa_struct.py): Single-agent wrapper.
 - Ready: [**PettingZoo**](imp_wrappers/pettingzoo/pettingzoo_wrap_struct.py) : Multi-agent wrapper.
 - Ready: [**Rllib example**](imp_wrappers/examples/rllib/rllib_example.py): Single-agent training with RLLib and Gymnasium wrapper.
-- WIP: [**MARLlib example**](): TBD
+- Ready: [**MARLlib**](imp_wrappers/marllib/marllib_wrap_ma_struct.py): Examples include random agents and how to train with MARLlib.
 - WIP: [**TorchRL example**](): TBD
 
 ## PyMarl algorithms available:
