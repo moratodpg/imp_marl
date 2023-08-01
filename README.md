@@ -16,6 +16,8 @@ This repository has been developed and is maintained by Pascal Leroy & Pablo G. 
 
 Please consider opening an issue or a pull request to help us improve this repository.
 
+Future developments are described in the [roadmap](ROADMAP.md).
+
 ![imp](imp_intro.png)
 
 ## Main requirements:
