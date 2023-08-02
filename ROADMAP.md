@@ -1,12 +1,11 @@
-# Roadmap of future development
+# ROADMAP
 
-We hereafter describre the following updates for the new release of IMP-MARL.
+We hereafter describe the upcoming updates for a new release of IMP-MARL.
 
 Major changes:
-
-- [ ] Remove reward from the environment and add it to the heuristic solver
+- [ ] Remove the discount reward from the environment and add it to the heuristic solver
 - [ ] Reformat the folders to have IMP-MARL as a single installable package
 
-Additional features:
+Additional RL libraries:
 - [ ] TorchRL
 - [ ] CleanRL
