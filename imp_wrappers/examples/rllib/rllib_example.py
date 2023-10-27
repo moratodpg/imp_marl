@@ -8,27 +8,27 @@ from ray.rllib.utils import try_import_tf, try_import_torch
 from ray.tune import register_env
 from ray.tune.registry import get_trainable_cls
 
-from imp_wrappers.gymnasium.gym_wrap_sa_struct import GymSaStruct
+from imp_wrappers.gymnasium.gymnasium_wrap_sa_struct import GymnasiumSaStruct
 
 tf1, tf, tfv = try_import_tf()
 torch, nn = try_import_torch()
 
 
 def env_gymsastruct_creator(env_config):
-    return GymSaStruct(struct_type=env_config.get("struct_type", "struct"),
-                       n_comp=env_config.get("n_comp", 2),
-                       custom_param=env_config.get("custom_param", None),
-                       discount_reward=env_config.get("discount_reward", .95),
-                       state_obs=env_config.get("state_obs", True),
-                       state_d_rate=env_config.get("state_d_rate", False),
-                       state_alphas=env_config.get("state_alphas", False),
-                       obs_d_rate=env_config.get("obs_d_rate", False),
-                       obs_multiple=env_config.get("obs_multiple", False),
-                       obs_all_d_rate=env_config.get("obs_all_d_rate", False),
-                       obs_alphas=env_config.get("obs_alphas", False),
-                       env_correlation=env_config.get("env_correlation",
+    return GymnasiumSaStruct(struct_type=env_config.get("struct_type", "struct"),
+                             n_comp=env_config.get("n_comp", 2),
+                             custom_param=env_config.get("custom_param", None),
+                             discount_reward=env_config.get("discount_reward", .95),
+                             state_obs=env_config.get("state_obs", True),
+                             state_d_rate=env_config.get("state_d_rate", False),
+                             state_alphas=env_config.get("state_alphas", False),
+                             obs_d_rate=env_config.get("obs_d_rate", False),
+                             obs_multiple=env_config.get("obs_multiple", False),
+                             obs_all_d_rate=env_config.get("obs_all_d_rate", False),
+                             obs_alphas=env_config.get("obs_alphas", False),
+                             env_correlation=env_config.get("env_correlation",
                                                       False),
-                       campaign_cost=env_config.get("campaign_cost", False))
+                             campaign_cost=env_config.get("campaign_cost", False))
 
 
 if __name__ == '__main__':
