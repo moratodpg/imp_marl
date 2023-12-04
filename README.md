@@ -29,7 +29,7 @@ However, to reproduce our results, more packages are required and installation i
 - [Create your own IMP environment scenario](imp_env/new_imp_env_tutorial.ipynb)
 - [IMP's API explained](imp_wrappers/README.md)
 - [Train agents like in the paper and/or **reproduce** the results](pymarl/README.md)
-- [Retrieve the results of the paper](results_scripts/README.md)
+- [Retrieve the results of the paper and execute the plot scripts](results_scripts/README.md)
 - [Train your own MARL agents with PyMarl](pymarl/EXEC_PYMARL.md)
 - [Reproduce the results of the paper](REPROD_EXP.md)
 
