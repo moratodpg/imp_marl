@@ -83,12 +83,12 @@ If you use IMP-MARL in your work, please consider citing our paper:
 
 [IMP-MARL: a Suite of Environments for Large-scale Infrastructure Management Planning via MARL](https://arxiv.org/abs/2306.11551)
 ```
-@misc{leroy2023impmarl,
-      title={IMP-MARL: a Suite of Environments for Large-scale Infrastructure Management Planning via MARL}, 
-      author={Pascal Leroy and Pablo G. Morato and Jonathan Pisane and Athanasios Kolios and Damien Ernst},
-      year={2023},
-      eprint={2306.11551},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
+@inproceedings{
+leroy2023impmarl,
+title={{IMP}-{MARL}: a Suite of Environments for Large-scale Infrastructure Management Planning via {MARL}},
+author={Pascal Leroy and Pablo G. Morato and Jonathan Pisane and Athanasios Kolios and Damien Ernst},
+booktitle={Thirty-seventh Conference on Neural Information Processing Systems Datasets and Benchmarks Track},
+year={2023},
+url={https://openreview.net/forum?id=q3FJk2Nvkk}
 }
 ```
