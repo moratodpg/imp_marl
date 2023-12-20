@@ -1,11 +1,11 @@
 import copy
+
+import numpy as np
+import torch as th
 from components.episode_buffer import EpisodeBatch
 from modules.mixers.dmaq_general import DMAQer
 from modules.mixers.dmaq_qatten import DMAQ_QattenMixer
-import torch.nn.functional as F
-import torch as th
 from torch.optim import RMSprop
-import numpy as np
 
 
 class DMAQ_qattenLearner:
@@ -22,14 +22,16 @@ class DMAQ_qattenLearner:
         if args.mixer is not None:
             if args.mixer == "dmaq":
                 self.mixer = DMAQer(args)
-            elif args.mixer == 'dmaq_qatten':
+            elif args.mixer == "dmaq_qatten":
                 self.mixer = DMAQ_QattenMixer(args)
             else:
                 raise ValueError("Mixer {} not recognised.".format(args.mixer))
             self.params += list(self.mixer.parameters())
             self.target_mixer = copy.deepcopy(self.mixer)
 
-        self.optimiser = RMSprop(params=self.params, lr=args.lr, alpha=args.optim_alpha, eps=args.optim_eps)
+        self.optimiser = RMSprop(
+            params=self.params, lr=args.lr, alpha=args.optim_alpha, eps=args.optim_eps
+        )
 
         # a little wasteful to deepcopy (e.g. duplicates action selector), but should work for any MAC
         self.target_mac = copy.deepcopy(mac)
@@ -38,8 +40,18 @@ class DMAQ_qattenLearner:
 
         self.n_actions = self.args.n_actions
 
-    def sub_train(self, batch: EpisodeBatch, t_env: int, episode_num: int, mac, mixer, optimiser, params,
-                  show_demo=False, save_data=None):
+    def sub_train(
+        self,
+        batch: EpisodeBatch,
+        t_env: int,
+        episode_num: int,
+        mac,
+        mixer,
+        optimiser,
+        params,
+        show_demo=False,
+        save_data=None,
+    ):
         # Get the relevant quantities
         rewards = batch["reward"][:, :-1]
         actions = batch["actions"][:, :-1]
@@ -58,7 +70,9 @@ class DMAQ_qattenLearner:
         mac_out = th.stack(mac_out, dim=1)  # Concat over time
 
         # Pick the Q-Values for the actions taken by each agent
-        chosen_action_qvals = th.gather(mac_out[:, :-1], dim=3, index=actions).squeeze(3)  # Remove the last dim
+        chosen_action_qvals = th.gather(mac_out[:, :-1], dim=3, index=actions).squeeze(
+            3
+        )  # Remove the last dim
 
         x_mac_out = mac_out.clone().detach()
         x_mac_out[avail_actions == 0] = -9999999
@@ -92,14 +106,20 @@ class DMAQ_qattenLearner:
             mac_out_detach = mac_out.clone().detach()
             mac_out_detach[avail_actions == 0] = -9999999
             cur_max_actions = mac_out_detach[:, 1:].max(dim=3, keepdim=True)[1]
-            target_chosen_qvals = th.gather(target_mac_out, 3, cur_max_actions).squeeze(3)
+            target_chosen_qvals = th.gather(target_mac_out, 3, cur_max_actions).squeeze(
+                3
+            )
             target_max_qvals = target_mac_out.max(dim=3)[0]
-            target_next_actions = cur_max_actions.detach()
+            # target_next_actions = cur_max_actions.detach()
 
-            cur_max_actions_onehot = th.zeros(cur_max_actions.squeeze(3).shape + (self.n_actions,))
+            cur_max_actions_onehot = th.zeros(
+                cur_max_actions.squeeze(3).shape + (self.n_actions,)
+            )
             if self.args.use_cuda:
-                cur_max_actions_onehot=cur_max_actions_onehot.cuda()
-            cur_max_actions_onehot = cur_max_actions_onehot.scatter_(3, cur_max_actions, 1)
+                cur_max_actions_onehot = cur_max_actions_onehot.cuda()
+            cur_max_actions_onehot = cur_max_actions_onehot.scatter_(
+                3, cur_max_actions, 1
+            )
         else:
             # Calculate the Q-Values necessary for the target
             target_mac_out = []
@@ -114,32 +134,59 @@ class DMAQ_qattenLearner:
         # Mix
         if mixer is not None:
             if self.args.mixer == "dmaq_qatten":
-                ans_chosen, q_attend_regs, head_entropies = \
-                    mixer(chosen_action_qvals, batch["state"][:, :-1], is_v=True)
-                ans_adv, _, _ = mixer(chosen_action_qvals, batch["state"][:, :-1], actions=actions_onehot,
-                                      max_q_i=max_action_qvals, is_v=False)
+                ans_chosen, q_attend_regs, head_entropies = mixer(
+                    chosen_action_qvals, batch["state"][:, :-1], is_v=True
+                )
+                ans_adv, _, _ = mixer(
+                    chosen_action_qvals,
+                    batch["state"][:, :-1],
+                    actions=actions_onehot,
+                    max_q_i=max_action_qvals,
+                    is_v=False,
+                )
                 chosen_action_qvals = ans_chosen + ans_adv
             else:
-                ans_chosen = mixer(chosen_action_qvals, batch["state"][:, :-1], is_v=True)
-                ans_adv = mixer(chosen_action_qvals, batch["state"][:, :-1], actions=actions_onehot,
-                                max_q_i=max_action_qvals, is_v=False)
+                ans_chosen = mixer(
+                    chosen_action_qvals, batch["state"][:, :-1], is_v=True
+                )
+                ans_adv = mixer(
+                    chosen_action_qvals,
+                    batch["state"][:, :-1],
+                    actions=actions_onehot,
+                    max_q_i=max_action_qvals,
+                    is_v=False,
+                )
                 chosen_action_qvals = ans_chosen + ans_adv
 
             if self.args.double_q:
                 if self.args.mixer == "dmaq_qatten":
-                    target_chosen, _, _ = self.target_mixer(target_chosen_qvals, batch["state"][:, 1:], is_v=True)
-                    target_adv, _, _ = self.target_mixer(target_chosen_qvals, batch["state"][:, 1:],
-                                                         actions=cur_max_actions_onehot,
-                                                         max_q_i=target_max_qvals, is_v=False)
+                    target_chosen, _, _ = self.target_mixer(
+                        target_chosen_qvals, batch["state"][:, 1:], is_v=True
+                    )
+                    target_adv, _, _ = self.target_mixer(
+                        target_chosen_qvals,
+                        batch["state"][:, 1:],
+                        actions=cur_max_actions_onehot,
+                        max_q_i=target_max_qvals,
+                        is_v=False,
+                    )
                     target_max_qvals = target_chosen + target_adv
                 else:
-                    target_chosen = self.target_mixer(target_chosen_qvals, batch["state"][:, 1:], is_v=True)
-                    target_adv = self.target_mixer(target_chosen_qvals, batch["state"][:, 1:],
-                                                   actions=cur_max_actions_onehot,
-                                                   max_q_i=target_max_qvals, is_v=False)
+                    target_chosen = self.target_mixer(
+                        target_chosen_qvals, batch["state"][:, 1:], is_v=True
+                    )
+                    target_adv = self.target_mixer(
+                        target_chosen_qvals,
+                        batch["state"][:, 1:],
+                        actions=cur_max_actions_onehot,
+                        max_q_i=target_max_qvals,
+                        is_v=False,
+                    )
                     target_max_qvals = target_chosen + target_adv
             else:
-                target_max_qvals = self.target_mixer(target_max_qvals, batch["state"][:, 1:], is_v=True)
+                target_max_qvals = self.target_mixer(
+                    target_max_qvals, batch["state"][:, 1:], is_v=True
+                )
 
         # Calculate 1-step Q-Learning targets
         targets = rewards + self.args.gamma * (1 - terminated) * target_max_qvals
@@ -147,14 +194,22 @@ class DMAQ_qattenLearner:
         if show_demo:
             tot_q_data = chosen_action_qvals.detach().cpu().numpy()
             tot_target = targets.detach().cpu().numpy()
-            print('action_pair_%d_%d' % (save_data[0], save_data[1]), np.squeeze(q_data[:, 0]),
-                  np.squeeze(q_i_data[:, 0]), np.squeeze(tot_q_data[:, 0]), np.squeeze(tot_target[:, 0]))
-            self.logger.log_stat('action_pair_%d_%d' % (save_data[0], save_data[1]),
-                                 np.squeeze(tot_q_data[:, 0]), t_env)
+            print(
+                "action_pair_%d_%d" % (save_data[0], save_data[1]),
+                np.squeeze(q_data[:, 0]),
+                np.squeeze(q_i_data[:, 0]),
+                np.squeeze(tot_q_data[:, 0]),
+                np.squeeze(tot_target[:, 0]),
+            )
+            self.logger.log_stat(
+                "action_pair_%d_%d" % (save_data[0], save_data[1]),
+                np.squeeze(tot_q_data[:, 0]),
+                t_env,
+            )
             return
 
         # Td-error
-        td_error = (chosen_action_qvals - targets.detach())
+        td_error = chosen_action_qvals - targets.detach()
 
         mask = mask.expand_as(td_error)
 
@@ -163,9 +218,9 @@ class DMAQ_qattenLearner:
 
         # Normal L2 loss, take mean over actual data
         if self.args.mixer == "dmaq_qatten":
-            loss = (masked_td_error ** 2).sum() / mask.sum() + q_attend_regs
+            loss = (masked_td_error**2).sum() / mask.sum() + q_attend_regs
         else:
-            loss = (masked_td_error ** 2).sum() / mask.sum()
+            loss = (masked_td_error**2).sum() / mask.sum()
 
         masked_hit_prob = th.mean(is_max_action, dim=2) * mask
         hit_prob = masked_hit_prob.sum() / mask.sum()
@@ -181,17 +236,44 @@ class DMAQ_qattenLearner:
             self.logger.log_stat("hit_prob", hit_prob.item(), t_env)
             self.logger.log_stat("grad_norm", grad_norm.cpu(), t_env)
             mask_elems = mask.sum().item()
-            self.logger.log_stat("td_error_abs", (masked_td_error.abs().sum().item() / mask_elems), t_env)
-            self.logger.log_stat("q_taken_mean",
-                                 (chosen_action_qvals * mask).sum().item() / (mask_elems * self.args.n_agents), t_env)
-            self.logger.log_stat("target_mean", (targets * mask).sum().item() / (mask_elems * self.args.n_agents),
-                                 t_env)
+            self.logger.log_stat(
+                "td_error_abs", (masked_td_error.abs().sum().item() / mask_elems), t_env
+            )
+            self.logger.log_stat(
+                "q_taken_mean",
+                (chosen_action_qvals * mask).sum().item()
+                / (mask_elems * self.args.n_agents),
+                t_env,
+            )
+            self.logger.log_stat(
+                "target_mean",
+                (targets * mask).sum().item() / (mask_elems * self.args.n_agents),
+                t_env,
+            )
             self.log_stats_t = t_env
 
-    def train(self, batch: EpisodeBatch, t_env: int, episode_num: int, show_demo=False, save_data=None):
-        self.sub_train(batch, t_env, episode_num, self.mac, self.mixer, self.optimiser, self.params,
-                       show_demo=show_demo, save_data=save_data)
-        if (episode_num - self.last_target_update_episode) / self.args.target_update_interval >= 1.0:
+    def train(
+        self,
+        batch: EpisodeBatch,
+        t_env: int,
+        episode_num: int,
+        show_demo=False,
+        save_data=None,
+    ):
+        self.sub_train(
+            batch,
+            t_env,
+            episode_num,
+            self.mac,
+            self.mixer,
+            self.optimiser,
+            self.params,
+            show_demo=show_demo,
+            save_data=save_data,
+        )
+        if (
+            episode_num - self.last_target_update_episode
+        ) / self.args.target_update_interval >= 1.0:
             self._update_targets()
             self.last_target_update_episode = episode_num
 
@@ -212,17 +294,26 @@ class DMAQ_qattenLearner:
         self.mac.save_models(path)
         if self.mixer is not None:
             th.save(self.mixer.state_dict(), "{}/mixer.th".format(path))
-        #th.save(self.optimiser.state_dict(), "{}/opt.th".format(path))
+        # th.save(self.optimiser.state_dict(), "{}/opt.th".format(path))
 
     def load_models(self, path):
         self.mac.load_models(path)
         # Not quite right but I don't want to save target networks
         self.target_mac.load_models(path)
         if self.mixer is not None:
-            self.mixer.load_state_dict(th.load("{}/mixer.th".format(path), map_location=lambda storage, loc: storage))
-            self.target_mixer.load_state_dict(th.load("{}/mixer.th".format(path),
-                                                      map_location=lambda storage, loc: storage))
-        #self.optimiser.load_state_dict(th.load("{}/opt.th".format(path), map_location=lambda storage, loc: storage))
+            self.mixer.load_state_dict(
+                th.load(
+                    "{}/mixer.th".format(path),
+                    map_location=lambda storage, loc: storage,
+                )
+            )
+            self.target_mixer.load_state_dict(
+                th.load(
+                    "{}/mixer.th".format(path),
+                    map_location=lambda storage, loc: storage,
+                )
+            )
+        # self.optimiser.load_state_dict(th.load("{}/opt.th".format(path), map_location=lambda storage, loc: storage))
 
     def n_learnable_param(self):
         total = self.mac.n_learnable_param()

@@ -1,34 +1,34 @@
-import numpy as np
-from copy import deepcopy
-from sacred import Experiment, SETTINGS
-from sacred.observers import FileStorageObserver, RunObserver
-from sacred.utils import apply_backspaces_and_linefeeds
-import sys
-from utils.logging import get_logger
-import yaml
-
 import datetime
 import os
 import pprint
-import time
+import sys
 import threading
-import torch as th
+import time
+from copy import deepcopy
+from os.path import abspath, dirname
 from types import SimpleNamespace as SN
-from utils.logging import Logger
-from os.path import dirname, abspath
 
-from learners import REGISTRY as le_REGISTRY
-from runners import REGISTRY as r_REGISTRY
-from controllers import REGISTRY as mac_REGISTRY
+import numpy as np
+import torch as th
+import yaml
 from components.episode_buffer import ReplayBuffer
 from components.transforms import OneHot
+from controllers import REGISTRY as mac_REGISTRY
+
+from learners import REGISTRY as le_REGISTRY
+from run import args_sanity_check
+from runners import REGISTRY as r_REGISTRY
+from sacred import Experiment, SETTINGS
+from sacred.observers import FileStorageObserver, RunObserver
+from sacred.utils import apply_backspaces_and_linefeeds
 
 from train_with_pymarl import _get_config, recursive_dict_update
-from run import args_sanity_check, evaluate_sequential
-from sacred import SETTINGS
+from utils.logging import get_logger, Logger
+
 SETTINGS.CONFIG.READ_ONLY_CONFIG = False
 SETTINGS[
-    'CAPTURE_MODE'] = "fd"  # set to "no" if you want to see stdout/stderr in console
+    "CAPTURE_MODE"
+] = "fd"  # set to "no" if you want to see stdout/stderr in console
 logger = get_logger()
 
 ex = Experiment("pymarl")
@@ -37,14 +37,14 @@ ex.captured_out_filter = apply_backspaces_and_linefeeds
 
 results_path = os.path.join(dirname(abspath(__file__)), "results_test")
 
+
 @ex.main
 def my_main(_run, _config, _log, env_args):
     # Setting the random seed throughout the modules
 
-
     np.random.seed(_config["seed"])
     th.manual_seed(_config["seed"])
-    env_args['seed'] = _config["seed"]
+    env_args["seed"] = _config["seed"]
 
     # run the framework
     run_test(_run, _config, _log)
@@ -61,9 +61,7 @@ def run_test(_run, _config, _log):
     logger = Logger(_log)
 
     _log.info("Experiment Parameters:")
-    experiment_params = pprint.pformat(_config,
-                                       indent=4,
-                                       width=1)
+    experiment_params = pprint.pformat(_config, indent=4, width=1)
     _log.info("\n\n" + experiment_params + "\n")
 
     # configure tensorboard logger
@@ -79,7 +77,7 @@ def run_test(_run, _config, _log):
     # Run and train
     run_sequential_test(args=args, logger=logger)
 
-    time.sleep(30) # To let sacred fileobserver write everything
+    time.sleep(30)  # To let sacred fileobserver write everything
 
     # Clean up after finishing
     print("Exiting Main")
@@ -114,23 +112,26 @@ def run_sequential_test(args, logger):
         "state": {"vshape": env_info["state_shape"]},
         "obs": {"vshape": env_info["obs_shape"], "group": "agents"},
         "actions": {"vshape": (1,), "group": "agents", "dtype": th.long},
-        "avail_actions": {"vshape": (env_info["n_actions"],),
-                          "group": "agents", "dtype": th.int},
+        "avail_actions": {
+            "vshape": (env_info["n_actions"],),
+            "group": "agents",
+            "dtype": th.int,
+        },
         "reward": {"vshape": (1,)},
         "terminated": {"vshape": (1,), "dtype": th.uint8},
     }
 
-    groups = {
-        "agents": args.n_agents
-    }
+    groups = {"agents": args.n_agents}
 
-    preprocess = {
-        "actions": ("actions_onehot", [OneHot(out_dim=args.n_actions)])
-    }
-    buffer = ReplayBuffer(scheme, groups, args.buffer_size,
-                          env_info["episode_limit"] + 1,
-                          preprocess=preprocess,
-                          device="cpu" if args.buffer_cpu_only else args.device)
+    preprocess = {"actions": ("actions_onehot", [OneHot(out_dim=args.n_actions)])}
+    buffer = ReplayBuffer(
+        scheme,
+        groups,
+        args.buffer_size,
+        env_info["episode_limit"] + 1,
+        preprocess=preprocess,
+        device="cpu" if args.buffer_cpu_only else args.device,
+    )
 
     # Setup multiagent controller here
     mac = mac_REGISTRY[args.mac](buffer.scheme, groups, args)
@@ -140,7 +141,7 @@ def run_sequential_test(args, logger):
 
     # Learner
     learner = le_REGISTRY[args.learner](mac, buffer.scheme, logger, args)
-    print("args.checkpoint_path ",args.checkpoint_path )
+    print("args.checkpoint_path ", args.checkpoint_path)
 
     if args.use_cuda:
         learner.cuda()
@@ -151,8 +152,8 @@ def run_sequential_test(args, logger):
 
         if not os.path.isdir(args.checkpoint_path):
             logger.console_logger.info(
-                "Checkpoint directory {} doesn't exist".format(
-                    args.checkpoint_path))
+                "Checkpoint directory {} doesn't exist".format(args.checkpoint_path)
+            )
             return
         # Go through all files in args.checkpoint_path
         for name in os.listdir(args.checkpoint_path):
@@ -161,7 +162,7 @@ def run_sequential_test(args, logger):
             if os.path.isdir(full_name) and name.isdigit():
                 timesteps.append(int(name))
         timesteps = sorted(timesteps)
-        print("timesteps",timesteps)
+        print("timesteps", timesteps)
         # max_index = len(timesteps) - 1
         for idx_, timestep_to_load in enumerate(timesteps):
             # if idx_ < max_index:
@@ -169,11 +170,9 @@ def run_sequential_test(args, logger):
             # if args.n_skip != 0 and idx_ % args.n_skip != 0:
             #     continue
             print("timestep_to_load", timestep_to_load)
-            model_path = os.path.join(args.checkpoint_path,
-                                      str(timestep_to_load))
+            model_path = os.path.join(args.checkpoint_path, str(timestep_to_load))
 
-            logger.console_logger.info(
-                "Loading model from {}".format(model_path))
+            logger.console_logger.info("Loading model from {}".format(model_path))
             learner.load_models(model_path)
             runner.load_models(model_path)
             runner.t_env = timestep_to_load
@@ -201,11 +200,13 @@ def run_sequential_test(args, logger):
     else:
         logger.console_logger.info("Checkpoint directory doesn't exist")
 
+
 def check_for_name(params):
     for param in params:
         if param.startswith("name="):
             return param[5:]
     return None
+
 
 class SetID(RunObserver):
     priority = 50  # very high priority
@@ -213,17 +214,19 @@ class SetID(RunObserver):
     def __init__(self, custom_id):
         self.custom_id = custom_id
 
-    def started_event(self, ex_info, command, host_info, start_time,
-                      config, meta_info, _id):
+    def started_event(
+        self, ex_info, command, host_info, start_time, config, meta_info, _id
+    ):
         return self.custom_id  # started_event should returns the _id
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     params = deepcopy(sys.argv)
 
     # Get the defaults from default.yaml
     with open(
-            os.path.join(os.path.dirname(__file__), "config", "default.yaml"),
-            "r") as f:
+        os.path.join(os.path.dirname(__file__), "config", "default.yaml"), "r"
+    ) as f:
         try:
             config_dict = yaml.load(f)
         except yaml.YAMLError as exc:
@@ -239,9 +242,10 @@ if __name__ == '__main__':
 
     name = check_for_name(params)
     if name is not None:
-        config_dict['name'] = name
-    config_dict["unique_token"] = "{}__{}".format(config_dict['name'], datetime.datetime.now().strftime(
-        "%Y-%m-%d_%H-%M-%S"))
+        config_dict["name"] = name
+    config_dict["unique_token"] = "{}__{}".format(
+        config_dict["name"], datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    )
 
     # now add all the config to sacred
     ex.add_config(config_dict)
@@ -253,4 +257,3 @@ if __name__ == '__main__':
     ex.observers.append(FileStorageObserver.create(file_obs_path))
 
     ex.run_commandline(params)
-

@@ -1,8 +1,9 @@
 import copy
-from components.episode_buffer import EpisodeBatch
-from modules.mixers.vdn import VDNMixer
-from modules.mixers.qmix import QMixer
+
 import torch as th
+from components.episode_buffer import EpisodeBatch
+from modules.mixers.qmix import QMixer
+from modules.mixers.vdn import VDNMixer
 from torch.optim import RMSprop
 
 
@@ -27,7 +28,9 @@ class QLearner:
             self.params += list(self.mixer.parameters())
             self.target_mixer = copy.deepcopy(self.mixer)
 
-        self.optimiser = RMSprop(params=self.params, lr=args.lr, alpha=args.optim_alpha, eps=args.optim_eps)
+        self.optimiser = RMSprop(
+            params=self.params, lr=args.lr, alpha=args.optim_alpha, eps=args.optim_eps
+        )
 
         # a little wasteful to deepcopy (e.g. duplicates action selector), but should work for any MAC
         self.target_mac = copy.deepcopy(mac)
@@ -52,7 +55,9 @@ class QLearner:
         mac_out = th.stack(mac_out, dim=1)  # Concat over time
 
         # Pick the Q-Values for the actions taken by each agent
-        chosen_action_qvals = th.gather(mac_out[:, :-1], dim=3, index=actions).squeeze(3)  # Remove the last dim
+        chosen_action_qvals = th.gather(mac_out[:, :-1], dim=3, index=actions).squeeze(
+            3
+        )  # Remove the last dim
 
         # Calculate the Q-Values necessary for the target
         target_mac_out = []
@@ -80,14 +85,18 @@ class QLearner:
 
         # Mix
         if self.mixer is not None:
-            chosen_action_qvals = self.mixer(chosen_action_qvals, batch["state"][:, :-1])
-            target_max_qvals = self.target_mixer(target_max_qvals, batch["state"][:, 1:])
+            chosen_action_qvals = self.mixer(
+                chosen_action_qvals, batch["state"][:, :-1]
+            )
+            target_max_qvals = self.target_mixer(
+                target_max_qvals, batch["state"][:, 1:]
+            )
 
         # Calculate 1-step Q-Learning targets
         targets = rewards + self.args.gamma * (1 - terminated) * target_max_qvals
 
         # Td-error
-        td_error = (chosen_action_qvals - targets.detach())
+        td_error = chosen_action_qvals - targets.detach()
 
         mask = mask.expand_as(td_error)
 
@@ -95,7 +104,7 @@ class QLearner:
         masked_td_error = td_error * mask
 
         # Normal L2 loss, take mean over actual data
-        loss = (masked_td_error ** 2).sum() / mask.sum()
+        loss = (masked_td_error**2).sum() / mask.sum()
 
         # Optimise
         self.optimiser.zero_grad()
@@ -103,7 +112,9 @@ class QLearner:
         grad_norm = th.nn.utils.clip_grad_norm_(self.params, self.args.grad_norm_clip)
         self.optimiser.step()
 
-        if (episode_num - self.last_target_update_episode) / self.args.target_update_interval >= 1.0:
+        if (
+            episode_num - self.last_target_update_episode
+        ) / self.args.target_update_interval >= 1.0:
             self._update_targets()
             self.last_target_update_episode = episode_num
 
@@ -111,23 +122,40 @@ class QLearner:
             self.logger.log_stat("loss", loss.item(), t_env)
             self.logger.log_stat("grad_norm", grad_norm.cpu(), t_env)
             mask_elems = mask.sum().item()
-            self.logger.log_stat("td_error_abs", (masked_td_error.abs().sum().item() / mask_elems), t_env)
-            self.logger.log_stat("q_taken_mean",
-                                 (chosen_action_qvals * mask).sum().item() / (mask_elems * self.args.n_agents), t_env)
-            self.logger.log_stat("target_mean", (targets * mask).sum().item() / (mask_elems * self.args.n_agents),
-                                 t_env)
-            max_q_indiv = mac_out[:, :-1].max(dim=-1)[0].mean(
-                dim=-1).unsqueeze(dim=-1)
-            self.logger.log_stat("max_q_indiv_mean",
-                                 (max_q_indiv * mask).sum().item() / (mask_elems * self.args.n_agents), t_env)
+            self.logger.log_stat(
+                "td_error_abs", (masked_td_error.abs().sum().item() / mask_elems), t_env
+            )
+            self.logger.log_stat(
+                "q_taken_mean",
+                (chosen_action_qvals * mask).sum().item()
+                / (mask_elems * self.args.n_agents),
+                t_env,
+            )
+            self.logger.log_stat(
+                "target_mean",
+                (targets * mask).sum().item() / (mask_elems * self.args.n_agents),
+                t_env,
+            )
+            max_q_indiv = mac_out[:, :-1].max(dim=-1)[0].mean(dim=-1).unsqueeze(dim=-1)
+            self.logger.log_stat(
+                "max_q_indiv_mean",
+                (max_q_indiv * mask).sum().item() / (mask_elems * self.args.n_agents),
+                t_env,
+            )
 
-            max_target_mac_out_training = target_mac_out_for_log[:, :-1].max(dim=-1)[0].mean(
-                dim=-1).unsqueeze(dim=-1)
-            self.logger.log_stat("max_target_mac_out_training_mean",
-                                 (max_target_mac_out_training * mask).sum().item() / (mask_elems * self.args.n_agents),
-                                 t_env)
+            max_target_mac_out_training = (
+                target_mac_out_for_log[:, :-1]
+                .max(dim=-1)[0]
+                .mean(dim=-1)
+                .unsqueeze(dim=-1)
+            )
+            self.logger.log_stat(
+                "max_target_mac_out_training_mean",
+                (max_target_mac_out_training * mask).sum().item()
+                / (mask_elems * self.args.n_agents),
+                t_env,
+            )
             self.log_stats_t = t_env
-
 
     def stats(self, batch, t_env):
         # Get the relevant quantities
@@ -151,7 +179,9 @@ class QLearner:
         mac_out = th.stack(mac_out, dim=1)  # Concat over time
 
         # Pick the Q-Values for the actions taken by each agent
-        chosen_action_qvals = th.gather(mac_out[:, :-1], dim=3, index=actions).squeeze(3)  # Remove the last dim
+        chosen_action_qvals = th.gather(mac_out[:, :-1], dim=3, index=actions).squeeze(
+            3
+        )  # Remove the last dim
 
         # Calculate the Q-Values necessary for the target
         target_mac_out = []
@@ -184,38 +214,66 @@ class QLearner:
 
         # Mix
         if self.mixer is not None:
-            chosen_action_qvals = self.mixer(chosen_action_qvals, batch["state"][:, :-1])
-            target_max_qvals = self.target_mixer(target_max_qvals, batch["state"][:, 1:])
+            chosen_action_qvals = self.mixer(
+                chosen_action_qvals, batch["state"][:, :-1]
+            )
+            target_max_qvals = self.target_mixer(
+                target_max_qvals, batch["state"][:, 1:]
+            )
 
         real_discounted_sum = rewards.clone().detach()
-        t = rewards.size()[1] - 1 # t max
+        t = rewards.size()[1] - 1  # t max
 
         real_discounted_sum[:, t, :] = rewards[:, t, :]
-        while t>0:
-            t-=1
-            real_discounted_sum[:, t, :] = rewards[:, t, :] + self.args.gamma * real_discounted_sum[:, t+1, :]
+        while t > 0:
+            t -= 1
+            real_discounted_sum[:, t, :] = (
+                rewards[:, t, :] + self.args.gamma * real_discounted_sum[:, t + 1, :]
+            )
 
         mask_elems = mask.sum().item()
 
-        self.logger.log_stat("chosen_q_indiv_mean",
-                             (chosen_action_qvals_copy * mask).sum().item() / (mask_elems * self.args.n_agents), t_env)
-        self.logger.log_stat("chosen_target_q_indiv_mean",
-                             (target_max_qvals_copy * mask).sum().item() / (mask_elems * self.args.n_agents), t_env)
+        self.logger.log_stat(
+            "chosen_q_indiv_mean",
+            (chosen_action_qvals_copy * mask).sum().item()
+            / (mask_elems * self.args.n_agents),
+            t_env,
+        )
+        self.logger.log_stat(
+            "chosen_target_q_indiv_mean",
+            (target_max_qvals_copy * mask).sum().item()
+            / (mask_elems * self.args.n_agents),
+            t_env,
+        )
 
         if self.mixer is not None:
-            self.logger.log_stat("chosen_q_mix_mean",
-                                 (chosen_action_qvals * mask).sum().item() / mask_elems, t_env)
-            self.logger.log_stat("target_q_mix_mean",
-                                 (target_max_qvals * mask).sum().item() / mask_elems,  t_env)
+            self.logger.log_stat(
+                "chosen_q_mix_mean",
+                (chosen_action_qvals * mask).sum().item() / mask_elems,
+                t_env,
+            )
+            self.logger.log_stat(
+                "target_q_mix_mean",
+                (target_max_qvals * mask).sum().item() / mask_elems,
+                t_env,
+            )
 
-        self.logger.log_stat("max_q_indiv_mean",
-                             (max_q_indiv * mask).sum().item() / (mask_elems * self.args.n_agents), t_env)
-        self.logger.log_stat("max_target_q_indiv_mean",
-                             (max_target_mac_out_training * mask).sum().item() / (mask_elems * self.args.n_agents),
-                             t_env)
-        self.logger.log_stat("real_discounted_per_state_mean",
-                             (real_discounted_sum * mask).sum().item() / mask_elems,
-                             t_env)
+        self.logger.log_stat(
+            "max_q_indiv_mean",
+            (max_q_indiv * mask).sum().item() / (mask_elems * self.args.n_agents),
+            t_env,
+        )
+        self.logger.log_stat(
+            "max_target_q_indiv_mean",
+            (max_target_mac_out_training * mask).sum().item()
+            / (mask_elems * self.args.n_agents),
+            t_env,
+        )
+        self.logger.log_stat(
+            "real_discounted_per_state_mean",
+            (real_discounted_sum * mask).sum().item() / mask_elems,
+            t_env,
+        )
         self.log_stats_t = t_env
 
     def _update_targets(self):
@@ -235,15 +293,20 @@ class QLearner:
         self.mac.save_models(path)
         if self.mixer is not None:
             th.save(self.mixer.state_dict(), "{}/mixer.th".format(path))
-        #th.save(self.optimiser.state_dict(), "{}/opt.th".format(path))
+        # th.save(self.optimiser.state_dict(), "{}/opt.th".format(path))
 
     def load_models(self, path):
         self.mac.load_models(path)
         # Not quite right but I don't want to save target networks
         self.target_mac.load_models(path)
         if self.mixer is not None:
-            self.mixer.load_state_dict(th.load("{}/mixer.th".format(path), map_location=lambda storage, loc: storage))
-        #self.optimiser.load_state_dict(th.load("{}/opt.th".format(path), map_location=lambda storage, loc: storage))
+            self.mixer.load_state_dict(
+                th.load(
+                    "{}/mixer.th".format(path),
+                    map_location=lambda storage, loc: storage,
+                )
+            )
+        # self.optimiser.load_state_dict(th.load("{}/opt.th".format(path), map_location=lambda storage, loc: storage))
 
     def n_learnable_param(self):
         total = self.mac.n_learnable_param()

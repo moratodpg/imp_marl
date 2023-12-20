@@ -12,15 +12,15 @@ class DDMACCritic(nn.Module):
         self.n_agents = args.n_agents
 
         input_shape = self._get_input_shape(scheme)
-        self.output_type = "q" #pm To be modified?
-        
+        self.output_type = "q"  # pm To be modified?
+
         critic_size = self.args.critic_size
 
         # Set up network layers
         self.fc1 = nn.Linear(input_shape, critic_size)
         self.fc2 = nn.Linear(critic_size, critic_size)
         # self.fc3 = nn.Linear(128, self.n_actions) # Q-values as output
-        self.fc3 = nn.Linear(critic_size, 1) # v-values as output
+        self.fc3 = nn.Linear(critic_size, 1)  # v-values as output
 
     def forward(self, batch, t=None):
         inputs = self._build_inputs(batch, t=t)
@@ -32,32 +32,36 @@ class DDMACCritic(nn.Module):
     def _build_inputs(self, batch, t=None):
         bs = batch.batch_size
         max_t = batch.max_seq_length if t is None else 1
-        ts = slice(None) if t is None else slice(t, t+1)
+        ts = slice(None) if t is None else slice(t, t + 1)
         inputs = []
         # state
-        inputs.append(batch["state"][:, ts].unsqueeze(2).repeat(1, 1, self.n_agents, 1)) # The state values can be fed differently here
-#        # actions (masked out by agent)
-#        actions = batch["actions_onehot"][:, ts].view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1)
-#        agent_mask = (1 - th.eye(self.n_agents, device=batch.device))
-#        agent_mask = agent_mask.view(-1, 1).repeat(1, self.n_actions).view(self.n_agents, -1)
-#        inputs.append(actions * agent_mask.unsqueeze(0).unsqueeze(0))
-#        
-#        # last actions
-#        if t == 0:
-#            inputs.append(th.zeros_like(batch["actions_onehot"][:, 0:1]).view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1))
-#        elif isinstance(t, int):
-#            inputs.append(batch["actions_onehot"][:, slice(t-1, t)].view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1))
-#        else:
-#            last_actions = th.cat([th.zeros_like(batch["actions_onehot"][:, 0:1]), batch["actions_onehot"][:, :-1]], dim=1)
-#            last_actions = last_actions.view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1)
-#            inputs.append(last_actions)
-#
-        inputs = th.cat([x.reshape(bs, max_t, self.n_agents, -1) for x in inputs], dim=-1)
+        inputs.append(
+            batch["state"][:, ts].unsqueeze(2).repeat(1, 1, self.n_agents, 1)
+        )  # The state values can be fed differently here
+        #        # actions (masked out by agent)
+        #        actions = batch["actions_onehot"][:, ts].view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1)
+        #        agent_mask = (1 - th.eye(self.n_agents, device=batch.device))
+        #        agent_mask = agent_mask.view(-1, 1).repeat(1, self.n_actions).view(self.n_agents, -1)
+        #        inputs.append(actions * agent_mask.unsqueeze(0).unsqueeze(0))
+        #
+        #        # last actions
+        #        if t == 0:
+        #            inputs.append(th.zeros_like(batch["actions_onehot"][:, 0:1]).view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1))
+        #        elif isinstance(t, int):
+        #            inputs.append(batch["actions_onehot"][:, slice(t-1, t)].view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1))
+        #        else:
+        #            last_actions = th.cat([th.zeros_like(batch["actions_onehot"][:, 0:1]), batch["actions_onehot"][:, :-1]], dim=1)
+        #            last_actions = last_actions.view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1)
+        #            inputs.append(last_actions)
+        #
+        inputs = th.cat(
+            [x.reshape(bs, max_t, self.n_agents, -1) for x in inputs], dim=-1
+        )
         return inputs
 
     def _get_input_shape(self, scheme):
         # state
         input_shape = scheme["state"]["vshape"]
         # actions and last actions
-#        input_shape += scheme["actions_onehot"]["vshape"][0] * self.n_agents * 2
+        #        input_shape += scheme["actions_onehot"]["vshape"][0] * self.n_agents * 2
         return input_shape

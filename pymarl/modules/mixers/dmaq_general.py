@@ -1,7 +1,7 @@
+import numpy as np
 import torch as th
 import torch.nn as nn
-import torch.nn.functional as F
-import numpy as np
+
 from .dmaq_si_weight import DMAQ_SI_Weight
 
 
@@ -19,12 +19,16 @@ class DMAQer(nn.Module):
         self.embed_dim = args.mixing_embed_dim
 
         hypernet_embed = self.args.hypernet_embed
-        self.hyper_w_final = nn.Sequential(nn.Linear(self.state_dim, hypernet_embed),
-                                           nn.ReLU(),
-                                           nn.Linear(hypernet_embed, self.n_agents))
-        self.V = nn.Sequential(nn.Linear(self.state_dim, hypernet_embed),
-                               nn.ReLU(),
-                               nn.Linear(hypernet_embed, self.n_agents))
+        self.hyper_w_final = nn.Sequential(
+            nn.Linear(self.state_dim, hypernet_embed),
+            nn.ReLU(),
+            nn.Linear(hypernet_embed, self.n_agents),
+        )
+        self.V = nn.Sequential(
+            nn.Linear(self.state_dim, hypernet_embed),
+            nn.ReLU(),
+            nn.Linear(hypernet_embed, self.n_agents),
+        )
 
         self.si_weight = DMAQ_SI_Weight(args)
 
@@ -45,7 +49,7 @@ class DMAQer(nn.Module):
         adv_w_final = adv_w_final.view(-1, self.n_agents)
 
         if self.args.is_minus_one:
-            adv_tot = th.sum(adv_q * (adv_w_final - 1.), dim=1)
+            adv_tot = th.sum(adv_q * (adv_w_final - 1.0), dim=1)
         else:
             adv_tot = th.sum(adv_q * adv_w_final, dim=1)
         return adv_tot

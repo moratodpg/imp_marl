@@ -19,4 +19,3 @@ For example, to compute the return resulting from the uncorrelated 4-out-of-5 en
 * Check the optimized heuristics: 'insp_interv': 10, 'insp_comp': 5
 * The seed was set up as 0 by default
 * Execute run_heuristics.py
-

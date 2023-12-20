@@ -17,4 +17,3 @@ echo $alg
 echo $env
 python pymarl/test_with_pymarl.py --config=${alg} --env-config=${env} with test_nepisode=${n_test} checkpoint_path=${path} runner=parallel batch_size_run=${n_env} use_cuda=True name=${name}
 deactivate
-

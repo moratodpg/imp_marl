@@ -24,8 +24,13 @@ class FACMACCritic(nn.Module):
 
     def forward(self, inputs, actions, hidden_state=None):
         if actions is not None:
-            inputs = th.cat([inputs.view(-1, self.input_shape - self.n_actions),
-                             actions.contiguous().view(-1, self.n_actions)], dim=-1)
+            inputs = th.cat(
+                [
+                    inputs.view(-1, self.input_shape - self.n_actions),
+                    actions.contiguous().view(-1, self.n_actions),
+                ],
+                dim=-1,
+            )
         x = F.relu(self.fc1(inputs))
         x = F.relu(self.fc2(x))
         q = self.fc3(x)
@@ -57,8 +62,13 @@ class FACMACDiscreteCritic(nn.Module):
 
     def forward(self, inputs, actions, hidden_state=None):
         if actions is not None:
-            inputs = th.cat([inputs.reshape(-1, self.input_shape - self.n_actions),
-                             actions.contiguous().view(-1, self.n_actions)], dim=-1)
+            inputs = th.cat(
+                [
+                    inputs.reshape(-1, self.input_shape - self.n_actions),
+                    actions.contiguous().view(-1, self.n_actions),
+                ],
+                dim=-1,
+            )
         x = F.relu(self.fc1(inputs))
         x = F.relu(self.fc2(x))
         q = self.fc3(x)

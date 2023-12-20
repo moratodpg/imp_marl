@@ -1,4 +1,5 @@
 import time
+
 import numpy as np
 
 
@@ -11,7 +12,13 @@ def print_time(start_time, T, t_max, episode, episode_rewards):
     last_reward = "N\A"
     if len(episode_rewards) > 5:
         last_reward = "{:.2f}".format(np.mean(episode_rewards[-50:]))
-    print("\033[F\033[F\x1b[KEp: {:,}, T: {:,}/{:,}, Reward: {}, \n\x1b[KElapsed: {}, Left: {}\n".format(episode, T, t_max, last_reward, time_str(time_elapsed), time_str(time_left)), " " * 10, end="\r")
+    print(
+        "\033[F\033[F\x1b[KEp: {:,}, T: {:,}/{:,}, Reward: {}, \n\x1b[KElapsed: {}, Left: {}\n".format(
+            episode, T, t_max, last_reward, time_str(time_elapsed), time_str(time_left)
+        ),
+        " " * 10,
+        end="\r",
+    )
 
 
 def time_left(start_time, t_start, t_current, t_max):

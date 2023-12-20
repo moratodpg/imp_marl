@@ -1,11 +1,11 @@
 """ Class for the transition model of an IMP problem. """
+import math
+
 import numpy as np
 import scipy.stats as stats
-import math
 
 
 class CreateModels:
-
     def __init__(self, config=None):
         self.T = config["T"]
         self.ncycles = config["ncycles"]
@@ -27,9 +27,10 @@ class CreateModels:
         self.dd[0, :] = d0
 
         for t in range(self.T):
-            dt = (((2 - self.m) / 2) * C * (
-                        math.pi ** 0.5 * S) ** self.m * self.ncycles + d0 ** (
-                              (2 - self.m) / 2)) ** (2 / (2 - self.m))
+            dt = (
+                ((2 - self.m) / 2) * C * (math.pi**0.5 * S) ** self.m * self.ncycles
+                + d0 ** ((2 - self.m) / 2)
+            ) ** (2 / (2 - self.m))
             dt[(dt < d0) | (dt > self.dcrit)] = self.dcrit + 0.1
             self.dd[t + 1, :] = dt
             d0 = dt
@@ -42,7 +43,8 @@ class CreateModels:
         interv_step = (math.log(self.dcrit) - math.log(1e-4)) / (n_bins - 2)
         interv_end = math.log(self.dcrit)
         interv_transf = np.exp(
-            np.arange(interv_start, interv_end + interv_step, interv_step))
+            np.arange(interv_start, interv_end + interv_step, interv_step)
+        )
         self.d_interv = np.append(self.d_interv, interv_transf)
         self.d_interv = np.append(self.d_interv, 1e20)
 
@@ -64,7 +66,9 @@ class CreateModels:
                 else:
                     H, _ = np.histogram(Dnext, self.d_interv)
                     self.T0[i, j, :] = H / countd.sum()
-        self.T0[-1,] = self.T0[-2,]
+        self.T0[-1,] = self.T0[
+            -2,
+        ]
 
         self.Tr = np.zeros((det_rates, n_bins, n_bins))
         self.Tr = np.tile(self.b0, (det_rates, n_bins, 1))

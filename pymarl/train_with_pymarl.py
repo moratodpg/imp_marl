@@ -1,21 +1,23 @@
+import collections
 import datetime
+import os
+import sys
+from copy import deepcopy
+from os.path import abspath, dirname
 
 import numpy as np
-import os
-import collections
-from os.path import dirname, abspath
-from copy import deepcopy
-from sacred import Experiment, SETTINGS
-from sacred.observers import FileStorageObserver, RunObserver
-from sacred.utils import apply_backspaces_and_linefeeds
-import sys
 import torch as th
 import yaml
 
 from run import run
+from sacred import Experiment, SETTINGS
+from sacred.observers import FileStorageObserver, RunObserver
+from sacred.utils import apply_backspaces_and_linefeeds
 from utils.logging import get_logger
 
-SETTINGS['CAPTURE_MODE'] = "fd" # set to "no" if you want to see stdout/stderr in console
+SETTINGS[
+    "CAPTURE_MODE"
+] = "fd"  # set to "no" if you want to see stdout/stderr in console
 logger = get_logger()
 
 ex = Experiment("pymarl")
@@ -24,13 +26,14 @@ ex.captured_out_filter = apply_backspaces_and_linefeeds
 
 results_path = os.path.join(dirname(abspath(__file__)), "results")
 
+
 @ex.main
 def my_main(_run, _config, _log):
     # Setting the random seed throughout the modules
     config = config_copy(_config)
     np.random.seed(config["seed"])
     th.manual_seed(config["seed"])
-    config['env_args']['seed'] = config["seed"]
+    config["env_args"]["seed"] = config["seed"]
 
     # run the framework
     run(_run, config, _log)
@@ -45,7 +48,15 @@ def _get_config(params, arg_name, subfolder):
             break
 
     if config_name is not None:
-        with open(os.path.join(os.path.dirname(__file__), "config", subfolder, "{}.yaml".format(config_name)), "r") as f:
+        with open(
+            os.path.join(
+                os.path.dirname(__file__),
+                "config",
+                subfolder,
+                "{}.yaml".format(config_name),
+            ),
+            "r",
+        ) as f:
             try:
                 config_dict = yaml.load(f)
             except yaml.YAMLError as exc:
@@ -70,6 +81,7 @@ def config_copy(config):
     else:
         return deepcopy(config)
 
+
 def check_for_name(params):
     for param in params:
         if param.startswith("name="):
@@ -83,16 +95,19 @@ class SetID(RunObserver):
     def __init__(self, custom_id):
         self.custom_id = custom_id
 
-    def started_event(self, ex_info, command, host_info, start_time,
-                      config, meta_info, _id):
+    def started_event(
+        self, ex_info, command, host_info, start_time, config, meta_info, _id
+    ):
         return self.custom_id  # started_event should returns the _id
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     params = deepcopy(sys.argv)
 
     # Get the defaults from default.yaml
-    with open(os.path.join(os.path.dirname(__file__), "config", "default.yaml"), "r") as f:
+    with open(
+        os.path.join(os.path.dirname(__file__), "config", "default.yaml"), "r"
+    ) as f:
         try:
             config_dict = yaml.load(f)
         except yaml.YAMLError as exc:
@@ -108,9 +123,10 @@ if __name__ == '__main__':
 
     name = check_for_name(params)
     if name is not None:
-        config_dict['name'] = name
-    config_dict["unique_token"] = "{}__{}".format(config_dict['name'], datetime.datetime.now().strftime(
-        "%Y-%m-%d_%H-%M-%S"))
+        config_dict["name"] = name
+    config_dict["unique_token"] = "{}__{}".format(
+        config_dict["name"], datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    )
 
     # now add all the config to sacred
     ex.add_config(config_dict)
@@ -121,4 +137,3 @@ if __name__ == '__main__':
     ex.observers.append(SetID(config_dict["unique_token"]))
     ex.observers.append(FileStorageObserver.create(file_obs_path))
     ex.run_commandline(params)
-
