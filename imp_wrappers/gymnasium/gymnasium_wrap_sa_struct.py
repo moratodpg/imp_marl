@@ -10,7 +10,7 @@ from imp_env.owf_env import Struct_owf
 from imp_env.struct_env import Struct
 
 
-class GymSaStruct(gym.Env):
+class GymnasiumSaStruct(gym.Env):
     def __init__(self,
                  struct_type: str = "struct",
                  n_comp: int = 2,
@@ -136,9 +136,10 @@ class GymSaStruct(gym.Env):
                        zip(self.struct_env.agent_list, converted_action)}
         _, rewards, done, _ = self.struct_env.step(action_dict)
         info = {}
+        reward = rewards[self.struct_env.agent_list[0]]
+        state = self.get_state()
 
-        return self.get_state(), rewards[
-            self.struct_env.agent_list[0]], done, {}, info
+        return state, reward, done, False, info
 
     def get_state(self):
         """ Returns the state of the environment. """

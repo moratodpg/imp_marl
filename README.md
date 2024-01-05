@@ -41,7 +41,8 @@ However, to reproduce our results, more packages are required and installation i
 
 ## Available wrappers with examples: 
 - Ready: [**PyMarl**](imp_wrappers/pymarl_wrapper): [Multi](imp_wrappers/pymarl_wrapper/pymarl_wrap_ma_struct.py) and [single](imp_wrappers/pymarl_wrapper/pymarl_wrap_sa_struct.py) agent wrappers.
-- Ready: [**Gymnasium**](imp_wrappers/gymnasium/gym_wrap_sa_struct.py): Single-agent wrapper.
+- Ready: [**Gym**](imp_wrappers/gym/gym_wrap_sa_struct.py): Single-agent wrapper.
+- Ready: [**Gymnasium**](imp_wrappers/gymnasium/gymnasium_wrap_sa_struct.py): Single-agent wrapper.
 - Ready: [**PettingZoo**](imp_wrappers/pettingzoo/pettingzoo_wrap_struct.py) : Multi-agent wrapper.
 - Ready: [**Rllib example**](imp_wrappers/examples/rllib/rllib_example.py): Single-agent training with RLLib and Gymnasium wrapper.
 - Ready: [**MARLlib**](imp_wrappers/marllib/marllib_wrap_ma_struct.py): Examples include random agents and how to train with MARLlib.
