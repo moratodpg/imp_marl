@@ -40,17 +40,31 @@ class Struct(ImpEnv):
         immediate_cost
         belief_update_uncorrelated
         belief_update_correlated
-
     Examples:
         >>> from environments.struct_env import Struct
+        >>> import numpy as np
         >>> env = Struct()
         >>> obs = env.reset()
-        >>> print(obs)
+        >>> print(obs.keys())
+        dict_keys(['agent_0', 'agent_1'])
+        >>> obs["agent_0"]
+        array([1.052000e-04, 5.500000e-05, 8.660000e-05, 1.261000e-04,
+               2.006000e-04, 3.173000e-04, 4.853000e-04, 7.444000e-04,
+               1.138400e-03, 1.783100e-03, 2.713600e-03, 4.235700e-03,
+               6.473200e-03, 1.002420e-02, 1.530330e-02, 2.316180e-02,
+               3.453640e-02, 5.087030e-02, 7.324320e-02, 1.008326e-01,
+               1.309823e-01, 1.539425e-01, 1.567708e-01, 1.275575e-01,
+               7.401660e-02, 2.583390e-02, 4.230100e-03, 2.268000e-04,
+               3.200000e-06, 0.000000e+00, 0.000000e+00])
         >>> actions = {}
         >>> for agent_id in env.agent_list:
-        >>>     actions[agent_id] = np.random.randint(0, env.actions_per_agent)
+        ...     actions[agent_id] = np.random.randint(0, env.actions_per_agent)
         >>> next_obs, rewards, done, info = env.step(actions)
-        >>> print(next_obs, rewards, done, info)
+        >>> print(rewards.keys())
+        dict_keys(['agent_0', 'agent_1'])
+        >>> print(done)
+        False
+
     """
     def __init__(self, config=None):
         """ Initialises the class according to the provided config instructions.
