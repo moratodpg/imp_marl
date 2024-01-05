@@ -2,7 +2,7 @@
 
 import numpy as np
 import os
-from imp_env.imp_env import ImpEnv
+from environments.imp_env import ImpEnv
 
 
 class Struct(ImpEnv):
@@ -42,7 +42,7 @@ class Struct(ImpEnv):
         belief_update_correlated
 
     Examples:
-        >>> from imp_env.struct_env import Struct
+        >>> from environments.struct_env import Struct
         >>> env = Struct()
         >>> obs = env.reset()
         >>> print(obs)

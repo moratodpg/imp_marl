@@ -2,7 +2,7 @@
 
 import os
 import numpy as np
-from imp_env.imp_env import ImpEnv
+from environments.imp_env import ImpEnv
 
 class Struct_owf(ImpEnv):
 

@@ -1,5 +1,5 @@
 import pytest
-from imp_env.struct_env import Struct
+from environments.struct_env import Struct
 
 def test_default_constructor():
     env = Struct()

@@ -4,7 +4,7 @@ This package contains wrappers for the IMP environments.
 
 Due to the variety of methods and frameworks used to train agents, we here provide a wrapper for most of them and showcase the flexibility provided by `imp_marl`.
 
-The wrappers simply use the interface defined in [imp_env.py](../imp_env/imp_env.py) in order to plug any IMP environment into any framework.
+The wrappers simply use the interface defined in [imp_env.py](../environments/imp_env.py) in order to plug any IMP environment into any framework.
 
 Examples of the use of these wrappers can be found in the [examples](examples) directories.
 

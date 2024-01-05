@@ -3,8 +3,8 @@
 import numpy as np
 import torch
 
-from imp_env.owf_env import Struct_owf
-from imp_env.struct_env import Struct
+from environments.owf_env import Struct_owf
+from environments.struct_env import Struct
 from imp_wrappers.pymarl_wrapper.MultiAgentEnv import MultiAgentEnv
 
 

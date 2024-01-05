@@ -4,7 +4,7 @@
 **IMP-MARL** offers a platform for benchmarking the scalability of cooperative MARL methods in real-world engineering applications.
 
 In IMP-MARL, you can:
-- [Implement your own infrastructure management planning (IMP) environment or execute an available IMP environment](./imp_env/).
+- [Implement your own infrastructure management planning (IMP) environment or execute an available IMP environment](environments/).
 - [Train IMP policies through state-of-the-art MARL methods. The environments can be integrated with typical ecosystems via wrappers](imp_wrappers/).
 - [Compute expert-based heuristic policies](./heuristics/)
 
@@ -26,7 +26,7 @@ To work with our environments, one only needs to install [Numpy](https://numpy.o
 However, to reproduce our results, more packages are required and installation instructions are provided [here](pymarl/README.md).
 
 ## Tutorials
-- [Create your own IMP environment scenario](imp_env/new_imp_env_tutorial.ipynb)
+- [Create your own IMP environment scenario](environments/new_imp_env_tutorial.ipynb)
 - [IMP's API explained](imp_wrappers/README.md)
 - [Train agents like in the paper and/or **reproduce** the results](pymarl/README.md)
 - [Retrieve the results of the paper and execute the plot scripts](results_scripts/README.md)
@@ -34,8 +34,8 @@ However, to reproduce our results, more packages are required and installation i
 - [Reproduce the results of the paper](REPROD_EXP.md)
 
 ## Sets of environments available:
-- [(Correlated and uncorrelated) k-out-of-n system with components subject to fatigue deterioration.](./imp_env/struct_env.py)
-- [Offshore wind structural system with components subject to fatigue deterioration.](./imp_env/owf_env.py)
+- [(Correlated and uncorrelated) k-out-of-n system with components subject to fatigue deterioration.](environments/struct_env.py)
+- [Offshore wind structural system with components subject to fatigue deterioration.](environments/owf_env.py)
 
 **Note: A campaign cost can be activated in any environment.**
 

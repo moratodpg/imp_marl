@@ -6,8 +6,8 @@ import gym
 import numpy as np
 from gym import spaces
 
-from imp_env.owf_env import Struct_owf
-from imp_env.struct_env import Struct
+from environments.owf_env import Struct_owf
+from environments.struct_env import Struct
 
 
 class GymSaStruct(gym.Env):
