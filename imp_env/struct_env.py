@@ -40,6 +40,17 @@ class Struct(ImpEnv):
         immediate_cost
         belief_update_uncorrelated
         belief_update_correlated
+
+    Examples:
+        >>> from imp_env.struct_env import Struct
+        >>> env = Struct()
+        >>> obs = env.reset()
+        >>> print(obs)
+        >>> actions = {}
+        >>> for agent_id in env.agent_list:
+        >>>     actions[agent_id] = np.random.randint(0, env.actions_per_agent)
+        >>> next_obs, rewards, done, info = env.step(actions)
+        >>> print(next_obs, rewards, done, info)
     """
     def __init__(self, config=None):
         """ Initialises the class according to the provided config instructions.
@@ -48,7 +59,7 @@ class Struct(ImpEnv):
             config: Dictionary containing config parameters.
                 Keys:
                     n_comp: Number of components.
-                    discount_reward: Discount factor. 
+                    discount_reward: Discount factor.
                     k_comp: Number of components required to not fail.
                     env_correlation: Whether the damage probability is correlated or not.
                     campaign_cost: Whether to include campaign cost in reward.
