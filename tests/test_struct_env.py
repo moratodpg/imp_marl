@@ -36,12 +36,14 @@ def test_default_constructor():
     assert "agent_1" in rewards
     assert done == False
 
+
 def test_terminal_state():
     env = Struct()
     cpt = 0
     done = False
     while not done:
-        _, _, done, _ = env.step({"agent_0": np.random.randint(0, 3), "agent_1": np.random.randint(0, 3)})
+        _, rewards, done, _ = env.step({"agent_0": np.random.randint(0, 3), "agent_1": np.random.randint(0, 3)})
+        assert rewards["agent_0"] == rewards["agent_1"]
         cpt += 1
     assert cpt == 30
 
