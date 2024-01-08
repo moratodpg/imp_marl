@@ -318,7 +318,7 @@ delete.py
 
 launch_50.sbatch
 
-heuristics/Results/
+papers/neurips_23/heuristics/Results/
 
 /sacred_cluster
 sacred_scripts/plots/
@@ -333,8 +333,8 @@ papers/neurips_23/results_scripts/MARL_logs.zip
 /papers/neurips_23/pymarl/imp_marl_venv
 
 imp_marl/environments/pomdp_models/model.npz
-/heuristics/heuristic_logs/
-/heuristics/heur_logs.zip
+/papers/neurips_23/heuristics/heuristic_logs/
+/papers/neurips_23/heuristics/heur_logs.zip
 /imp_marl/imp_wrappers/marllib/examples/exp_results/
 
 .DS_Store

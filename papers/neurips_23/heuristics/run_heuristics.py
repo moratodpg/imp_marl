@@ -1,5 +1,5 @@
-from heuristics.heuristics_interval_owf import HeuristicsOwf
-from heuristics.heuristics_intervals_struct import HeuristicsStruct
+from papers.neurips_23.heuristics.heuristics_interval_owf import HeuristicsOwf
+from papers.neurips_23.heuristics.heuristics_intervals_struct import HeuristicsStruct
 import timeit
 
 if __name__ == '__main__':
