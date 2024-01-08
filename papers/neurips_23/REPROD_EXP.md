@@ -21,12 +21,12 @@ To reproduce the results in our paper, you will need **python 3.7!!**
 
 Conda:
 ```
-./pymarl/install_conda.sh
+./papers/neurips_23/pymarl/install_conda.sh
 ```
 
 or Virtual environment (make sure you execute the script with a python 3.7 version):
 ```
-./pymarl/install_venv.sh
+./papers/neurips_23/pymarl/install_venv.sh
 ```
 
 Several script are in notebook, so you will need to [install jupyter notebook](https://jupyter.org/install).
@@ -42,13 +42,13 @@ pip install -e .
 ```
 # Reproduce one experiment
 
-## Retrieve seeds to execute to reproduce
+## Retrieve seeds to reproduce
 
 The seeds required to reproduce our paper are obtained by downloading the logs from our experiments.
 
 To download the logs, you can use the following script or go to the [download instructions](results_scripts/README.md):
 ```
-mkdir -p results_scripts/logs
+mkdir -p papers/neurips_23/results_scripts/logs
 wget https://zenodo.org/record/8032339/files/MARL_logs.zip
 unzip MARL_logs.zip -d results_scripts/logs/
 unzip results_scripts/logs/MARL_logs/owf.zip -d results_scripts/logs/MARL_logs/
@@ -86,7 +86,7 @@ To train with the seed=843209078, you need to execute the training script, after
 
 ```
 conda activate imp_marl_pymarl
-python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=843209078
+python pymarl/pymarl_train.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=843209078
 conda deactivate
 ```
 
@@ -94,7 +94,7 @@ or
 
 ```
 source pymarl/imp_marl_venv/bin/activate
-python pymarl/train_with_pymarl.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=843209078
+python pymarl/pymarl_train.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=843209078
 deactivate
 ````
 
@@ -105,5 +105,5 @@ A results folder will be created with your results and you will find the train n
 You now needs to execute the test run to obtain the results.
 
 ```
-./pymarl/run_test.sh qmix_uc_10_struct_c_5__yyyy-mm-dd-hh-mm-ss 10000
+./papers/neurips_23/pymarl/run_test.sh qmix_uc_10_struct_c_5__yyyy-mm-dd-hh-mm-ss 10000
 ```
