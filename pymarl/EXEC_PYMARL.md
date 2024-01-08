@@ -47,7 +47,7 @@ We provide the complete list of configurations used in our paper and you can cre
 # Train agents
 Command to train agents, after activating your virtual environment:
 ```
-python pymarl/run_train_with_pymarl.py --config=alg_config_file --env-config=env_config_file with name=alg_name_in_env_name
+python pymarl/pymarl_train.py --config=alg_config_file --env-config=env_config_file with name=alg_name_in_env_name
 ```
 
 # Train agents like in the paper
