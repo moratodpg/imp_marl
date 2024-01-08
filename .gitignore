@@ -326,15 +326,15 @@ sacred_scripts/plots/
 sacred_scripts/remove_command.txt
 results_test/
 
-results_scripts/plots/
-results_scripts/logs/
-results_scripts/MARL_logs.zip
-/pymarl/results/
-/pymarl/imp_marl_venv
+papers/neurips_23/results_scripts/plots/
+papers/neurips_23/results_scripts/logs/
+papers/neurips_23/results_scripts/MARL_logs.zip
+/papers/neurips_23/pymarl/results/
+/papers/neurips_23/pymarl/imp_marl_venv
 
-environments/pomdp_models/model.npz
+imp_marl/environments/pomdp_models/model.npz
 /heuristics/heuristic_logs/
 /heuristics/heur_logs.zip
-/imp_wrappers/marllib/examples/exp_results/
+/imp_marl/imp_wrappers/marllib/examples/exp_results/
 
 .DS_Store
