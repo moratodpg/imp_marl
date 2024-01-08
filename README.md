@@ -23,7 +23,7 @@ Future developments are described in the [roadmap](ROADMAP.md).
 ## Main requirements:
 To work with our environments, one only needs to install [Numpy](https://numpy.org/install/).
 
-However, to reproduce our results, more packages are required and installation instructions are provided [here](papers/neurips_23/pymarl/README.md).
+However, to reproduce our results, more packages are required and installation instructions are provided [here](papers/neurips_23/pymarl/EXEC_PYMARL.md).
 
 ## Tutorials
 - [Create your own IMP environment scenario](imp_marl/environments/new_imp_env_tutorial.ipynb)
