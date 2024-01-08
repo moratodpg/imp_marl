@@ -332,7 +332,9 @@ results_scripts/MARL_logs.zip
 /pymarl/results/
 /pymarl/imp_marl_venv
 
-imp_env/pomdp_models/model.npz
+environments/pomdp_models/model.npz
 /heuristics/heuristic_logs/
 /heuristics/heur_logs.zip
 /imp_wrappers/marllib/examples/exp_results/
+
+.DS_Store

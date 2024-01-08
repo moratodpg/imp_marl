@@ -23,7 +23,7 @@ from controllers import REGISTRY as mac_REGISTRY
 from components.episode_buffer import ReplayBuffer
 from components.transforms import OneHot
 
-from train_with_pymarl import _get_config, recursive_dict_update
+from pymarl_train import _get_config, recursive_dict_update
 from run import args_sanity_check, evaluate_sequential
 from sacred import SETTINGS
 SETTINGS.CONFIG.READ_ONLY_CONFIG = False

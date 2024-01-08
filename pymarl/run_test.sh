@@ -15,6 +15,6 @@ n_env=2
 name=test_${n_test}_${exp_name}
 echo $alg
 echo $env
-python pymarl/test_with_pymarl.py --config=${alg} --env-config=${env} with test_nepisode=${n_test} checkpoint_path=${path} runner=parallel batch_size_run=${n_env} use_cuda=True name=${name}
+python pymarl/pymarl_test.py --config=${alg} --env-config=${env} with test_nepisode=${n_test} checkpoint_path=${path} runner=parallel batch_size_run=${n_env} use_cuda=True name=${name}
 deactivate
 
