@@ -2,7 +2,7 @@ import numpy as np
 from datetime import datetime
 from os import path, makedirs
 
-from environments.owf_env import Struct_owf
+from imp_marl.environments.owf_env import Struct_owf
 
 
 class HeuristicsOwf():
