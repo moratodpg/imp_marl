@@ -41,7 +41,7 @@ class Struct(ImpEnv):
         belief_update_uncorrelated
         belief_update_correlated
     Examples:
-        >>> from environments.struct_env import Struct
+        >>> from imp_marl.environments.struct_env import Struct
         >>> import numpy as np
         >>> env = Struct()
         >>> obs = env.reset()

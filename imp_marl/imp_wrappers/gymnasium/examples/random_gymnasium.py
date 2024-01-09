@@ -1,6 +1,6 @@
 """ Demonstration of random agents with the gym wrapper. """
 
-from imp_wrappers.gymnasium.gymnasium_wrap_sa_struct import GymnasiumSaStruct
+from imp_marl.imp_wrappers.gymnasium.gymnasium_wrap_sa_struct import GymnasiumSaStruct
 import numpy as np
 
 if __name__ == '__main__':

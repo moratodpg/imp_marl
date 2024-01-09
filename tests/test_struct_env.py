@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from environments.struct_env import Struct
+from imp_marl.environments.struct_env import Struct
 
 def test_default_constructor():
     env = Struct()

@@ -8,7 +8,7 @@ from ray.rllib.utils import try_import_tf, try_import_torch
 from ray.tune import register_env
 from ray.tune.registry import get_trainable_cls
 
-from imp_wrappers.gymnasium.gymnasium_wrap_sa_struct import GymnasiumSaStruct
+from imp_marl.imp_wrappers.gymnasium.gymnasium_wrap_sa_struct import GymnasiumSaStruct
 
 tf1, tf, tfv = try_import_tf()
 torch, nn = try_import_torch()

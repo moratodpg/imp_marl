@@ -5,7 +5,7 @@ import numpy as np
 import yaml
 from yaml import SafeLoader
 
-from imp_wrappers.marllib.marllib_wrap_ma_struct import MarllibImpMarl
+from imp_marl.imp_wrappers.marllib.marllib_wrap_ma_struct import MarllibImpMarl
 
 if __name__ == '__main__':
 

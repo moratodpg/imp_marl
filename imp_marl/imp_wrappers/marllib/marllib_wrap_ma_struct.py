@@ -3,7 +3,7 @@
 # https://github.com/Replicable-MARL/MARLlib/blob/master/marllib/envs/base_env/smac.py
 
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
-from imp_wrappers.pymarl_wrapper.pymarl_wrap_ma_struct import PymarlMAStruct
+from imp_marl.imp_wrappers.pymarl_wrapper.pymarl_wrap_ma_struct import PymarlMAStruct
 
 import numpy as np
 from gym.spaces import Dict as GymDict, Discrete, Box

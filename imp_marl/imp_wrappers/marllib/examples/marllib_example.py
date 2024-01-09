@@ -3,7 +3,7 @@ import os
 from marllib import marl
 from marllib.envs.base_env import ENV_REGISTRY
 
-from imp_wrappers.marllib.marllib_wrap_ma_struct import MarllibImpMarl
+from imp_marl.imp_wrappers.marllib.marllib_wrap_ma_struct import MarllibImpMarl
 
 # Performed with a new conda environment and by installing MARLLIB from sources
 # See https://github.com/Replicable-MARL/MARLlib

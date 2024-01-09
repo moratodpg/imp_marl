@@ -2,8 +2,8 @@ import itertools
 import numpy as np
 from gymnasium import spaces
 
-from environments.owf_env import Struct_owf
-from environments.struct_env import Struct
+from imp_marl.environments.owf_env import Struct_owf
+from imp_marl.environments.struct_env import Struct
 from pettingzoo.utils.env import ParallelEnv
 
 

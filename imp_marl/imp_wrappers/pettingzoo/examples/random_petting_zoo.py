@@ -1,6 +1,6 @@
 import numpy as np
 
-from imp_marl.imp_wrappers.pettingzoo import PettingZooStruct
+from imp_marl.imp_wrappers.pettingzoo.pettingzoo_wrap_struct import PettingZooStruct
 
 if __name__ == '__main__':
     n_episode = 100
