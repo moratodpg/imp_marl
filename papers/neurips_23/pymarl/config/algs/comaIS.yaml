@@ -1,5 +1,5 @@
 # --- COMA-IS specific parameters ---
-# NOT used in our QV papers
+# NOT used in our QV paper
 action_selector: "multinomial"
 epsilon_start: .5
 epsilon_finish: .01
