@@ -1,5 +1,5 @@
 # --- VDN specific parameters ---
-# NOT used in our QV papers
+# NOT used in our QV paper
 # use epsilon greedy action selector
 action_selector: "epsilon_greedy"
 epsilon_start: 1.0
