@@ -7,6 +7,8 @@ The experiments data are in the three zip files:
 
 ## Download instruction
 
+Requirement: Numpy.
+
 To retrieve the logs, you need to download the data from [Zenodo](https://zenodo.org/record/8032339).
 
 We created a script to automate the download and unzip process: [download_logs.sh](download_logs.sh).
@@ -14,7 +16,7 @@ We created a script to automate the download and unzip process: [download_logs.s
 ## Plot scripts
 
 You will be able to create all figures from the paper with the different notebooks.
-Beware that the first cell may be updated to find the logs if you chose something other than `results_scripts/logs`.
+Beware that the first cell may be updated to find the logs(default is `results_scripts/logs`).
 
 The names of the notebooks are self-explanatory:
 
