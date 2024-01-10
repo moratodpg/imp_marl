@@ -1,4 +1,4 @@
-""" Interface for creating IMP environments. """
+""" Interface for IMP environments. """
 class ImpEnv(object):
     """ Interface for creating IMP environments.
 

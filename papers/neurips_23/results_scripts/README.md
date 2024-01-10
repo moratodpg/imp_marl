@@ -1,14 +1,17 @@
-# How to retrieve the data
+# Experiments data from Zenodo
 
-To retrieve the logs, you need to download the data from [Zenodo](https://zenodo.org/record/8032339).
-
-The experiments are in the three zip files:
-
+The experiments data are in the three zip files:
 1. `best_agent_networks.zip`: The controller networks’ weights of the best MARL-based policies.  
 2. `heur_logs.zip`: The configuration, execution, and result files of the computed expert-based heuristic policies.
 3. `MARL logs.zip`: The configuration, execution, and result files of all investigated MARL methods.
 
+## Download instruction
+
+To retrieve the logs, you need to download the data from [Zenodo](https://zenodo.org/record/8032339).
+
 We created a script to automate the download and unzip process: [download_logs.sh](download_logs.sh).
+
+## Plot scripts
 
 You will be able to create all figures from the paper with the different notebooks.
 Beware that the first cell may be updated to find the logs if you chose something other than `results_scripts/logs`.
