@@ -1,6 +1,6 @@
 # PyMarl
 
-**TO REPRODUCE THE RESULTS IN THE PAPER, PLEASE FOLLOW THE INSTRUCTIONS IN [THIS SECTION](#Reproduce-our-results).**
+**TO REPRODUCE THE RESULTS IN THE PAPER, PLEASE FOLLOW THE INSTRUCTIONS IN [THIS SECTION](#Reproduce-paper-results).**
 
 
 The PyMarl code is derived from the [PyMarl original implementation](https://github.com/oxwhirl/pymarl).
