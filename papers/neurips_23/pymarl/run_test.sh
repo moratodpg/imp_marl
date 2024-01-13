@@ -1,7 +1,7 @@
 #!/bin/bash
 
 conda activate imp_marl_pymarl
-#source env/bin/activate
+#source imp_marl_venv/bin/activate
 
 exp_dir="results/models" # directory where the trained models are stored
 exp_name=$1
