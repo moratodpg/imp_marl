@@ -111,7 +111,7 @@ To test the agents after training, use the `run_test.sh` file.
 
 The seeds required to reproduce our paper are obtained by downloading the data from our experiments.
 
-These logs are available in [/resutls_scritps](imp_marl/papers/neurips_23/results_scripts/).
+These logs are available in [/results_scripts](imp_marl/papers/neurips_23/results_scripts/).
 
 Once downloaded, the [find_seed notebook](imp_marl/papers/neurips_23/results_scripts/find_seed.ipynb) allows you to retrieve seeds for a given configuration. 
  
