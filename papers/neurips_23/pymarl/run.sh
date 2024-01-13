@@ -1,7 +1,7 @@
 #!/bin/bash
 
 conda activate imp_marl_pymarl
-#source pymarl/imp_marl_venv/bin/activate
+#source imp_marl_venv/bin/activate
 
 alg=$1
 env=$2
