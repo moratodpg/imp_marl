@@ -149,7 +149,10 @@ A results folder will be created with your results and you will find the train n
 ## Test the agents
 
 You now need to execute the test run to get the results, indicating:
-checkpoint_directory tests_number campaign_option
+- `checkpoint_directory` 
+- `tests_number` 
+- `campaign_option` 
+
 For this particular example: `qmix_uc_10_struct_c_5__yyyy-mm-dd-hh-mm-ss 10000 True`
 
 ```
