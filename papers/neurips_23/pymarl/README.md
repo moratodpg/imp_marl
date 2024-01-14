@@ -55,7 +55,7 @@ pip install -e ../../../
 Before executing experiments, you need to create the configuration files.
 Configuration files are stored in the folder `pymarl/config`.
 There are two config folders:
-- The [alg](pymarl/config/alg) folder contains the config for each algorithm.
+- The [alg](config/alg) folder contains the config for each algorithm.
 - The [envs](config/envs) folder contains the config for each environment.
 
 We provide the complete list of configurations used in our paper and you can create new ones on your own.
