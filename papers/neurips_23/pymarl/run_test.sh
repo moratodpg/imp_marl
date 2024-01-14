@@ -14,12 +14,11 @@ fi
 path=${exp_dir}${exp_name}
 n_test=$2 # number of test episodes
 campaign_option=$3
-seed_number=$4
 n_env=2 # number of environments to run in parallel
 name=test_${n_test}_${exp_name}
 echo $alg
 echo $env
-python pymarl_test.py --config=${alg} --env-config=${env} with test_nepisode=${n_test} checkpoint_path=${path} runner=parallel batch_size_run=${n_env} use_cuda=True name=${name} seed=${seed_number} env_args.campaign_cost=${campaign_option}
+python pymarl_test.py --config=${alg} --env-config=${env} with test_nepisode=${n_test} checkpoint_path=${path} runner=parallel batch_size_run=${n_env} use_cuda=True name=${name} env_args.campaign_cost=${campaign_option}
 
 conda deactivate
 #deactivate
