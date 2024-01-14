@@ -46,7 +46,7 @@ You need to install the packages from this repository.
 The `-e` allows you to modify imp_marl packages and use them without reinstalling it.
 
 ```
-pip install -e ../../../ 
+pip install -e ../../../ .
 ```
 **Reminder**: the current working directory of the terminal is `/imp_marl/papers/neurips_23/pymarl/`.
 
