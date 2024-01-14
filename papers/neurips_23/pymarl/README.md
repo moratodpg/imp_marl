@@ -141,7 +141,7 @@ To train with the seed=843209078, you need to execute the training script, after
 
 ```
 conda activate imp_marl_pymarl
-python pymarl_train.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=843209078 env_args.campaign_cost=True
+python pymarl_train.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 env_args.campaign_cost=True test_nepisode=-1 seed=843209078 
 conda deactivate
 ```
 A results folder will be created with your results and you will find the train networks in the `results/models/` folder.
@@ -151,7 +151,7 @@ A results folder will be created with your results and you will find the train n
 You now need to execute the test run to get the results, indicating:
 - `checkpoint_directory` 
 - `tests_number` 
-- `campaign_option` 
+- `campaign_cost_option` 
 
 For this particular example: `qmix_uc_10_struct_c_5__yyyy-mm-dd-hh-mm-ss 10000 True`
 
