@@ -55,7 +55,7 @@ pip install -e ../../../
 Before executing experiments, you need to create the configuration files.
 Configuration files are stored in the folder `pymarl/config`.
 There are two config folders:
-- The [alg](pymarl/config/alg) folder contains the config for each algorithm.
+- The [algs](config/algs) folder contains the config for each algorithm.
 - The [envs](config/envs) folder contains the config for each environment.
 
 We provide the complete list of configurations used in our paper and you can create new ones on your own.
@@ -111,16 +111,16 @@ To test the agents after training, use the `run_test.sh` file.
 
 The seeds required to reproduce our paper are obtained by downloading the data from our experiments.
 
-These logs are available in [/results_scripts](imp_marl/papers/neurips_23/results_scripts/).
+These logs are available in [/results_scripts](../results_scripts/).
 
-Once downloaded, the [find_seed notebook](imp_marl/papers/neurips_23/results_scripts/find_seed.ipynb) allows you to retrieve seeds for a given configuration. 
+Once downloaded, the [find_seed notebook](../results_scripts/find_seed.ipynb) allows you to retrieve seeds for a given configuration. 
  
 ## Train the agents
 As example, we want to reproduce the results of QMIX in the k-out-of-n environment with 5 agents and correlations and campaign cost.
 
 Therefore, alg = `qmix_uc_10` and env = `struct_c_5`.
 
-You first need the seeds. Go to the [find seed](imp_marl/papers/neurips_23/results_scripts/find_seed.ipynb), change the `alg` and `env` variable at the last cell and execute the notebook.
+You first need the seeds. Go to the [find seed](../results_scripts/find_seed.ipynb), change the `alg` and `env` variable at the last cell and execute the notebook.
 
 You will obtain:
 
