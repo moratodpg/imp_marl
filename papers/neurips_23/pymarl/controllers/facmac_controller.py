@@ -1,6 +1,6 @@
-from modules.agents import REGISTRY as agent_REGISTRY
-from components.action_selectors import REGISTRY as action_REGISTRY
 import torch as th
+from components.action_selectors import REGISTRY as action_REGISTRY
+from modules.agents import REGISTRY as agent_REGISTRY
 
 
 # This multi-agent controller shares parameters between agents
@@ -15,12 +15,19 @@ class FacmacMAC:
             self.action_selector = action_REGISTRY[args.action_selector](args)
         self.hidden_states = None
 
-    def select_actions(self, ep_batch, t_ep, t_env, bs=slice(None), test_mode=False, explore=False):
+    def select_actions(
+        self, ep_batch, t_ep, t_env, bs=slice(None), test_mode=False, explore=False
+    ):
         # Only select actions for the selected batch elements in bs
         avail_actions = ep_batch["avail_actions"][:, t_ep]
         agent_outputs = self.forward(ep_batch, t_ep, return_logits=(not test_mode))
-        chosen_actions = self.action_selector.select_action(agent_outputs[bs], avail_actions[bs], t_env,
-                                                            test_mode=test_mode, explore=explore)
+        chosen_actions = self.action_selector.select_action(
+            agent_outputs[bs],
+            avail_actions[bs],
+            t_env,
+            test_mode=test_mode,
+            explore=explore,
+        )
         if getattr(self.args, "use_ent_reg", False):
             return chosen_actions, agent_outputs
         return chosen_actions
@@ -33,7 +40,9 @@ class FacmacMAC:
         if self.agent_output_type == "pi_logits":
             if getattr(self.args, "mask_before_softmax", True):
                 # Make the logits for unavailable actions very negative to minimise their affect on the softmax
-                reshaped_avail_actions = avail_actions.reshape(ep_batch.batch_size * self.n_agents, -1)
+                reshaped_avail_actions = avail_actions.reshape(
+                    ep_batch.batch_size * self.n_agents, -1
+                )
                 agent_outs[reshaped_avail_actions == 0] = -1e10
 
             if return_logits:
@@ -44,7 +53,9 @@ class FacmacMAC:
         return agent_outs.view(ep_batch.batch_size, self.n_agents, -1)
 
     def init_hidden(self, batch_size):
-        self.hidden_states = self.agent.init_hidden().unsqueeze(0).expand(batch_size, self.n_agents, -1)  # bav
+        self.hidden_states = (
+            self.agent.init_hidden().unsqueeze(0).expand(batch_size, self.n_agents, -1)
+        )  # bav
 
     def parameters(self):
         return self.agent.parameters()
@@ -77,13 +88,17 @@ class FacmacMAC:
             if t == 0:
                 inputs.append(th.zeros_like(batch["actions_onehot"][:, t]))
             else:
-                inputs.append(batch["actions_onehot"][:, t-1])
+                inputs.append(batch["actions_onehot"][:, t - 1])
         if self.args.obs_agent_id:
-            inputs.append(th.eye(self.n_agents, device=batch.device).unsqueeze(0).expand(bs, -1, -1))
+            inputs.append(
+                th.eye(self.n_agents, device=batch.device)
+                .unsqueeze(0)
+                .expand(bs, -1, -1)
+            )
 
         try:
-            inputs = th.cat([x.reshape(bs*self.n_agents, -1) for x in inputs], dim=1)
-        except Exception as e:
+            inputs = th.cat([x.reshape(bs * self.n_agents, -1) for x in inputs], dim=1)
+        except Exception:
             pass
         return inputs
 
@@ -100,7 +115,11 @@ class FacmacMAC:
         th.save(self.agent.state_dict(), "{}/agent.th".format(path))
 
     def load_models(self, path):
-        self.agent.load_state_dict(th.load("{}/agent.th".format(path), map_location=lambda storage, loc: storage))
+        self.agent.load_state_dict(
+            th.load(
+                "{}/agent.th".format(path), map_location=lambda storage, loc: storage
+            )
+        )
 
     def n_learnable_param(self):
         return sum(p.numel() for p in self.agent.parameters() if p.requires_grad)

@@ -1,23 +1,26 @@
 """ Demonstration of the PymarlMAStruct wrapper with random actions for struct. """
 
 import numpy as np
+
 from imp_marl.imp_wrappers.pymarl_wrapper.pymarl_wrap_ma_struct import PymarlMAStruct
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     n_episode = 100
-    env = PymarlMAStruct(struct_type="struct",
-                         n_comp=2,
-                         discount_reward=.95,
-                         state_obs=True,
-                         state_d_rate=False,
-                         state_alphas=False,
-                         obs_d_rate=False,
-                         obs_multiple=False,
-                         obs_all_d_rate=False,
-                         obs_alphas=False,
-                         env_correlation=False,
-                         campaign_cost=False)
+    env = PymarlMAStruct(
+        struct_type="struct",
+        n_comp=2,
+        discount_reward=0.95,
+        state_obs=True,
+        state_d_rate=False,
+        state_alphas=False,
+        obs_d_rate=False,
+        obs_multiple=False,
+        obs_all_d_rate=False,
+        obs_alphas=False,
+        env_correlation=False,
+        campaign_cost=False,
+    )
 
     env_info = env.get_env_info()
 
@@ -43,7 +46,13 @@ if __name__ == '__main__':
             reward, terminated, info = env.step(actions)
             episode_reward += reward
         array_reward.append(episode_reward)
-    print(n_episode, " mean std ", np.mean(array_reward), np.std(array_reward),
-          np.min(array_reward), np.max(array_reward))
+    print(
+        n_episode,
+        " mean std ",
+        np.mean(array_reward),
+        np.std(array_reward),
+        np.min(array_reward),
+        np.max(array_reward),
+    )
 
     env.close()

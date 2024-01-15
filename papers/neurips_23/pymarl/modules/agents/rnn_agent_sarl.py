@@ -1,5 +1,4 @@
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class RNNAgentSARL(nn.Module):
@@ -13,9 +12,10 @@ class RNNAgentSARL(nn.Module):
         fc1_list = [input_shape] + fc1_list
         self.fc1 = nn.Sequential()
         for i in range(1, len(fc1_list)):
-            self.fc1.add_module("lin" + str(i - 1), nn.Linear(fc1_list[i-1], fc1_list[i]))
-            self.fc1.add_module("Relu" + str(i - 1),
-                                nn.ReLU())
+            self.fc1.add_module(
+                "lin" + str(i - 1), nn.Linear(fc1_list[i - 1], fc1_list[i])
+            )
+            self.fc1.add_module("Relu" + str(i - 1), nn.ReLU())
 
         self.rnn = nn.GRUCell(args.rnn_hidden_dim, args.rnn_hidden_dim)
 
@@ -24,8 +24,9 @@ class RNNAgentSARL(nn.Module):
         fc2_list.append(args.n_actions)
         self.fc2 = nn.Sequential()
         for i in range(1, len(fc2_list)):
-            self.fc2.add_module("fc2_lin" + str(i - 1),
-                                nn.Linear(fc2_list[i - 1], fc2_list[i]))
+            self.fc2.add_module(
+                "fc2_lin" + str(i - 1), nn.Linear(fc2_list[i - 1], fc2_list[i])
+            )
 
     def init_hidden(self):
         # make hidden states on same device as model

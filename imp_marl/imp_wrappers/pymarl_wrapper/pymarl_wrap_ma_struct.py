@@ -15,21 +15,23 @@ class PymarlMAStruct(MultiAgentEnv):
     It manipulates an imp_env to create all inputs for PyMARL agents.
     """
 
-    def __init__(self,
-                 struct_type: str = "struct",
-                 n_comp: int = 2,
-                 custom_param: dict = None,
-                 discount_reward: float = 1.,
-                 state_obs: bool = True,
-                 state_d_rate: bool = False,
-                 state_alphas: bool = False,
-                 obs_d_rate: bool = False,
-                 obs_multiple: bool = False,
-                 obs_all_d_rate: bool = False,
-                 obs_alphas: bool = False,
-                 env_correlation: bool = False,
-                 campaign_cost: bool = False,
-                 seed=None):
+    def __init__(
+        self,
+        struct_type: str = "struct",
+        n_comp: int = 2,
+        custom_param: dict = None,
+        discount_reward: float = 1.0,
+        state_obs: bool = True,
+        state_d_rate: bool = False,
+        state_alphas: bool = False,
+        obs_d_rate: bool = False,
+        obs_multiple: bool = False,
+        obs_all_d_rate: bool = False,
+        obs_alphas: bool = False,
+        env_correlation: bool = False,
+        campaign_cost: bool = False,
+        seed=None,
+    ):
         """
         Initialise based on the full configuration.
 
@@ -58,35 +60,34 @@ class PymarlMAStruct(MultiAgentEnv):
         # Check struct type and default values
         assert struct_type == "owf" or struct_type == "struct", "Error in struct_type"
         if struct_type == "struct":
-            self.k_comp = custom_param.get("k_comp", None) if (
-                        custom_param is not None) else None
+            self.k_comp = (
+                custom_param.get("k_comp", None) if (custom_param is not None) else None
+            )
             assert self.k_comp is None or self.k_comp <= n_comp, "Error in k_comp"
         elif struct_type == "owf":
-            self.lev = custom_param.get("lev", 3) if (
-                        custom_param is not None) else 3
+            self.lev = custom_param.get("lev", 3) if (custom_param is not None) else 3
             assert self.lev is not None, "Error in lev"
             obs_alphas = False
             env_correlation = False
             state_alphas = False
 
-        assert isinstance(state_obs, bool) \
-               and isinstance(state_d_rate, bool) \
-               and isinstance(state_alphas, bool) \
-               and isinstance(obs_d_rate, bool) \
-               and isinstance(obs_multiple, bool) \
-               and isinstance(obs_all_d_rate, bool) \
-               and isinstance(obs_alphas, bool) \
-               and isinstance(env_correlation, bool) \
-               and isinstance(campaign_cost, bool), "Error in env parameters"
+        assert (
+            isinstance(state_obs, bool)
+            and isinstance(state_d_rate, bool)
+            and isinstance(state_alphas, bool)
+            and isinstance(obs_d_rate, bool)
+            and isinstance(obs_multiple, bool)
+            and isinstance(obs_all_d_rate, bool)
+            and isinstance(obs_alphas, bool)
+            and isinstance(env_correlation, bool)
+            and isinstance(campaign_cost, bool)
+        ), "Error in env parameters"
         assert 0 <= discount_reward <= 1, "Error in discount_reward"
         assert not (obs_d_rate and obs_all_d_rate), "Error in env parameters"
-        assert state_obs or state_d_rate or state_alphas, \
-            "Error in env parameters"
+        assert state_obs or state_d_rate or state_alphas, "Error in env parameters"
         if not env_correlation:
-            assert not obs_alphas, \
-                "Error in env parameter obs_alphas"
-            assert not state_alphas, \
-                "Error in env parameter state_alphas"
+            assert not obs_alphas, "Error in env parameter obs_alphas"
+            assert not state_alphas, "Error in env parameter state_alphas"
 
         self.n_comp = n_comp
         self.custom_param = custom_param
@@ -103,18 +104,22 @@ class PymarlMAStruct(MultiAgentEnv):
         self._seed = seed
 
         if struct_type == "struct":
-            self.config = {"n_comp": n_comp,
-                           "discount_reward": discount_reward,
-                           "k_comp": self.k_comp,
-                           "env_correlation": env_correlation,
-                           "campaign_cost": campaign_cost}
+            self.config = {
+                "n_comp": n_comp,
+                "discount_reward": discount_reward,
+                "k_comp": self.k_comp,
+                "env_correlation": env_correlation,
+                "campaign_cost": campaign_cost,
+            }
             self.struct_env = Struct(self.config)
             self.n_agents = self.struct_env.n_comp
         elif struct_type == "owf":
-            self.config = {"n_owt": n_comp,
-                           "lev": self.lev,
-                           "discount_reward": discount_reward,
-                           "campaign_cost": campaign_cost}
+            self.config = {
+                "n_owt": n_comp,
+                "lev": self.lev,
+                "discount_reward": discount_reward,
+                "campaign_cost": campaign_cost,
+            }
 
             self.struct_env = Struct_owf(self.config)
             self.n_agents = self.struct_env.n_agents
@@ -123,8 +128,7 @@ class PymarlMAStruct(MultiAgentEnv):
         self.agent_list = self.struct_env.agent_list
         self.n_actions = self.struct_env.actions_per_agent
 
-        self.action_histogram = {"action_" + str(k): 0 for k in
-                                 range(self.n_actions)}
+        self.action_histogram = {"action_" + str(k): 0 for k in range(self.n_actions)}
 
         self.unit_dim = self.get_unit_dim()  # Qplex requirement
 
@@ -156,9 +160,9 @@ class PymarlMAStruct(MultiAgentEnv):
         """
 
         self.update_action_histogram(actions)
-        action_dict = {k: action
-                       for k, action in
-                       zip(self.struct_env.agent_list, actions)}
+        action_dict = {
+            k: action for k, action in zip(self.struct_env.agent_list, actions)
+        }
         _, rewards, done, _ = self.struct_env.step(action_dict)
         info = {}
         if done:
@@ -168,12 +172,11 @@ class PymarlMAStruct(MultiAgentEnv):
         return rewards[self.struct_env.agent_list[0]], done, info
 
     def get_obs(self):
-        """ Returns all agent observations in a list. """
-        return [self.get_obs_agent(i) for i in
-                range(self.n_agents)]
+        """Returns all agent observations in a list."""
+        return [self.get_obs_agent(i) for i in range(self.n_agents)]
 
     def get_unit_dim(self):
-        """ Returns the dimension of the unit observation used by QPLEX. """
+        """Returns the dimension of the unit observation used by QPLEX."""
         return len(self.all_obs_from_struct_env()) // self.n_agents
 
     def get_obs_agent(self, agent_id: int):
@@ -202,15 +205,15 @@ class PymarlMAStruct(MultiAgentEnv):
         return obs
 
     def get_obs_size(self):
-        """ Returns the size of the observation. """
+        """Returns the size of the observation."""
         return len(self.get_obs_agent(0))
 
     def get_normalized_drate(self):
-        """ Returns the normalized d_rate. """
+        """Returns the normalized d_rate."""
         return self.struct_env.d_rate / self.struct_env.ep_length
 
     def all_obs_from_struct_env(self):
-        """ Returns all observations concatenated in a single vector. """
+        """Returns all observations concatenated in a single vector."""
         # Concatenate all obs with a single time.
         idx = 0
         obs = None
@@ -223,7 +226,7 @@ class PymarlMAStruct(MultiAgentEnv):
         return obs
 
     def get_state(self):
-        """ Returns the state of the environment. """
+        """Returns the state of the environment."""
         state = []
         if self.state_obs:
             state = np.append(state, self.all_obs_from_struct_env())
@@ -234,11 +237,11 @@ class PymarlMAStruct(MultiAgentEnv):
         return state
 
     def get_state_size(self):
-        """ Returns the shape of the state"""
+        """Returns the shape of the state"""
         return len(self.get_state())
 
     def get_avail_actions(self):
-        """ Returns the available actions of all agents in a list. """
+        """Returns the available actions of all agents in a list."""
         avail_actions = []
         for agent_id in range(self.n_agents):
             avail_agent = self.get_avail_agent_actions(agent_id)
@@ -255,32 +258,31 @@ class PymarlMAStruct(MultiAgentEnv):
         return [1] * self.n_actions
 
     def get_total_actions(self):
-        """ Returns the total number of actions an agent could ever take. """
+        """Returns the total number of actions an agent could ever take."""
         return self.struct_env.actions_per_agent
 
     def reset(self):
-        """ Returns initial observations and states. """
-        self.action_histogram = {"action_" + str(k): 0 for k in
-                                 range(self.n_actions)}
+        """Returns initial observations and states."""
+        self.action_histogram = {"action_" + str(k): 0 for k in range(self.n_actions)}
         self.struct_env.reset()
         return self.get_obs(), self.get_state()
 
     def render(self):
-        """ See base class. """
+        """See base class."""
         pass
 
     def close(self):
-        """ See base class. """
+        """See base class."""
         pass
 
     def seed(self):
-        """ Returns the random seed """
+        """Returns the random seed"""
         return self._seed
 
     def save_replay(self):
-        """ See base class. """
+        """See base class."""
         pass
 
     def get_stats(self):
-        """ See base class. """
+        """See base class."""
         return {}

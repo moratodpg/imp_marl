@@ -1,8 +1,7 @@
+import numpy as np
 import torch as th
 import torch.nn as nn
-import torch.nn.functional as F
-import numpy as np
-import pickle as pkl
+
 from .dmaq_qatten_weight import Qatten_Weight
 from .dmaq_si_weight import DMAQ_SI_Weight
 
@@ -38,7 +37,7 @@ class DMAQ_QattenMixer(nn.Module):
         adv_w_final = adv_w_final.view(-1, self.n_agents)
 
         if self.args.is_minus_one:
-            adv_tot = th.sum(adv_q * (adv_w_final - 1.), dim=1)
+            adv_tot = th.sum(adv_q * (adv_w_final - 1.0), dim=1)
         else:
             adv_tot = th.sum(adv_q * adv_w_final, dim=1)
         return adv_tot
@@ -54,8 +53,10 @@ class DMAQ_QattenMixer(nn.Module):
     def forward(self, agent_qs, states, actions=None, max_q_i=None, is_v=False):
         bs = agent_qs.size(0)
 
-        w_final, v, attend_mag_regs, head_entropies = self.attention_weight(agent_qs, states, actions)
-        w_final = w_final.view(-1, self.n_agents)  + 1e-10
+        w_final, v, attend_mag_regs, head_entropies = self.attention_weight(
+            agent_qs, states, actions
+        )
+        w_final = w_final.view(-1, self.n_agents) + 1e-10
         v = v.view(-1, 1).repeat(1, self.n_agents)
         v /= self.n_agents
 

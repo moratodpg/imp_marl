@@ -2,6 +2,7 @@
 import os
 
 import ray
+
 # Example coded with ray==2.5.1
 from ray import air, tune
 from ray.rllib.utils import try_import_tf, try_import_torch
@@ -15,28 +16,29 @@ torch, nn = try_import_torch()
 
 
 def env_gymsastruct_creator(env_config):
-    return GymnasiumSaStruct(struct_type=env_config.get("struct_type", "struct"),
-                             n_comp=env_config.get("n_comp", 2),
-                             custom_param=env_config.get("custom_param", None),
-                             discount_reward=env_config.get("discount_reward", .95),
-                             state_obs=env_config.get("state_obs", True),
-                             state_d_rate=env_config.get("state_d_rate", False),
-                             state_alphas=env_config.get("state_alphas", False),
-                             obs_d_rate=env_config.get("obs_d_rate", False),
-                             obs_multiple=env_config.get("obs_multiple", False),
-                             obs_all_d_rate=env_config.get("obs_all_d_rate", False),
-                             obs_alphas=env_config.get("obs_alphas", False),
-                             env_correlation=env_config.get("env_correlation",
-                                                      False),
-                             campaign_cost=env_config.get("campaign_cost", False))
+    return GymnasiumSaStruct(
+        struct_type=env_config.get("struct_type", "struct"),
+        n_comp=env_config.get("n_comp", 2),
+        custom_param=env_config.get("custom_param", None),
+        discount_reward=env_config.get("discount_reward", 0.95),
+        state_obs=env_config.get("state_obs", True),
+        state_d_rate=env_config.get("state_d_rate", False),
+        state_alphas=env_config.get("state_alphas", False),
+        obs_d_rate=env_config.get("obs_d_rate", False),
+        obs_multiple=env_config.get("obs_multiple", False),
+        obs_all_d_rate=env_config.get("obs_all_d_rate", False),
+        obs_alphas=env_config.get("obs_alphas", False),
+        env_correlation=env_config.get("env_correlation", False),
+        campaign_cost=env_config.get("campaign_cost", False),
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     env_dict_config = {
         "struct_type": "struct",
         "n_comp": 2,
         "custom_param": None,
-        "discount_reward": .95,
+        "discount_reward": 0.95,
         "state_obs": True,
         "state_d_rate": False,
         "state_alphas": False,
@@ -45,7 +47,7 @@ if __name__ == '__main__':
         "obs_all_d_rate": False,
         "obs_alphas": False,
         "env_correlation": False,
-        "campaign_cost": False
+        "campaign_cost": False,
     }
 
     ray.init()

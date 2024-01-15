@@ -36,4 +36,3 @@ name: "ddmac"
 
 use_cuda: False
 use_tensorboard: True
-

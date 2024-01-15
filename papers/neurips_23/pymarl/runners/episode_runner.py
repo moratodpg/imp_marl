@@ -1,11 +1,12 @@
-from envs import REGISTRY as env_REGISTRY
 from functools import partial
-from components.episode_buffer import EpisodeBatch
+
 import numpy as np
 import torch as th
+from components.episode_buffer import EpisodeBatch
+from envs import REGISTRY as env_REGISTRY
+
 
 class EpisodeRunner:
-
     def __init__(self, args, logger):
         self.args = args
         self.logger = logger
@@ -26,10 +27,15 @@ class EpisodeRunner:
         self.log_train_stats_t = -1000000
 
     def setup(self, scheme, groups, preprocess, mac):
-        self.new_batch = partial(EpisodeBatch, scheme, groups, self.batch_size,
-                                 self.episode_limit + 1,
-                                 preprocess=preprocess,
-                                 device=self.args.device)
+        self.new_batch = partial(
+            EpisodeBatch,
+            scheme,
+            groups,
+            self.batch_size,
+            self.episode_limit + 1,
+            preprocess=preprocess,
+            device=self.args.device,
+        )
         self.mac = mac
 
     def get_env_info(self):
@@ -61,7 +67,7 @@ class EpisodeRunner:
             pre_transition_data = {
                 "state": [self.env.get_state()],
                 "avail_actions": [self.env.get_avail_actions()],
-                "obs": [self.env.get_obs()]
+                "obs": [self.env.get_obs()],
             }
             self.batch.update(pre_transition_data, ts=self.t)
 
@@ -70,22 +76,23 @@ class EpisodeRunner:
 
             if self.args.mac == "is_mac":
                 # Inserting policy experiences to the buffer
-                actions, behavior = self.mac.select_actions(self.batch,
-                                                            t_ep=self.t,
-                                                            t_env=self.t_env,
-                                                            test_mode=test_mode)
+                actions, behavior = self.mac.select_actions(
+                    self.batch, t_ep=self.t, t_env=self.t_env, test_mode=test_mode
+                )
             else:
-                if getattr(self.args, "action_selector",
-                           "epsilon_greedy") == "gumbel":
-                    actions = self.mac.select_actions(self.batch, t_ep=self.t,
-                                                      t_env=self.t_env,
-                                                      test_mode=test_mode,
-                                                      explore=(not test_mode))
+                if getattr(self.args, "action_selector", "epsilon_greedy") == "gumbel":
+                    actions = self.mac.select_actions(
+                        self.batch,
+                        t_ep=self.t,
+                        t_env=self.t_env,
+                        test_mode=test_mode,
+                        explore=(not test_mode),
+                    )
                     actions = th.argmax(actions, dim=-1).long()
                 else:
-                    actions = self.mac.select_actions(self.batch, t_ep=self.t,
-                                                      t_env=self.t_env,
-                                                      test_mode=test_mode)
+                    actions = self.mac.select_actions(
+                        self.batch, t_ep=self.t, t_env=self.t_env, test_mode=test_mode
+                    )
 
             reward, terminated, env_info = self.env.step(actions[0])
             episode_return += reward
@@ -93,8 +100,7 @@ class EpisodeRunner:
             post_transition_data = {
                 "actions": actions,
                 "reward": [(reward,)],
-                "terminated": [
-                    (terminated != env_info.get("episode_limit", False),)],
+                "terminated": [(terminated != env_info.get("episode_limit", False),)],
             }
             if self.args.mac == "is_mac":
                 post_transition_data["behavior"] = behavior
@@ -106,7 +112,7 @@ class EpisodeRunner:
         last_data = {
             "state": [self.env.get_state()],
             "avail_actions": [self.env.get_avail_actions()],
-            "obs": [self.env.get_obs()]
+            "obs": [self.env.get_obs()],
         }
         self.batch.update(last_data, ts=self.t)
 
@@ -114,34 +120,41 @@ class EpisodeRunner:
 
         if self.args.mac == "is_mac":
             # Inserting policy experiences to the buffer
-            actions, behavior = self.mac.select_actions(self.batch,
-                                                        t_ep=self.t,
-                                                        t_env=self.t_env,
-                                                        test_mode=test_mode)
-            self.batch.update({"actions": actions, "behavior":behavior},
-                              ts=self.t)
+            actions, behavior = self.mac.select_actions(
+                self.batch, t_ep=self.t, t_env=self.t_env, test_mode=test_mode
+            )
+            self.batch.update({"actions": actions, "behavior": behavior}, ts=self.t)
         else:
-            if getattr(self.args, "action_selector",
-                       "epsilon_greedy") == "gumbel":
-                actions = self.mac.select_actions(self.batch, t_ep=self.t,
-                                                  t_env=self.t_env,
-                                                  test_mode=test_mode,
-                                                  explore=(not test_mode))
+            if getattr(self.args, "action_selector", "epsilon_greedy") == "gumbel":
+                actions = self.mac.select_actions(
+                    self.batch,
+                    t_ep=self.t,
+                    t_env=self.t_env,
+                    test_mode=test_mode,
+                    explore=(not test_mode),
+                )
                 actions = th.argmax(actions, dim=-1).long()
             else:
-                actions = self.mac.select_actions(self.batch, t_ep=self.t,
-                                                  t_env=self.t_env,
-                                                  test_mode=test_mode)
-            self.batch.update({"actions": actions, }, ts=self.t)
-
-
+                actions = self.mac.select_actions(
+                    self.batch, t_ep=self.t, t_env=self.t_env, test_mode=test_mode
+                )
+            self.batch.update(
+                {
+                    "actions": actions,
+                },
+                ts=self.t,
+            )
 
         cur_stats = self.test_stats if test_mode else self.train_stats
         cur_returns = self.test_returns if test_mode else self.train_returns
 
         log_prefix = "test_" if test_mode else ""
-        cur_stats.update({k: cur_stats.get(k, 0) + env_info.get(k, 0) for k in
-                          set(cur_stats) | set(env_info)})
+        cur_stats.update(
+            {
+                k: cur_stats.get(k, 0) + env_info.get(k, 0)
+                for k in set(cur_stats) | set(env_info)
+            }
+        )
         cur_stats["n_episodes"] = 1 + cur_stats.get("n_episodes", 0)
         cur_stats["ep_length"] = self.t + cur_stats.get("ep_length", 0)
         if not test_mode:
@@ -151,12 +164,15 @@ class EpisodeRunner:
 
         if test_mode and (len(self.test_returns) == self.args.test_nepisode):
             self._log(cur_returns, cur_stats, log_prefix)
-        elif not test_mode and self.t_env - self.log_train_stats_t >= self.args.runner_log_interval:
+        elif (
+            not test_mode
+            and self.t_env - self.log_train_stats_t >= self.args.runner_log_interval
+        ):
             self._log(cur_returns, cur_stats, log_prefix)
             if hasattr(self.mac.action_selector, "epsilon"):
-                self.logger.log_stat("epsilon",
-                                     self.mac.action_selector.epsilon,
-                                     self.t_env)
+                self.logger.log_stat(
+                    "epsilon", self.mac.action_selector.epsilon, self.t_env
+                )
             self.log_train_stats_t = self.t_env
 
         return self.batch
@@ -168,14 +184,13 @@ class EpisodeRunner:
         pass
 
     def _log(self, returns, stats, prefix):
-        self.logger.log_stat(prefix + "return_mean", np.mean(returns),
-                             self.t_env)
-        self.logger.log_stat(prefix + "return_std", np.std(returns),
-                             self.t_env)
+        self.logger.log_stat(prefix + "return_mean", np.mean(returns), self.t_env)
+        self.logger.log_stat(prefix + "return_std", np.std(returns), self.t_env)
         returns.clear()
 
         for k, v in stats.items():
             if k != "n_episodes":
-                self.logger.log_stat(prefix + k + "_mean",
-                                     v / stats["n_episodes"], self.t_env)
+                self.logger.log_stat(
+                    prefix + k + "_mean", v / stats["n_episodes"], self.t_env
+                )
         stats.clear()

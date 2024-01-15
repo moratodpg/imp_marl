@@ -15,19 +15,18 @@ class COMACritic(nn.Module):
 
         critic_size = self.args.critic_intermediate_size
         assert len(critic_size) >= 2
-        
+
         # Set up network layers
         self.fc1 = nn.Sequential()
         self.fc1.add_module("lin0", nn.Linear(input_shape, critic_size[0]))
-        for i in range(1, len(critic_size)-1):
-            self.fc1.add_module("Relu"+str(i-1),
-                                nn.ReLU())
-            self.fc1.add_module("lin" + str(i),
-                                nn.Linear(critic_size[i-1], critic_size[i]))
+        for i in range(1, len(critic_size) - 1):
+            self.fc1.add_module("Relu" + str(i - 1), nn.ReLU())
+            self.fc1.add_module(
+                "lin" + str(i), nn.Linear(critic_size[i - 1], critic_size[i])
+            )
 
         self.fc2 = nn.Linear(critic_size[-2], critic_size[-1])
         self.fc3 = nn.Linear(critic_size[-1], self.n_actions)
-
 
     def forward(self, batch, t=None):
         inputs = self._build_inputs(batch, t=t)
@@ -39,7 +38,7 @@ class COMACritic(nn.Module):
     def _build_inputs(self, batch, t=None):
         bs = batch.batch_size
         max_t = batch.max_seq_length if t is None else 1
-        ts = slice(None) if t is None else slice(t, t+1)
+        ts = slice(None) if t is None else slice(t, t + 1)
         inputs = []
         # state
         inputs.append(batch["state"][:, ts].unsqueeze(2).repeat(1, 1, self.n_agents, 1))
@@ -48,24 +47,53 @@ class COMACritic(nn.Module):
         inputs.append(batch["obs"][:, ts])
 
         # actions (masked out by agent)
-        actions = batch["actions_onehot"][:, ts].view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1)
-        agent_mask = (1 - th.eye(self.n_agents, device=batch.device))
-        agent_mask = agent_mask.view(-1, 1).repeat(1, self.n_actions).view(self.n_agents, -1)
+        actions = (
+            batch["actions_onehot"][:, ts]
+            .view(bs, max_t, 1, -1)
+            .repeat(1, 1, self.n_agents, 1)
+        )
+        agent_mask = 1 - th.eye(self.n_agents, device=batch.device)
+        agent_mask = (
+            agent_mask.view(-1, 1).repeat(1, self.n_actions).view(self.n_agents, -1)
+        )
         inputs.append(actions * agent_mask.unsqueeze(0).unsqueeze(0))
 
         # last actions
         if t == 0:
-            inputs.append(th.zeros_like(batch["actions_onehot"][:, 0:1]).view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1))
+            inputs.append(
+                th.zeros_like(batch["actions_onehot"][:, 0:1])
+                .view(bs, max_t, 1, -1)
+                .repeat(1, 1, self.n_agents, 1)
+            )
         elif isinstance(t, int):
-            inputs.append(batch["actions_onehot"][:, slice(t-1, t)].view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1))
+            inputs.append(
+                batch["actions_onehot"][:, slice(t - 1, t)]
+                .view(bs, max_t, 1, -1)
+                .repeat(1, 1, self.n_agents, 1)
+            )
         else:
-            last_actions = th.cat([th.zeros_like(batch["actions_onehot"][:, 0:1]), batch["actions_onehot"][:, :-1]], dim=1)
-            last_actions = last_actions.view(bs, max_t, 1, -1).repeat(1, 1, self.n_agents, 1)
+            last_actions = th.cat(
+                [
+                    th.zeros_like(batch["actions_onehot"][:, 0:1]),
+                    batch["actions_onehot"][:, :-1],
+                ],
+                dim=1,
+            )
+            last_actions = last_actions.view(bs, max_t, 1, -1).repeat(
+                1, 1, self.n_agents, 1
+            )
             inputs.append(last_actions)
 
-        inputs.append(th.eye(self.n_agents, device=batch.device).unsqueeze(0).unsqueeze(0).expand(bs, max_t, -1, -1))
+        inputs.append(
+            th.eye(self.n_agents, device=batch.device)
+            .unsqueeze(0)
+            .unsqueeze(0)
+            .expand(bs, max_t, -1, -1)
+        )
 
-        inputs = th.cat([x.reshape(bs, max_t, self.n_agents, -1) for x in inputs], dim=-1)
+        inputs = th.cat(
+            [x.reshape(bs, max_t, self.n_agents, -1) for x in inputs], dim=-1
+        )
         return inputs
 
     def _get_input_shape(self, scheme):

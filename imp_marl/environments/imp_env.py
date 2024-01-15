@@ -1,11 +1,14 @@
 """ Interface for IMP environments. """
+
+
 class ImpEnv(object):
-    """ Interface for creating IMP environments.
+    """Interface for creating IMP environments.
 
     Methods:
         reset
         step
     """
+
     def reset(self) -> dict:
         """
         Returns damage probabilities in a dictionary and resets the environment.
