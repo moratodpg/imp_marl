@@ -1,15 +1,16 @@
 import numpy as np
-from numpy.testing import assert_array_equal
 
 from imp_marl.environments.struct_env import Struct
+from numpy.testing import assert_array_equal
+
 
 def test_default_constructor():
     env = Struct()
     assert env.n_comp == 2
     assert env.discount_reward == 1
     assert env.k_comp == 1
-    assert env.env_correlation == False
-    assert env.campaign_cost == False
+    assert env.env_correlation is False
+    assert env.campaign_cost is False
 
     obs = env.reset()
     assert type(obs) is dict
@@ -34,7 +35,7 @@ def test_default_constructor():
     assert len(rewards) == 2
     assert "agent_0" in rewards
     assert "agent_1" in rewards
-    assert done == False
+    assert done is False
 
 
 def test_terminal_state():
@@ -42,10 +43,13 @@ def test_terminal_state():
     cpt = 0
     done = False
     while not done:
-        _, rewards, done, _ = env.step({"agent_0": np.random.randint(0, 3), "agent_1": np.random.randint(0, 3)})
+        _, rewards, done, _ = env.step(
+            {"agent_0": np.random.randint(0, 3), "agent_1": np.random.randint(0, 3)}
+        )
         assert rewards["agent_0"] == rewards["agent_1"]
         cpt += 1
     assert cpt == 30
+
 
 def test_repair_initial_distrib():
     env = Struct()
@@ -53,7 +57,7 @@ def test_repair_initial_distrib():
     obs = env.reset()
 
     # we remove the last element which is the time
-    assert_array_equal(init_distrib[0],obs["agent_0"][:-1])
+    assert_array_equal(init_distrib[0], obs["agent_0"][:-1])
     assert_array_equal(init_distrib[1], obs["agent_1"][:-1])
 
     actions = {}
@@ -69,6 +73,7 @@ def test_repair_initial_distrib():
     assert_array_equal(init_distrib[0], obs["agent_0"][:-1])
     assert_array_equal(init_distrib[1], obs["agent_1"][:-1])
 
+
 def test_only_nothing():
     np.random.seed(42)
     env = Struct()
@@ -79,6 +84,7 @@ def test_only_nothing():
         total_reward += rewards["agent_0"]
     assert total_reward == -40.24126096000002
 
+
 def test_only_inspect():
     np.random.seed(42)
     env = Struct()
@@ -88,6 +94,7 @@ def test_only_inspect():
         _, rewards, done, _ = env.step({"agent_0": 1, "agent_1": 1})
         total_reward += rewards["agent_0"]
     assert total_reward == -60.14257297286546
+
 
 def test_only_repair():
     np.random.seed(42)
