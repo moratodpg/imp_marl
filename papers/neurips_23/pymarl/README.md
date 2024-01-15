@@ -1,6 +1,6 @@
 # PyMarl
 
-**TO REPRODUCE THE RESULTS IN THE PAPER, PLEASE FOLLOW THE INSTRUCTIONS IN [THIS SECTION](#Reproduce-our-results).**
+**TO REPRODUCE THE RESULTS IN THE PAPER, PLEASE FOLLOW THE INSTRUCTIONS IN [THIS SECTION](#Reproduce-paper-results).**
 
 
 The PyMarl code is derived from the [PyMarl original implementation](https://github.com/oxwhirl/pymarl).
@@ -46,16 +46,16 @@ You need to install the packages from this repository.
 The `-e` allows you to modify imp_marl packages and use them without reinstalling it.
 
 ```
-pip install -e pip install -e ../../../
+pip install -e ../../../ 
 ```
-Reminder: the current working directory of the terminal is `/imp_marl/papers/neurips_23/pymarl/`.
+**Reminder**: the current working directory of the terminal is `/imp_marl/papers/neurips_23/pymarl/`.
 
 # Train and test with pymarl
 ## Configuration files
 Before executing experiments, you need to create the configuration files.
 Configuration files are stored in the folder `pymarl/config`.
 There are two config folders:
-- The [alg](pymarl/config/alg) folder contains the config for each algorithm.
+- The [algs](config/algs) folder contains the config for each algorithm.
 - The [envs](config/envs) folder contains the config for each environment.
 
 We provide the complete list of configurations used in our paper and you can create new ones on your own.
@@ -111,16 +111,16 @@ To test the agents after training, use the `run_test.sh` file.
 
 The seeds required to reproduce our paper are obtained by downloading the data from our experiments.
 
-These logs are available in [/resutls_scritps](imp_marl/papers/neurips_23/results_scripts/).
+These logs are available in [/results_scripts](../results_scripts/).
 
-Once downloaded, the [find_seed notebook](imp_marl/papers/neurips_23/results_scripts/find_seed.ipynb) allows you to retrieve seeds for a given configuration. 
+Once downloaded, the [find_seed notebook](../results_scripts/find_seed.ipynb) allows you to retrieve seeds for a given configuration. 
  
 ## Train the agents
 As example, we want to reproduce the results of QMIX in the k-out-of-n environment with 5 agents and correlations and campaign cost.
 
 Therefore, alg = `qmix_uc_10` and env = `struct_c_5`.
 
-You first need the seeds. Go to the [find seed](imp_marl/papers/neurips_23/results_scripts/find_seed.ipynb), change the `alg` and `env` variable at the last cell and execute the notebook.
+You first need the seeds. Go to the [find seed](../results_scripts/find_seed.ipynb), change the `alg` and `env` variable at the last cell and execute the notebook.
 
 You will obtain:
 
@@ -141,15 +141,20 @@ To train with the seed=843209078, you need to execute the training script, after
 
 ```
 conda activate imp_marl_pymarl
-python pymarl_train.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 test_nepisode=-1 seed=843209078 env_args.campaign_cost=True
+python pymarl_train.py --config=qmix_uc_10 --env-config=struct_c_5 with name=qmix_uc_10_struct_c_5 env_args.campaign_cost=True test_nepisode=-1 seed=843209078 
 conda deactivate
 ```
-A results folder will be created with your results and you will find the train networks in the `results/models` folder.
+A results folder will be created with your results and you will find the train networks in the `results/models/` folder.
 
 ## Test the agents
 
-You now needs to execute the test run to obtain the results, here with 10000 test episodes per checkpoint.
+You now need to execute the test run to get the results, indicating:
+- `checkpoint_directory` 
+- `tests_number` 
+- `campaign_cost_option` 
+
+For this particular example: `qmix_uc_10_struct_c_5__yyyy-mm-dd-hh-mm-ss 10000 True`
 
 ```
-./run_test.sh qmix_uc_10_struct_c_5__yyyy-mm-dd-hh-mm-ss 10000
+./run_test.sh qmix_uc_10_struct_c_5__yyyy-mm-dd-hh-mm-ss 10000 True
 ```
