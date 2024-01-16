@@ -2,9 +2,13 @@
 
 import itertools
 
-import gym
+try:
+    # Example coded with gym==0.23
+    import gym
+except ModuleNotFoundError:
+    print("You need to install gym==0.23 to use the wrapper as in the repository")
 
-# Example coded with gym==0.23
+
 import numpy as np
 from gym import spaces
 
