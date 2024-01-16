@@ -1,3 +1,3 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 
-setup(name="imp_marl", packages=find_packages())
+setup(name="imp_marl")
