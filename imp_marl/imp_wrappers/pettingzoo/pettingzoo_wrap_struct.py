@@ -1,12 +1,18 @@
 import numpy as np
-from gymnasium import spaces
-from pettingzoo.utils.env import ParallelEnv
+
+try:
+
+    # Example coded with pettingzoo-1.23.1
+    from gymnasium import spaces
+    from pettingzoo.utils.env import ParallelEnv
+except ModuleNotFoundError:
+    print("ModuleNotFoundError")
+    print("You need to install pettingzoo to use the wrapper as in the repository.")
+    print("The wrapper has been coded with pettingzoo==1.23.1.")
+    exit()
 
 from imp_marl.environments.owf_env import Struct_owf
 from imp_marl.environments.struct_env import Struct
-
-
-# Example coded with pettingzoo-1.23.1
 
 
 class PettingZooStruct(ParallelEnv):
