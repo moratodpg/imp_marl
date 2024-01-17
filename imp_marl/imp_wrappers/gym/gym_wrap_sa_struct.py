@@ -6,8 +6,8 @@ try:
     # Example coded with gym==0.23
     import gym
 except ModuleNotFoundError:
-    print("You need to install gym==0.23 to use the wrapper as in the repository")
-
+    print("You need to install gym==0.23 to use the wrapper as in the repository.")
+    exit()
 
 import numpy as np
 from gym import spaces
