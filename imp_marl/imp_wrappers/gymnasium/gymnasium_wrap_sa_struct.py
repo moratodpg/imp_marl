@@ -2,9 +2,18 @@
 
 import itertools
 
-import gymnasium as gym
+try:
+    # # Example coded with gymnasium==0.28.1
+    import gymnasium as gym
+except ModuleNotFoundError:
+    print("ModuleNotFoundError")
+    print("You need to install gymnasium to use the wrapper as in the repository.")
+    print("The wrapper has been coded with gymnasium==0.28.1 but you need gym>=0.26.O")
+    print(
+        "More information here https://gymnasium.farama.org/main/content/migration-guide/."
+    )
+    exit()
 
-# Example coded with gymnasium==0.28.1
 import numpy as np
 from gymnasium import spaces
 
