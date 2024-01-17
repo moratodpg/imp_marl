@@ -7,8 +7,8 @@ try:
     import gym
 except ModuleNotFoundError:
     print("ModuleNotFoundError")
-    print("You need to install gym==0.23 to use the wrapper as in the repository.")
-    print("The version 0.23 is not mandatory but you need < v0.26.")
+    print("You need to install gym to use the wrapper as in the repository.")
+    print("The wrapper has been coded with gym==0.23 but you need gym<=0.25.2.")
     print(
         "More information here https://gymnasium.farama.org/main/content/migration-guide/."
     )
