@@ -6,7 +6,12 @@ try:
     # Example coded with gym==0.23
     import gym
 except ModuleNotFoundError:
+    print("ModuleNotFoundError")
     print("You need to install gym==0.23 to use the wrapper as in the repository.")
+    print("The version 0.23 is not mandatory but you need < v0.26.")
+    print(
+        "More information here https://gymnasium.farama.org/main/content/migration-guide/."
+    )
     exit()
 
 import numpy as np
