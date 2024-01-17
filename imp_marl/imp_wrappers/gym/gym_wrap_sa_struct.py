@@ -12,7 +12,7 @@ except ModuleNotFoundError:
     print(
         "More information here https://gymnasium.farama.org/main/content/migration-guide/."
     )
-    exit()
+    raise ModuleNotFoundError
 
 import numpy as np
 from gym import spaces
