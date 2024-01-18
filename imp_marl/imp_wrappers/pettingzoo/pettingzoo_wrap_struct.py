@@ -6,9 +6,13 @@ try:
     from gymnasium import spaces
     from pettingzoo.utils.env import ParallelEnv
 except ModuleNotFoundError:
+    print("")
+    print("")
     print("ModuleNotFoundError")
     print("You need to install pettingzoo to use the wrapper as in the repository.")
     print("The wrapper has been coded with pettingzoo==1.23.1.")
+    print("")
+    print("")
     raise ModuleNotFoundError
 
 from imp_marl.environments.owf_env import Struct_owf
