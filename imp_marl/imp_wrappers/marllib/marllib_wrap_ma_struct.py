@@ -3,8 +3,19 @@
 # https://github.com/Replicable-MARL/MARLlib/blob/master/marllib/envs/base_env/smac.py
 
 import numpy as np
-from gym.spaces import Box, Dict as GymDict, Discrete
-from ray.rllib.env.multi_agent_env import MultiAgentEnv
+
+try:
+    from gym.spaces import Box, Dict as GymDict, Discrete
+    from ray.rllib.env.multi_agent_env import MultiAgentEnv
+except ModuleNotFoundError:
+    print("")
+    print("")
+    print("ModuleNotFoundError")
+    print("You need to install marllib to use the wrapper as in the repository.")
+    print("See https://github.com/Replicable-MARL/MARLlib")
+    print("")
+    print("")
+    raise ModuleNotFoundError
 
 from imp_marl.imp_wrappers.pymarl_wrapper.pymarl_wrap_ma_struct import PymarlMAStruct
 
