@@ -13,7 +13,7 @@ Each wrapper has its own requirements. Please check the import of each wrapper, 
 ## Available wrappers:
 - [PymarlMAStruct](pymarl_wrapper/pymarl_wrap_ma_struct.py): Multi-agent wrapper for the [MultiAgentEnv](pymarl_wrapper/MultiAgentEnv.py) interface required by [PyMarl](pymarl_wrapper/README.md).
 - [PymarlSAStruct](pymarl_wrapper/pymarl_wrap_sa_struct.py): Single-agent wrapper for the [MultiAgentEnv](SingleAgentEnv.py) interface required by [PyMarl](pymarl_wrapper/README.md).
-- [EPymarlMAStruct](epymarl_wrapper/epymarl_wrap_ma_struct.py): Multi-agent wrapper for the [MultiAgentEnv](pymarl_wrapper/MultiAgentEnv.py) interface required by [EPyMarl](https://github.com/uoe-agents/epymarl/tree/main).
+- [EPymarlMAStruct](epymarl_wrapper/epymarl_wrap_ma_struct.py): Multi-agent wrapper for the interface required by [EPyMarl](https://github.com/uoe-agents/epymarl/tree/main).
 - [GymSaStruct](gym/gym_wrap_sa_struct.py): Single-agent wrapper for the [Gym v21 ](https://gymnasium.farama.org/v0.27.1/content/migration-guide/) interface.
 - [GymnasiumSaStruct](gymnasium/gymnasium_wrap_sa_struct.py): Single-agent wrapper for the [Gymnasium](https://gymnasium.farama.org/api/env/) interface.
 - [PettingZooStruct](pettingzoo/pettingzoo_wrap_struct.py): Multi-agent wrapper for the [PettingZoo](https://pettingzoo.farama.org/) interface.
