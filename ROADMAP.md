@@ -13,4 +13,4 @@ Additional environments:
 Additional RL libraries:
 - [ ] TorchRL
 - [x] CleanRL
-- [ ] EPyMARL
+- [x] EPyMARL
