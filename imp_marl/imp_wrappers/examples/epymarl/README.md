@@ -16,9 +16,7 @@ You can run IMP-MARL environments on EPyMARL by:
 5. Register your imp_marl env(s) within EPyMARL. Do that on `/src/envs/__init__.py`:
     ```
     from imp_marl.imp_wrappers.epymarl_wrapper.epymarl_wrap_ma_struct import EPymarlMAStruct
-    def env_fn(env, **kwargs) -> MultiAgentEnv:
-    return env(**kwargs)
-    REGISTRY = {}
+
     REGISTRY["struct_marl"] = partial(env_fn, env=EPymarlMAStruct)
     ```
 6. Include the config files associated with your env(s) in `/src/config/envs`. As reference, you can find here the config file for a struct env with three uncorrelated structural components `struct_uc_3.yaml`. Other config files can be found [here](https://github.com/moratodpg/imp_marl/tree/main/papers/neurips_23/pymarl/config/envs). 
