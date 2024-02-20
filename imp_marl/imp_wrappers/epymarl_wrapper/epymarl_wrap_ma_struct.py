@@ -2,6 +2,7 @@
 
 from imp_marl.imp_wrappers.pymarl_wrapper.pymarl_wrap_ma_struct import PymarlMAStruct
 
+
 class EPymarlMAStruct(PymarlMAStruct):
     """
     Wrapper for Struct and Struct_owf respecting the interface of EPyMARL.
@@ -67,7 +68,7 @@ class EPymarlMAStruct(PymarlMAStruct):
             obs_alphas=obs_alphas,
             env_correlation=env_correlation,
             campaign_cost=campaign_cost,
-            seed=seed
+            seed=seed,
         )
 
         self.map_name = map_name
