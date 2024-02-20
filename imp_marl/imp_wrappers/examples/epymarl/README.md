@@ -21,7 +21,7 @@ You can run IMP-MARL environments on EPyMARL by:
     REGISTRY = {}
     REGISTRY["struct_marl"] = partial(env_fn, env=EPymarlMAStruct)
     ```
-6. Include the config files associated with your env(s) in `/src/config/envs`. For instance, you can include `struct_uc_3.yaml` config file.
+6. Include the config files associated with your env(s) in `/src/config/envs`. As reference, you can find here the config file for a struct env with three uncorrelated structural components `struct_uc_3.yaml`. Other config files can be found [here](https://github.com/moratodpg/imp_marl/tree/main/papers/neurips_23/pymarl/config/envs). 
 7. You can now run it! To execute for example struct_uc_3 with QMIX, run: 
     ```
     python3 src/main.py --config=qmix --env-config=struct_uc_3
