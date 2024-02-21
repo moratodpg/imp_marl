@@ -9,7 +9,7 @@ For more information, check their [blog](https://agents.inf.ed.ac.uk/blog/epymar
 
 You can run IMP-MARL environments on EPyMARL by:
 
-1. Create a new virtual environment.
+1. Create a new *virtual environment*.
 2. Install imp_marl package: `pip install git+http://github.com/moratodpg/imp_marl.git`.
 3. [Clone EPyMARL](https://github.com/uoe-agents/epymarl).
 4. Install the required EPyMARL modules according to the requirements file: `pip install -r requirements`.
