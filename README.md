@@ -41,12 +41,13 @@ However, to reproduce our results, more packages are required and installation i
 ## Available wrappers and examples
 All wrappers are available in [imp_wrappers](imp_marl/imp_wrappers/).
 - Ready: [**PyMarl**](imp_marl/imp_wrappers/pymarl_wrapper): [Multi](imp_marl/imp_wrappers/pymarl_wrapper/pymarl_wrap_ma_struct.py) and [single](imp_marl/imp_wrappers/pymarl_wrapper/pymarl_wrap_sa_struct.py) agent wrappers.
-- Ready: [**EPyMarl**](imp_marl/imp_wrappers/epymarl_wrapper): [Multi](imp_marl/imp_wrappers/epymarl_wrapper/epymarl_wrap_ma_struct.py) agent wrapper.
+- Ready: [**EPyMarl**](imp_marl/imp_wrappers/epymarl): Multi-agent wrapper.
 - Ready: [**Gym**](imp_marl/imp_wrappers/gym/gym_wrap_sa_struct.py): Single-agent wrapper.
 - Ready: [**Gymnasium**](imp_marl/imp_wrappers/gymnasium/gymnasium_wrap_sa_struct.py): Single-agent wrapper.
 - Ready: [**PettingZoo**](imp_marl/imp_wrappers/pettingzoo/pettingzoo_wrap_struct.py) : Multi-agent wrapper.
 - Ready: [**Rllib**](imp_marl/imp_wrappers/examples/rllib/rllib_example.py): Single-agent training with RLLib and Gymnasium wrapper.
 - Ready: [**MARLlib**](imp_marl/imp_wrappers/marllib/marllib_wrap_ma_struct.py): Examples include random agents and how to train with MARLlib.
+- Ready: [**CleanRL**](imp_marl/imp_wrappers/examples/CleanRL): Examples on how to train with CleanRL using the Gym wrapper.
 - WIP: [**TorchRL example**](): WIP
 
 
