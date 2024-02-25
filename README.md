@@ -40,7 +40,7 @@ However, to reproduce our results, more packages are required and installation i
 
 ## Available wrappers and examples
 All wrappers are available in [imp_wrappers](imp_marl/imp_wrappers/).
-- Ready: [**PyMarl**](imp_marl/imp_wrappers/pymarl_wrapper): [Multi](imp_marl/imp_wrappers/pymarl_wrapper/pymarl_wrap_ma_struct.py) and [single](imp_marl/imp_wrappers/pymarl_wrapper/pymarl_wrap_sa_struct.py) agent wrappers.
+- Ready: [**PyMarl**](imp_marl/imp_wrappers/pymarl): [Multi](imp_marl/imp_wrappers/pymarl/pymarl_wrap_ma_struct.py) and [single](imp_marl/imp_wrappers/pymarl/pymarl_wrap_sa_struct.py) agent wrappers.
 - Ready: [**EPyMarl**](imp_marl/imp_wrappers/epymarl/epymarl_wrap_ma_struct.py): Multi-agent wrapper.
 - Ready: [**Gym**](imp_marl/imp_wrappers/gym/gym_wrap_sa_struct.py): Single-agent wrapper.
 - Ready: [**Gymnasium**](imp_marl/imp_wrappers/gymnasium/gymnasium_wrap_sa_struct.py): Single-agent wrapper.
