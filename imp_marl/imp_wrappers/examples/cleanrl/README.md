@@ -1,6 +1,6 @@
 # CleanRL
 
-Clean RL is not a modular library but focus on a single-file implementation of RL aglos (see their [README](https://github.com/vwxyzjn/cleanrl/blob/master/README.md)).
+Clean RL is not a modular library, but focus on a single-file implementation of RL algorithms (see their [README](https://github.com/vwxyzjn/cleanrl/blob/master/README.md)).
 
 Right now they do not support Gymnasium but they support old Gym (v21) that is implemented in the wrapper [**GymSaStruct**](imp_wrappers/gym/gym_wrap_sa_struct.py).
 
