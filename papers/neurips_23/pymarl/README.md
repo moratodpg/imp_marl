@@ -102,7 +102,7 @@ To test the agents at training time, you need to modify `run.sh` file.
 To test the agents after training, use the `run_test.sh` file.
 
 ```bash
-./pymarl/run_test.sh experiment_name n_test_epsiode
+./run_test.sh experiment_name n_test_epsiode
 ```
 
 # Reproduce paper results
