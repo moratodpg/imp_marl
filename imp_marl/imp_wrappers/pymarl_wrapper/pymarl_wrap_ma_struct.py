@@ -1,7 +1,17 @@
 """ Wrapper for struct_env respecting the interface of PyMARL. """
 
 import numpy as np
-import torch
+
+try:
+    import torch
+except ModuleNotFoundError:
+    print("")
+    print("")
+    print("ModuleNotFoundError")
+    print("You need to install torch to use the wrapper as in the repository.")
+    print("")
+    print("")
+    raise ModuleNotFoundError
 
 from imp_marl.environments.owf_env import Struct_owf
 from imp_marl.environments.struct_env import Struct
