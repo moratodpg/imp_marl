@@ -37,7 +37,7 @@ class Struct_owf(ImpEnv):
                 "global_costs": [5, 100, 600], # [mobilization, corrective surplus, system failure]
                 "mobiliz_elements": 5,
                 "pf_constraint": 1.0,
-                "pf_sys_constraint": 1e-3,
+                "pf_sys_constraint": 1.0,
                 "sensor_deterioration": [[0.02, 0.98, 0.0], [0, 0.35, 0.65], [0.0, 0.0, 1.0]],
             }
         assert (
@@ -143,9 +143,9 @@ class Struct_owf(ImpEnv):
         self.d_rate = next_drate
         self.sensor_condition = next_sensor_condition
 
-        observation = self._get_observation()
-
         self.time_step += 1
+
+        observation = self._get_observation()
 
         # An episode is done if the agent has reached the target
         done = self.time_step >= self.ep_length
