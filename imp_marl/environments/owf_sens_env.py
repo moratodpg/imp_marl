@@ -6,7 +6,7 @@ import numpy as np
 from imp_marl.environments.imp_env import ImpEnv
 
 
-class Struct_owf(ImpEnv):
+class OWF_Sens(ImpEnv):
     def __init__(self, config=None):
         """offshore wind farm (owf) class.
 
@@ -36,7 +36,7 @@ class Struct_owf(ImpEnv):
                 "component_costs": [[1, 2, 10], [4, 6, 30]], # [insp, sensor inst, repair]
                 "global_costs": [5, 100, 600], # [mobilization, corrective surplus, system failure]
                 "mobiliz_elements": 5,
-                "pf_constraint": 1.0,
+                "pf_constraint": 1e-3,
                 "pf_sys_constraint": 1.0,
                 "sensor_deterioration": [[0.02, 0.98, 0.0], [0, 0.35, 0.65], [0.0, 0.0, 1.0]],
             }
@@ -164,7 +164,7 @@ class Struct_owf(ImpEnv):
         for i in range(self.n_owt): # loop over OWTs
             # Check for system failure (observable event)
             pf_components = new_proba[i, :].reshape((self.lev, self.stress_conditions, self.crack_conditions)).sum(axis=1)[:, -1]
-            pf_sys = Struct_owf.pf_sys(pf_components)
+            pf_sys = OWF_Sens.pf_sys(pf_components)
             f_sys = np.random.choice([0, 1], size=None, replace=True, p=[1 - pf_sys, pf_sys])
 
             # if system failure, repair all components
@@ -229,7 +229,7 @@ class Struct_owf(ImpEnv):
                 new_drate[i, j, 0] = drate_comp + 1
 
             pf_components = new_proba[i, :].reshape((self.lev, self.stress_conditions, self.crack_conditions)).sum(axis=1)[:, -1]
-            pf_sys = Struct_owf.pf_sys(pf_components)
+            pf_sys = OWF_Sens.pf_sys(pf_components)
 
             # Component level constraints
             if self.pf_constraint is not None:
@@ -281,9 +281,9 @@ class Struct_owf(ImpEnv):
     
     # get observations
     def _get_observation(self):
-        damage_proba_comp = Struct_owf.reshape_observations(self.damage_proba, (self.n_agents, self.stress_conditions, self.crack_conditions))
-        d_rate_comp = Struct_owf.reshape_observations(self.d_rate, (self.n_agents, -1))
-        sensor_condition_comp = Struct_owf.reshape_observations(self.sensor_condition, (self.n_agents, -1))
+        damage_proba_comp = OWF_Sens.reshape_observations(self.damage_proba, (self.n_agents, self.stress_conditions, self.crack_conditions))
+        d_rate_comp = OWF_Sens.reshape_observations(self.d_rate, (self.n_agents, -1))
+        sensor_condition_comp = OWF_Sens.reshape_observations(self.sensor_condition, (self.n_agents, -1))
         observation = {}
         for i in range(self.n_agents): 
             observation[self.agent_list[i]] = np.concatenate(
