@@ -153,6 +153,7 @@ class Struct_owf(ImpEnv):
         return observation, rewards, done, inspection
 
     def transition(self, proba, action, drate, sensor_condition):
+        """Transitions the environment to the next state based on the selected actions."""
         new_proba = proba.copy()
         new_drate = drate.copy()
         new_sensor_condition = sensor_condition.copy()
