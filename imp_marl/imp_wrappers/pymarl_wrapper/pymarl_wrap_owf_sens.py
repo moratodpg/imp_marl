@@ -32,10 +32,11 @@ class PymarlOWF_Sens(MultiAgentEnv):
         component_costs: list = [[1, 2, 10], [4, 6, 30]], # [insp, sensor inst, repair]
         global_costs: list = [5, 100, 600], # [mobilization, corrective surplus, system failure]
         mobiliz_elements: int = 5,
-        pf_constraint: float = 1e-3,
+        pf_constraint: float = 0.001,
         pf_sys_constraint: float = 1.0,
         sensor_deterioration: list = [[0.02, 0.98, 0.0], [0, 0.35, 0.65], [0.0, 0.0, 1.0]],
         seed=None,
+        **kwargs,
     ):
         """
         Initialise based on the full configuration.
