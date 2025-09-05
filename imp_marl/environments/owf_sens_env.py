@@ -30,13 +30,13 @@ class OWF_Sens(ImpEnv):
         """
         if config is None:
             config = {
-                "n_owt": 2,
+                "n_owt": 1,
                 "lev": 3,
                 "discount_reward": 1,
-                "component_costs": [[1, 2, 10], [4, 6, 30]], # [insp, sensor inst, repair]
-                "global_costs": [5, 100, 600], # [mobilization, corrective surplus, system failure]
+                "component_costs": [[0.8, 1.8, 10], [3.8, 7.8, 30]], # [insp, sensor inst, repair]
+                "global_costs": [1, 100, 600], # [mobilization, corrective surplus, system failure]
                 "mobiliz_elements": 5,
-                "pf_constraint": 1e-3,
+                "pf_constraint": 0.001, # 0.004 (ref)
                 "pf_sys_constraint": 1.0,
                 "sensor_deterioration": [[0.02, 0.98, 0.0], [0, 0.35, 0.65], [0.0, 0.0, 1.0]],
             }
@@ -129,7 +129,7 @@ class OWF_Sens(ImpEnv):
         for i in range(self.n_agents):
             action_list[i] = action[self.agent_list[i]]
 
-        inspection, next_proba, next_drate, next_sensor_condition, reward_ = self.transition(
+        inspection, next_proba, next_drate, next_sensor_condition, reward_, pf_constraints_flags = self.transition(
             self.damage_proba, action_list, self.d_rate, self.sensor_condition
         )
 
@@ -150,7 +150,11 @@ class OWF_Sens(ImpEnv):
         # An episode is done if the agent has reached the target
         done = self.time_step >= self.ep_length
 
-        return observation, rewards, done, inspection
+        # Info dictionary: inspection outcomes and constraint flags
+        info = {"inspections": inspection}
+        info.update(pf_constraints_flags)
+
+        return observation, rewards, done, info
 
     def transition(self, proba, action, drate, sensor_condition):
         """Transitions the environment to the next state based on the selected actions."""
@@ -158,6 +162,8 @@ class OWF_Sens(ImpEnv):
         new_drate = drate.copy()
         new_sensor_condition = sensor_condition.copy()
         inspections = np.full((self.n_owt, self.lev), self.n_obs_inspection + 1, dtype=int)  # default "no inspection outcome" token
+        pf_comp_constraint = np.zeros((self.n_owt, self.lev), dtype=bool)
+        pf_sys_constraint = np.zeros(self.n_owt, dtype=bool)
         reward_sum = np.array(0.0)
         actions_count = 0
 
@@ -233,20 +239,24 @@ class OWF_Sens(ImpEnv):
 
             # Component level constraints
             if self.pf_constraint is not None:
-                for j in range(self.lev):
+                for j in range(self.lev - 1): # mudline component cannot be acted upon
                     if pf_components[j] > self.pf_constraint:
+                        pf_comp_constraint[i, j] = True
                         new_proba[i, j] = self.initial_damage_proba[i, j].copy()
                         new_drate[i, j, 0] = 0
                         new_sensor_condition[i, j, :] = [0, 0, 1]
+                        reward_sum -= self.component_costs[j, 2]
                         reward_sum -= self.global_costs[1] # corrective action surplus cost
             
             # System level constraint 
             if self.pf_sys_constraint is not None:
                 if pf_sys > self.pf_sys_constraint:
-                    for j in range(self.lev):
+                    pf_sys_constraint[i] = True
+                    for j in range(self.lev - 1): # mudline component cannot be acted upon
                         new_proba[i, j] = self.initial_damage_proba[i, j].copy()
                         new_drate[i, j, 0] = 0
                         new_sensor_condition[i, j, :] = [0, 0, 1]
+                        reward_sum -= self.component_costs[j, 2]
                         reward_sum -= self.global_costs[1] # corrective action surplus cost
 
         # System cost (mobilization)
@@ -254,7 +264,13 @@ class OWF_Sens(ImpEnv):
             mobilization_groups = math.ceil(actions_count / self.mobiliz_elements)
             reward_sum -= self.global_costs[0] * mobilization_groups
 
-        return inspections, new_proba, new_drate, new_sensor_condition, reward_sum
+        # Convert constraint flags to a dictionary
+        pf_constraints_flags = {
+            "components": pf_comp_constraint,
+            "system": pf_sys_constraint
+        }
+
+        return inspections, new_proba, new_drate, new_sensor_condition, reward_sum, pf_constraints_flags
 
     @staticmethod
     def pf_sys(pf):
