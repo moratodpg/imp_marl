@@ -1,4 +1,4 @@
-""" Wrapper for owf_sens_env respecting the interface of PyMARL. """
+""" Wrapper for owf_sens_env respecting the interface of ePyMARL. """
 
 import numpy as np
 
@@ -16,7 +16,7 @@ except ModuleNotFoundError:
 from imp_marl.environments.owf_sens_env import OWF_Sens
 from imp_marl.imp_wrappers.pymarl_wrapper.MultiAgentEnv import MultiAgentEnv
 
-class PymarlOWF_Sens(MultiAgentEnv):
+class ePymarlOWF_Sens(MultiAgentEnv):
     """
     Wrapper for Struct and Struct_owf respecting the interface of PyMARL.
 
@@ -132,7 +132,8 @@ class PymarlOWF_Sens(MultiAgentEnv):
             for k in self.action_histogram:
                 self.action_histogram[k] /= self.episode_limit * self.n_agents
             info = self.action_histogram
-        return rewards[self.struct_env.agent_list[0]], done, info
+        truncated = False
+        return self.get_obs(), rewards[self.struct_env.agent_list[0]], done, truncated, info
 
     def get_obs(self):
         """Returns all agent observations in a list."""
