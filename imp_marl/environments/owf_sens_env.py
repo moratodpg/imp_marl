@@ -247,6 +247,7 @@ class OWF_Sens(ImpEnv):
                         new_sensor_condition[i, j, :] = [0, 0, 1]
                         reward_sum -= self.component_costs[j, 2]
                         reward_sum -= self.global_costs[1] # corrective action surplus cost
+                        inspections[i, j] = self.n_obs_inspection + 1  # no inspection outcome token
             
             # System level constraint 
             if self.pf_sys_constraint is not None:
@@ -258,6 +259,7 @@ class OWF_Sens(ImpEnv):
                         new_sensor_condition[i, j, :] = [0, 0, 1]
                         reward_sum -= self.component_costs[j, 2]
                         reward_sum -= self.global_costs[1] # corrective action surplus cost
+                        inspections[i, j] = self.n_obs_inspection + 1  # no inspection outcome token
 
         # System cost (mobilization)
         if actions_count > 0 and self.global_costs[0] > 0:
