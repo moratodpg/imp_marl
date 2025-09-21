@@ -36,9 +36,10 @@ class OWF_Sens(ImpEnv):
                 "component_costs": [[0.8, 1.8, 10], [3.8, 7.8, 30]], # [insp, sensor inst, repair]
                 "global_costs": [1, 100, 600], # [mobilization, corrective surplus, system failure]
                 "mobiliz_elements": 5,
-                "pf_constraint": 0.001, # 0.004 (ref)
+                "pf_constraint": 0.001, # 0.001 (ref)
                 "pf_sys_constraint": 1.0,
                 "sensor_deterioration": [[0.02, 0.98, 0.0], [0, 0.35, 0.65], [0.0, 0.0, 1.0]],
+                "risk_reward": False
             }
         assert (
             "n_owt" in config
@@ -50,6 +51,7 @@ class OWF_Sens(ImpEnv):
             and "pf_constraint" in config
             and "pf_sys_constraint" in config
             and "sensor_deterioration" in config
+            and "risk_reward" in config
         ), "Missing env config"
 
         self.n_owt = config["n_owt"]
@@ -61,6 +63,7 @@ class OWF_Sens(ImpEnv):
         self.pf_constraint = config["pf_constraint"]
         self.pf_sys_constraint = config["pf_sys_constraint"]
         self.sensor_deterioration = np.array(config["sensor_deterioration"], dtype=float)
+        self.risk_reward = config["risk_reward"]
 
         self.n_comp = self.n_owt * self.lev
         self.n_agents = self.n_owt * (self.lev - 1) # mudline component cannot be acted upon
@@ -260,6 +263,10 @@ class OWF_Sens(ImpEnv):
                         reward_sum -= self.component_costs[j, 2]
                         reward_sum -= self.global_costs[1] # corrective action surplus cost
                         inspections[i, j] = self.n_obs_inspection + 1  # no inspection outcome token
+            
+            # Risk-based reward
+            if self.risk_reward:
+                reward_sum -= pf_sys * self.global_costs[2] # system failure cost
 
         # System cost (mobilization)
         if actions_count > 0 and self.global_costs[0] > 0:
