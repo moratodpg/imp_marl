@@ -35,6 +35,7 @@ class ePymarlOWF_Sens(MultiAgentEnv):
         pf_constraint: float = 0.001,
         pf_sys_constraint: float = 1.0,
         sensor_deterioration: list = [[0.02, 0.98, 0.0], [0, 0.35, 0.65], [0.0, 0.0, 1.0]],
+        risk_reward: bool = False,
         seed=None,
         **kwargs,
     ):
@@ -52,6 +53,7 @@ class ePymarlOWF_Sens(MultiAgentEnv):
             pf_constraint: (float) Probability of failure constraint
             pf_sys_constraint: (float) Probability of system failure constraint
             sensor_deterioration: (list) Deterioration rates for each sensor
+            risk_reward: (bool) If True, use risk-based reward
             seed: (int) Seed for the random number generator
         """
         # Check struct type and default values
@@ -83,6 +85,7 @@ class ePymarlOWF_Sens(MultiAgentEnv):
             "pf_constraint": pf_constraint,
             "pf_sys_constraint": pf_sys_constraint,
             "sensor_deterioration": sensor_deterioration,
+            "risk_reward": risk_reward,
         }
         self.struct_env = OWF_Sens(self.config)
         self.n_agents = self.struct_env.n_agents
