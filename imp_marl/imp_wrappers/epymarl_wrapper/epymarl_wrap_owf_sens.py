@@ -133,19 +133,21 @@ class ePymarlOWF_Sens(MultiAgentEnv):
             info: dict of info for logging
         """
         # remapping actions if info_available is limited
-        # inspections: 0 → 0, 1 → 2, 2 → 4
-        # monitoring: 0 → 0, 1 → 1, 2 → 4, 3 → 5
         if self.info_available == "inspections":
             if isinstance(actions, list):
                 actions = [2 if a == 1 else 4 if a == 2 else a for a in actions]
             elif isinstance(actions, torch.Tensor):
-                actions = actions.clone()
-                actions[actions == 1] = 2
-                actions[actions == 2] = 4
+                orig = actions.clone()
+                out = actions.clone()
+                out[orig == 1] = 2
+                out[orig == 2] = 4
+                actions = out
             elif isinstance(actions, np.ndarray):
-                actions = actions.copy()
-                actions[actions == 1] = 2
-                actions[actions == 2] = 4
+                orig = actions.copy()
+                out = actions.copy()
+                out[orig == 1] = 2
+                out[orig == 2] = 4
+                actions = out
             else:
                 raise TypeError(f"Unsupported actions type: {type(actions)}")
 
@@ -153,13 +155,17 @@ class ePymarlOWF_Sens(MultiAgentEnv):
             if isinstance(actions, list):
                 actions = [4 if a == 2 else 5 if a == 3 else a for a in actions]
             elif isinstance(actions, torch.Tensor):
-                actions = actions.clone()
-                actions[actions == 2] = 4
-                actions[actions == 3] = 5
+                orig = actions.clone()
+                out = actions.clone()
+                out[orig == 2] = 4
+                out[orig == 3] = 5
+                actions = out
             elif isinstance(actions, np.ndarray):
-                actions = actions.copy()
-                actions[actions == 2] = 4
-                actions[actions == 3] = 5
+                orig = actions.copy()
+                out = actions.copy()
+                out[orig == 2] = 4
+                out[orig == 3] = 5
+                actions = out
             else:
                 raise TypeError(f"Unsupported actions type: {type(actions)}")
 
