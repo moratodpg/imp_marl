@@ -36,6 +36,7 @@ class ePymarlOWF_Sens(MultiAgentEnv):
         pf_sys_constraint: float = 1.0,
         sensor_deterioration: list = [[0.02, 0.98, 0.0], [0, 0.35, 0.65], [0.0, 0.0, 1.0]],
         risk_reward: bool = False,
+        info_available: str = "all",
         seed=None,
         **kwargs,
     ):
@@ -54,6 +55,7 @@ class ePymarlOWF_Sens(MultiAgentEnv):
             pf_sys_constraint: (float) Probability of system failure constraint
             sensor_deterioration: (list) Deterioration rates for each sensor
             risk_reward: (bool) If True, use risk-based reward
+            info_available: (str) Information available (inspections, monitoring, all)
             seed: (int) Seed for the random number generator
         """
         # Check struct type and default values
@@ -73,6 +75,7 @@ class ePymarlOWF_Sens(MultiAgentEnv):
         self.lev = lev
         self.discount_reward = discount_reward
         self.obs_multiple = obs_multiple
+        self.info_available = info_available
         self._seed = seed
 
         self.config = {
@@ -92,9 +95,14 @@ class ePymarlOWF_Sens(MultiAgentEnv):
 
         self.episode_limit = self.struct_env.ep_length
         self.agent_list = self.struct_env.agent_list
-        self.n_actions = self.struct_env.actions_per_agent
+        if self.info_available == "inspections":
+            self.n_actions = 3  
+        elif self.info_available == "monitoring":
+            self.n_actions = 4  
+        elif self.info_available == "all":
+            self.n_actions = self.struct_env.actions_per_agent
 
-        self.action_histogram = {"action_" + str(k): 0 for k in range(self.n_actions)}
+        self.action_histogram = {"action_" + str(k): 0 for k in range(self.struct_env.actions_per_agent)}
 
         self.unit_dim = self.get_unit_dim()  # Qplex requirement
 
@@ -124,6 +132,36 @@ class ePymarlOWF_Sens(MultiAgentEnv):
             done: True if the episode is finished
             info: dict of info for logging
         """
+        # remapping actions if info_available is limited
+        # inspections: 0 → 0, 1 → 2, 2 → 4
+        # monitoring: 0 → 0, 1 → 1, 2 → 4, 3 → 5
+        if self.info_available == "inspections":
+            if isinstance(actions, list):
+                actions = [2 if a == 1 else 4 if a == 2 else a for a in actions]
+            elif isinstance(actions, torch.Tensor):
+                actions = actions.clone()
+                actions[actions == 1] = 2
+                actions[actions == 2] = 4
+            elif isinstance(actions, np.ndarray):
+                actions = actions.copy()
+                actions[actions == 1] = 2
+                actions[actions == 2] = 4
+            else:
+                raise TypeError(f"Unsupported actions type: {type(actions)}")
+
+        elif self.info_available == "monitoring":
+            if isinstance(actions, list):
+                actions = [4 if a == 2 else 5 if a == 3 else a for a in actions]
+            elif isinstance(actions, torch.Tensor):
+                actions = actions.clone()
+                actions[actions == 2] = 4
+                actions[actions == 3] = 5
+            elif isinstance(actions, np.ndarray):
+                actions = actions.copy()
+                actions[actions == 2] = 4
+                actions[actions == 3] = 5
+            else:
+                raise TypeError(f"Unsupported actions type: {type(actions)}")
 
         self.update_action_histogram(actions)
         action_dict = {
@@ -208,11 +246,11 @@ class ePymarlOWF_Sens(MultiAgentEnv):
 
     def get_total_actions(self):
         """Returns the total number of actions an agent could ever take."""
-        return self.struct_env.actions_per_agent
+        return self.n_actions
 
     def reset(self):
         """Returns initial observations and states."""
-        self.action_histogram = {"action_" + str(k): 0 for k in range(self.n_actions)}
+        self.action_histogram = {"action_" + str(k): 0 for k in range(self.struct_env.actions_per_agent)}
         self.struct_env.reset()
         return self.get_obs(), self.get_state()
 
