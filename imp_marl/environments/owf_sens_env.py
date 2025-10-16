@@ -174,6 +174,9 @@ class OWF_Sens(ImpEnv):
             # Check for system failure (observable event)
             pf_components = new_proba[i, :].reshape((self.lev, self.stress_conditions, self.crack_conditions)).sum(axis=1)[:, -1]
             pf_sys = OWF_Sens.pf_sys(pf_components)
+            # Risk-based reward
+            if self.risk_reward:
+                reward_sum -= pf_sys * self.global_costs[2] # system failure cost
             f_sys = np.random.choice([0, 1], size=None, replace=True, p=[1 - pf_sys, pf_sys])
 
             # if system failure, repair all components
@@ -181,7 +184,8 @@ class OWF_Sens(ImpEnv):
                 new_proba[i, :, :] = self.initial_damage_proba[i, :, :].copy()
                 new_drate[i, :, 0] = 0
                 new_sensor_condition[i, :, :] = np.array([0, 0, 1])
-                reward_sum -= self.global_costs[2] # system failure cost
+                if not self.risk_reward:
+                    reward_sum -= self.global_costs[2] # system failure cost
                 # no actions are applied from this point
                 continue
             # update all component probabilities (no system failure)
@@ -263,10 +267,6 @@ class OWF_Sens(ImpEnv):
                         reward_sum -= self.component_costs[j, 2]
                         reward_sum -= self.global_costs[1] # corrective action surplus cost
                         inspections[i, j] = self.n_obs_inspection + 1  # no inspection outcome token
-            
-            # Risk-based reward
-            if self.risk_reward:
-                reward_sum -= pf_sys * self.global_costs[2] # system failure cost
 
         # System cost (mobilization)
         if actions_count > 0 and self.global_costs[0] > 0:
