@@ -6,6 +6,22 @@ import numpy as np
 
 from imp_marl.environments.imp_env import ImpEnv
 
+ZAYAS_TOPOLOGY = [
+    [0, 1],    # element 0: hotspots 0, 1
+    [2, 3],    # element 1: hotspots 2, 3
+    [4],       # element 2: hotspot 4 only
+    [5],       # element 3
+    [6, 7],    # element 4
+    [8, 9],    # element 5
+    [10],      # element 6
+    [11],      # element 7
+    [12, 13],  # element 8
+    [14, 15],  # element 9
+    [16, 17],  # element 10
+    [18, 19],  # element 11
+    [20, 21],  # element 12
+]
+
 
 class Struct_Zayas(ImpEnv):
     """zayas frame system (struct_zayas) class.
@@ -73,7 +89,7 @@ class Struct_Zayas(ImpEnv):
         """
         if config is None:
             config = {
-                "n_comp": 2,
+                "n_comp": 22,
                 "discount_reward": 1,
                 "campaign_cost": False,
             }
@@ -96,20 +112,20 @@ class Struct_Zayas(ImpEnv):
         numpy_models = np.load(
             os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
-                "pomdp_models/Dr3031C10.npz",
+                "pomdp_models/zayas_model.npz",
             )
         )
 
         # (ncomp components, proba_size cracks)
         self.initial_damage_proba = np.zeros((self.n_comp, self.proba_size))
 
-        self.initial_damage_proba[:, :] = numpy_models["belief0"][0, 0, :, 0]
+        self.initial_damage_proba[:, :] = numpy_models["belief_0"]
 
-        # (3 actions, 10 components, 31 det rates, 30 cracks, 30 cracks)
-        self.transition_model = numpy_models["P"][:, 0, :, :, :]
+        # (3 actions, n_comp components, 31 det rates, 30 cracks, 30 cracks)
+        self.transition_model = numpy_models["P"]
 
-        # (3 actions, 10 components, 30 cracks, 2 inspections)
-        self.inspection_model = numpy_models["O"][:, 0, :, :]
+        # (3 actions, n_comp components, 30 cracks, 2 inspections)
+        self.inspection_model = numpy_models["O"]
 
 
         self.agent_list = ["agent_" + str(i) for i in range(self.n_comp)]
@@ -187,35 +203,54 @@ class Struct_Zayas(ImpEnv):
         done = self.time_step >= self.ep_length
 
         return self.observations, rewards, done, {"inspection": inspection}
-
-    def pf_sys(self, pf, k):
-        """Computes the system failure probability pf_sys for k-out-of-n components
-
-        Args:
-            pf: Numpy array with components' failure probability.
-            k: Integer indicating k (out of n) components.
-
-        Returns:
-            PF_sys: Numpy array with the system failure probability.
+    
+    def connect_zayas(pf_hotspot, topology=ZAYAS_TOPOLOGY):
+        """Compute element failure probabilities from hotspot failure probs.
+        
+        Each element is a series system of its hotspots:
+        pf_elem = 1 - prod(1 - pf_hotspot[j]) for j in element's hotspots.
         """
-        n = pf.size
-        nk = n - k
-        m = k + 1
-        A = np.zeros(m + 1)
-        A[1] = 1
-        L = 1
-        for j in range(1, n + 1):
-            h = j + 1
-            Rel = 1 - pf[j - 1]
-            if nk < j:
-                L = h - nk
-            if k < j:
-                A[m] = A[m] + A[k] * Rel
-                h = k
-            for i in range(h, L - 1, -1):
-                A[i] = A[i] + (A[i - 1] - A[i]) * Rel
-        PF_sys = 1 - A[m]
-        return PF_sys
+        surv_comp = 1.0 - pf_hotspot
+        surv_elem = np.array([
+            np.prod(surv_comp[idx]) for idx in topology
+        ])
+        return 1.0 - surv_elem
+
+    def elem_state(pf_elem):
+        """Joint probability vector over all 2^n element state combinations.
+        
+        Assumes elements are independent. Returns a vector of length 2^n,
+        where entry k corresponds to the binary state (failed/survived)
+        encoded by the binary representation of k.
+        
+        Equivalent to the Kronecker product of [pf_i, 1-pf_i] vectors.
+        """
+        n = len(pf_elem)
+        q = np.array([pf_elem[0], 1.0 - pf_elem[0]])
+        for i in range(1, n):
+            q = np.kron(q, [pf_elem[i], 1.0 - pf_elem[i]])
+        return q
+    
+    def pf_sys(pf_hotspot, surv_sys_cond, topology=ZAYAS_TOPOLOGY):
+        """Compute system failure probability from hotspot failure probabilities.
+        
+        Parameters
+        ----------
+        pf_hotspot : array of shape (n_hotspots,)
+            Failure probability of each hotspot.
+        surv_sys_cond : array of shape (2^n_elem,)
+            Conditional system survival probability for each element state combo.
+        topology : list of lists
+            Mapping from elements to hotspot indices.
+        
+        Returns
+        -------
+        float
+            System failure probability.
+        """
+        pf_elem = connect_zayas(pf_hotspot, topology)
+        q = elem_state(pf_elem)
+        return 1.0 - surv_sys_cond @ q
 
     def immediate_cost(self, B, a, B_, drate):
         """Computes the immediate reward (negative cost) based on current (and next) damage probability and action selected
