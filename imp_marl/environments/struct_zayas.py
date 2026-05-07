@@ -23,7 +23,7 @@ ZAYAS_TOPOLOGY = [
 ]
 
 
-class Struct_Zayas(ImpEnv):
+class StructZayas(ImpEnv):
     """zayas frame system (struct_zayas) class.
 
     Attributes:
@@ -127,6 +127,7 @@ class Struct_Zayas(ImpEnv):
         # (3 actions, n_comp components, 30 cracks, 2 inspections)
         self.inspection_model = numpy_models["O"]
 
+        self.sys_surv_cond = numpy_models["surv_sys_cond"]
 
         self.agent_list = ["agent_" + str(i) for i in range(self.n_comp)]
 
@@ -204,7 +205,7 @@ class Struct_Zayas(ImpEnv):
 
         return self.observations, rewards, done, {"inspection": inspection}
     
-    def connect_zayas(pf_hotspot, topology=ZAYAS_TOPOLOGY):
+    def connect_zayas(self, pf_hotspot, topology=ZAYAS_TOPOLOGY):
         """Compute element failure probabilities from hotspot failure probs.
         
         Each element is a series system of its hotspots:
@@ -216,7 +217,7 @@ class Struct_Zayas(ImpEnv):
         ])
         return 1.0 - surv_elem
 
-    def elem_state(pf_elem):
+    def elem_state(self, pf_elem):
         """Joint probability vector over all 2^n element state combinations.
         
         Assumes elements are independent. Returns a vector of length 2^n,
@@ -231,7 +232,7 @@ class Struct_Zayas(ImpEnv):
             q = np.kron(q, [pf_elem[i], 1.0 - pf_elem[i]])
         return q
     
-    def pf_sys(pf_hotspot, surv_sys_cond, topology=ZAYAS_TOPOLOGY):
+    def pf_sys(self, pf_hotspot, topology=ZAYAS_TOPOLOGY):
         """Compute system failure probability from hotspot failure probabilities.
         
         Parameters
@@ -248,9 +249,9 @@ class Struct_Zayas(ImpEnv):
         float
             System failure probability.
         """
-        pf_elem = connect_zayas(pf_hotspot, topology)
-        q = elem_state(pf_elem)
-        return 1.0 - surv_sys_cond @ q
+        pf_elem = self.connect_zayas(pf_hotspot, topology)
+        q = self.elem_state(pf_elem)
+        return 1 - np.dot(self.sys_surv_cond, q)
 
     def immediate_cost(self, B, a, B_, drate):
         """Computes the immediate reward (negative cost) based on current (and next) damage probability and action selected
@@ -285,12 +286,12 @@ class Struct_Zayas(ImpEnv):
             PfSyS_ = PF_
             PfSyS = PF
         else:
-            PfSyS_ = self.pf_sys(PF_, self.k_comp)
-            PfSyS = self.pf_sys(PF, self.k_comp)
+            PfSyS_ = self.pf_sys(PF_)
+            PfSyS = self.pf_sys(PF)
         if PfSyS_ < PfSyS:
-            cost_system += PfSyS_ * (-10000)
+            cost_system += PfSyS_ * (-10_000)
         else:
-            cost_system += (PfSyS_ - PfSyS) * (-10000)
+            cost_system += (PfSyS_ - PfSyS) * (-10_000)
         if campaign_executed:
             cost_system += -5
         return cost_system
