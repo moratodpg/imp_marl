@@ -289,9 +289,9 @@ class StructZayas(ImpEnv):
             PfSyS_ = self.pf_sys(PF_)
             PfSyS = self.pf_sys(PF)
         if PfSyS_ < PfSyS:
-            cost_system += PfSyS_ * (-10_000)
+            cost_system += PfSyS_ * (-100_000)
         else:
-            cost_system += (PfSyS_ - PfSyS) * (-10_000)
+            cost_system += (PfSyS_ - PfSyS) * (-100_000)
         if campaign_executed:
             cost_system += -5
         return cost_system
