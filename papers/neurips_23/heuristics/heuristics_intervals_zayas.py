@@ -101,7 +101,7 @@ class HeuristicsStructZayas:
     def episode(self, insp_int, comp_insp):
         rew_total_ = 0
         done_ = False
-        insp_obs = np.full(self.n_comp, 2)
+        insp_obs = {"inspection": np.full(self.struct_env.n_comp, 2.0)}
         self.struct_env.reset()
         action = {}
         for agent in self.struct_env.agent_list:
@@ -115,8 +115,8 @@ class HeuristicsStructZayas:
                 inspection_index = (-pf).argsort()[:comp_insp]
                 for index in inspection_index:
                     action_[self.struct_env.agent_list[index]] = 1
-            if np.any(insp_obs == 1):
-                index_repair = np.where(insp_obs == 1)[0]
+            if np.any(insp_obs["inspection"] == 1):
+                index_repair = np.where(insp_obs["inspection"] == 1)[0]
                 if len(index_repair) > 0:
                     for index in index_repair:
                         action_[self.struct_env.agent_list[index]] = 2
