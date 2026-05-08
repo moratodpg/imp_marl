@@ -1,13 +1,14 @@
 import timeit
 
-from papers.neurips_23.heuristics.heuristics_interval_owf import HeuristicsOwf
-from papers.neurips_23.heuristics.heuristics_intervals_struct import HeuristicsStruct
+from heuristics_interval_owf import HeuristicsOwf
+from heuristics_intervals_struct import HeuristicsStruct
+from heuristics_intervals_zayas import HeuristicsStructZayas
 
 if __name__ == "__main__":
 
     search = False
-    env = "struct"  # "struct" or "owf"
-    eval_size = 1500
+    env = "zayas"  # "struct" or "owf" or "zayas"
+    eval_size = 10000
 
     if env == "struct":
         n_comp = 5
@@ -37,6 +38,17 @@ if __name__ == "__main__":
             campaign_cost=False,
             seed=seed_test,
         )
+    elif env == "zayas":
+        n_comp = 22
+        discount_reward = 0.95
+        campaign_cost = False
+        seed_test = 0
+        heuristic = HeuristicsStructZayas(
+            n_comp=n_comp,
+            discount_reward=discount_reward,
+            campaign_cost=campaign_cost,
+            seed=seed_test,
+        )
     else:
         heuristic = None
 
@@ -48,6 +60,6 @@ if __name__ == "__main__":
 
     else:
         # Evaluation
-        insp_int = 10
-        insp_comp = 5
+        insp_int = 3
+        insp_comp = 8
         heuristic.eval(eval_size, insp_int, insp_comp)
