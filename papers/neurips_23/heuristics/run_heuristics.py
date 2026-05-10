@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     search = False
     env = "zayas"  # "struct" or "owf" or "zayas"
-    eval_size = 10000
+    eval_size = 10_000
 
     if env == "struct":
         n_comp = 5
@@ -60,6 +60,6 @@ if __name__ == "__main__":
 
     else:
         # Evaluation
-        insp_int = 3
-        insp_comp = 8
+        insp_int = 16
+        insp_comp = 20
         heuristic.eval(eval_size, insp_int, insp_comp)
