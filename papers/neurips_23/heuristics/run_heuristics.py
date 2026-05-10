@@ -60,6 +60,6 @@ if __name__ == "__main__":
 
     else:
         # Evaluation
-        insp_int = 16
+        insp_int = 8
         insp_comp = 20
         heuristic.eval(eval_size, insp_int, insp_comp)
