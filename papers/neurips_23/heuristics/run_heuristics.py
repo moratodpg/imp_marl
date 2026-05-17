@@ -6,9 +6,9 @@ from heuristics_intervals_zayas import HeuristicsStructZayas
 
 if __name__ == "__main__":
 
-    search = False
+    search = True
     env = "zayas"  # "struct" or "owf" or "zayas"
-    eval_size = 10_000
+    eval_size = 100
 
     if env == "struct":
         n_comp = 5
