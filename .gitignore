@@ -50,6 +50,8 @@ if using
 # *.iml
 # *.ipr
 
+papers/neurips_23/heuristics/heuristics/
+
 # CMake
 cmake-build-*/
 
