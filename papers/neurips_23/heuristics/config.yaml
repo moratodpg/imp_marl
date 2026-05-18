@@ -62,6 +62,24 @@ search:
     repair_comp_threshold: [0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5]          # exact component PF values to try
     n_insp: [1, 5, 10, 15, 20]                                 # number of components to inspect
 
+# ── MARL Evaluation ────────────────────────────────────────────────────────────
+# Run: python eval_marl.py
+# env section above is also used (n_comp, discount_reward, campaign_cost).
+marl:
+  model_dir: marl_models/qmix_v1   # path to checkpoint subfolder containing agent.th
+  eval_episodes: 1000
+  seed: 0
+
+  # Model architecture — must match training
+  n_actions: 3
+  hidden_dim: 64
+  use_rnn: true
+
+  # Observation augmentations — must match training
+  obs_d_rate: true        # append normalised degradation rate per agent
+  obs_agent_id: true      # append one-hot agent ID
+  obs_last_action: false  # append one-hot of last action taken
+
 # ── Evaluation (used when search.enabled: false) ───────────────────────────────
 eval:
   eval_size: 1000
