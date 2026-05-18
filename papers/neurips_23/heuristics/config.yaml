@@ -1,0 +1,78 @@
+# Heuristics runner configuration.
+# Run from this directory: python run_heuristics.py
+
+# ── Environment ────────────────────────────────────────────────────────────────
+env:
+  type: zayas            # struct | owf | zayas
+
+  # struct params
+  # n_comp: 5
+  # k_comp: 4
+  # discount_reward: 0.95
+  # campaign_cost: false
+  # env_correlation: false  # true = correlated, false = uncorrelated
+
+  # owf params (use when type: owf)
+  # n_owt: 2
+  # lev: 3
+  # discount_reward: 0.95
+  # campaign_cost: false
+
+  # zayas params (use when type: zayas)
+  n_comp: 22
+  discount_reward: 0.95
+  campaign_cost: false
+
+# ── Agent ──────────────────────────────────────────────────────────────────────
+agent:
+  type: donothing          # interval | marginal_value | component_pf | donothing
+  #
+  # interval       — inspect top-k components at fixed intervals; repair observed-damaged.
+  #                  Compatible with: struct, owf.
+  #
+  # marginal_value — repair by marginal system-PF reduction; inspect by expected information
+  #                  value. Compatible with: zayas.
+  #
+  # component_pf   — inspections triggered by system PF threshold; repairs triggered by
+  #                  component PF threshold. Compatible with: struct, owf, zayas.
+  #
+  # Agent-specific constructor params (optional):
+  # params:
+  #   repair_threshold: 20.0   # marginal_value only — minimum marginal score to repair
+
+# ── Search ─────────────────────────────────────────────────────────────────────
+search:
+  enabled: false
+  eval_size: 100
+  seed: 0
+
+  # Search parameter ranges — set the section that matches your agent type.
+  params:
+
+    # ── interval agent ──────────────────────────────────
+    # insp_interval: [1, 30]      # [start, stop) integer range
+    # comp_inspection: [1, 22]     # [start, stop) integer range
+
+    # ── marginal_value agent (uncomment, remove interval params) ──
+    # max_repairs: [1, 23]
+    # comp_inspection: [1, 23]
+
+    # ── component_pf agent (uncomment, remove interval params) ────
+    insp_sys_threshold: [0.000001, 0.000005, 0.00001, 0.00005]  # exact system PF values to try
+    repair_comp_threshold: [0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5]          # exact component PF values to try
+    n_insp: [1, 5, 10, 15, 20]                                 # number of components to inspect
+
+# ── Evaluation (used when search.enabled: false) ───────────────────────────────
+eval:
+  eval_size: 1000
+  params:
+    # interval agent
+    insp_interval: 10
+    # comp_inspection: 21
+    # marginal_value agent
+    # max_repairs: 5
+    # comp_inspection: 10
+    # component_pf agent
+    # insp_sys_threshold: 0.01     # system PF above which inspections are triggered
+    # repair_comp_threshold: 0.5   # component PF above which repair is triggered
+    # n_insp: 5                    # number of components to inspect when triggered
