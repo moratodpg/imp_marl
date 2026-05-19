@@ -1,14 +1,15 @@
-""" Demonstration of the PymarlMAStruct wrapper with random actions for struct. """
+""" Demonstration of the PymarlMAStruct wrapper with random actions for owf. """
 
 import numpy as np
 
-from imp_marl.imp_wrappers.pymarl_wrapper.pymarl_wrap_sa_struct import PymarlSAStruct
+from imp_marl.imp_wrappers.pymarl.pymarl_wrap_sa_struct import PymarlSAStruct
 
 if __name__ == "__main__":
 
     n_episode = 100
+
     env = PymarlSAStruct(
-        struct_type="struct",
+        struct_type="owf",
         n_comp=2,
         discount_reward=0.95,
         state_obs=True,
@@ -23,6 +24,7 @@ if __name__ == "__main__":
     )
 
     env_info = env.get_env_info()
+
     n_actions = env_info["n_actions"]
     n_agents = env_info["n_agents"]
     array_reward = []

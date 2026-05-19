@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from imp_marl.imp_wrappers.pymarl_wrapper.pymarl_wrap_ma_struct import PymarlMAStruct
+from imp_marl.imp_wrappers.pymarl.pymarl_wrap_ma_struct import PymarlMAStruct
 
 if __name__ == "__main__":
     n_episode = 100

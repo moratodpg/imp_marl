@@ -2,8 +2,8 @@
 
 import numpy as np
 
-from imp_marl.imp_wrappers.pymarl_wrapper.pymarl_wrap_ma_struct import PymarlMAStruct
-from imp_marl.imp_wrappers.pymarl_wrapper.pymarl_wrap_sa_struct import PymarlSAStruct
+from imp_marl.imp_wrappers.pymarl.pymarl_wrap_ma_struct import PymarlMAStruct
+from imp_marl.imp_wrappers.pymarl.pymarl_wrap_sa_struct import PymarlSAStruct
 
 if __name__ == "__main__":
 
